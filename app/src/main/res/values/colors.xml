@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#037C4A</color>
+    <color name="colorPrimaryDark">#005934</color>
+
+    <!-- THEMES COLOR -->
+    <color name="colorPrimaryStocks">#595592</color>
+    <color name="colorPrimaryStocksDark">#484578</color>
+
+    <color name="colorPrimaryShops">#509742</color>
+    <color name="colorPrimaryShopsDark">#407b35</color>
+
+    <color name="colorPrimaryFood">#F19816</color>
+    <color name="colorPrimaryFoodDark">#c27a11</color>
+
+    <color name="colorPrimaryCinema">#343C67</color>
+    <color name="colorPrimaryCinemaDark">#252a49</color>
+
+    <color name="colorPrimaryEvents">#EB6838</color>
+    <color name="colorPrimaryEventsDark">#b4502c</color>
+
+    <color name="colorPrimaryFun">#00AFDC</color>
+    <color name="colorPrimaryFunDark">#0091b6</color>
+
+
+    <color name="colorHighRating">#007B00</color>
+    <color name="colorMiddleRating">#F1CB11</color>
+    <color name="colorLowRating">#D0021B</color>
+
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorMainBorder">#11000000</color>
+    <color name="colorGray">#E7E7E9</color>
+    <color name="colorTextGray">#909090</color>
+    <color name="colorTextBlack">#2b2b2b</color>
+    <color name="colorTextRed">#CC3346</color>
+    <color name="colorTextGreen">#6F897E</color>
+
+</resources>

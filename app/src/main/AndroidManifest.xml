@@ -1,0 +1,64 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ru.cproject.vesnaandroid">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:name=".VesnaApplication"
+        android:supportsRtl="false"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".activities.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.MainActivity"/>
+
+        <activity
+            android:name=".activities.stocks.MainStocksActivity"
+            android:theme="@style/StockTheme"/>
+        <activity
+            android:name=".activities.stocks.SingleStockActivity"
+            android:theme="@style/StockTheme"/>
+        <activity
+            android:name=".activities.shops.MainShopsActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activities.shops.SingleShopActivity"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".activities.films.MainFilmsActivity"
+            android:theme="@style/FilmsTheme"/>
+        <activity
+            android:name=".activities.films.SingleFilmActivity"
+            android:theme="@style/FilmsTheme" />
+
+        <activity
+            android:name=".activities.events.MainEventsActivity"
+            android:theme="@style/EventsTheme" />
+
+        <activity
+            android:name=".activities.events.SingleEventActivity"
+            android:theme="@style/EventsTheme"/>
+
+        <activity
+            android:name=".activities.TcInfoActivity"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".activities.login.LoginActivity" />
+
+        <activity android:name=".activities.login.RegisterActivity" />
+
+        <activity android:name=".activities.categories.CategoriesActivity" />
+
+    </application>
+
+</manifest>

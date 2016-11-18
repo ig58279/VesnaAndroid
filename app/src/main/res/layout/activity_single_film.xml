@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/slider_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:background="@drawable/slider_fade_out"/>
+
+        <View
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/slider_shadow"
+            android:layout_alignBottom="@+id/content"
+            android:background="@color/colorWhite"/>
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-14dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="14dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignBottom="@+id/bottom"
+                    android:background="@drawable/card_shadow"/>
+
+
+                <ImageView
+                    android:id="@+id/poster"
+                    android:layout_width="112dp"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="22dp"
+                    android:adjustViewBounds="true"
+                    android:padding="7dp"
+                    android:background="@drawable/card_shadow"/>
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="12dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_toRightOf="@+id/poster"
+                    android:textAllCaps="true"
+                    android:textSize="17sp"
+                    android:textColor="@color/colorTextBlack"/>
+
+                <TextView
+                    android:id="@+id/age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title"
+                    android:layout_alignLeft="@id/title"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/age"
+                    android:layout_alignLeft="@id/age"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextBlack" />
+
+                <TextView
+                    android:id="@+id/country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/genre"
+                    android:layout_alignLeft="@id/genre"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextBlack" />
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/country"
+                    android:layout_alignLeft="@id/country"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/rating_background"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/seanse_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_below="@id/poster"
+                    android:layout_marginTop="9dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextGray"/>
+
+                <View
+                    android:id="@+id/bottom"
+                    android:layout_width="0dp"
+                    android:layout_height="22dp"
+                    android:layout_below="@id/seanse_table"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_shadow"
+                android:paddingTop="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:id="@+id/info"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textAllCaps="true"
+                        android:text="Информация"/>
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorTextGray" />
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textAllCaps="true"
+                        android:text="Описание"/>
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/content_tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

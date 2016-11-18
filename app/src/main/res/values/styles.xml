@@ -1,0 +1,57 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="StockTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryStocks</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryStocksDark</item>
+        <item name="colorAccent">@color/colorPrimaryStocks</item>
+    </style>
+
+    <style name="ShopsTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryShops</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryShopsDark</item>
+        <item name="colorAccent">@color/colorPrimaryShops</item>
+    </style>
+
+    <style name="FoodTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryFood</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryFoodDark</item>
+        <item name="colorAccent">@color/colorPrimaryFood</item>
+    </style>
+
+    <style name="FilmsTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryCinema</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryCinemaDark</item>
+        <item name="colorAccent">@color/colorPrimaryCinema</item>
+    </style>
+
+    <style name="EventsTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryEvents</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryEventsDark</item>
+        <item name="colorAccent">@color/colorPrimaryEvents</item>
+    </style>
+
+    <style name="FunTheme" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryFun</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryFunDark</item>
+        <item name="colorAccent">@color/colorPrimaryFun</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+</resources>

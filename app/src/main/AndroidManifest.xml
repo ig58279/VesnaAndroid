@@ -59,6 +59,9 @@
 
         <activity android:name=".activities.categories.CategoriesActivity" />
 
+        <activity android:name=".activities.SearchActivity"
+            android:theme="@style/SearchTheme"/>
+
     </application>
 
 </manifest>

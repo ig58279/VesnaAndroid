@@ -1,8 +1,13 @@
 package ru.cproject.vesnaandroid.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,8 +104,46 @@ public class TcInfoActivity extends ProtoSingleActivity {
         }
 
         address.setText(mall.getAddress().getTitle());
-        // TODO: 08.11.16 координаты
+
+        makeRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean installed = appInstallOrNot("com.google.android.apps.maps");
+                if (installed) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + mall.getAddress().getLat() +"," + mall.getAddress().getLng() + "(ТРЦ \"Весна\")" );
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TcInfoActivity.this);
+                    builder
+                            .setMessage("У Вас не установлено приложение Google Maps. Хотите установить?")
+                            .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    final String appPackageName = "com.google.android.apps.maps";
+                                    try {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                    } catch (android.content.ActivityNotFoundException anfe) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Нет", null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            }
+        });
 
         description.setText(mall.getContent());
+    }
+    private boolean appInstallOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {}
+        return false;
     }
 }

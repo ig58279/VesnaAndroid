@@ -2,6 +2,7 @@ package ru.cproject.vesnaandroid.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -83,6 +84,13 @@ public class StocksAdapter extends RecyclerView.Adapter {
                 ((StockViewHolder) holder).like.setImageResource(R.drawable.ic_like);
             else
                 ((StockViewHolder) holder).like.setImageResource(R.drawable.dislike);
+
+            if (stock.isSpecial()) {
+                ((StockViewHolder) holder).special.setVisibility(View.VISIBLE);
+                ((StockViewHolder) holder).rectangle.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.colorPrimaryStocks), PorterDuff.Mode.SRC_IN);
+                ((StockViewHolder) holder).triangle.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimaryStocks), PorterDuff.Mode.SRC_IN);
+            } else
+                ((StockViewHolder) holder).special.setVisibility(View.GONE);
         }
     }
 
@@ -104,6 +112,9 @@ public class StocksAdapter extends RecyclerView.Adapter {
     protected class StockViewHolder extends RecyclerView.ViewHolder {
 
         ViewGroup wrapper;
+        ViewGroup special;
+        ImageView rectangle;
+        ImageView triangle;
         ImageView image;
         TextView title;
         TextView timestamp;
@@ -113,6 +124,9 @@ public class StocksAdapter extends RecyclerView.Adapter {
         StockViewHolder(View itemView) {
             super(itemView);
             wrapper = (ViewGroup) itemView.findViewById(R.id.wrapper);
+            special = (ViewGroup) itemView.findViewById(R.id.special);
+            rectangle = (ImageView) itemView.findViewById(R.id.rectangle);
+            triangle = (ImageView) itemView.findViewById(R.id.triangle);
             image = (ImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
             timestamp = (TextView) itemView.findViewById(R.id.timestamp);

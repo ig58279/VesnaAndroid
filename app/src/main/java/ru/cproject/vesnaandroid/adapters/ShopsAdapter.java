@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
+
+import static ru.cproject.vesnaandroid.R.id.stock;
 
 /**
  * Created by Bitizen on 29.10.16.
@@ -51,6 +54,12 @@ public class ShopsAdapter extends RecyclerView.Adapter {
         ((ShopViewHolder) holder).name.getBackground().setColorFilter(Color.parseColor("#f4f4f4"), PorterDuff.Mode.SRC_IN);
         ((ShopViewHolder) holder).name.setText(shop.getName());
         ((ShopViewHolder) holder).showOnMap.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        if (shop.isSpecial()) {
+            ((ShopsAdapter.ShopViewHolder) holder).special.setVisibility(View.VISIBLE);
+            ((ShopsAdapter.ShopViewHolder) holder).rectangle.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            ((ShopsAdapter.ShopViewHolder) holder).triangle.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        } else
+            ((ShopsAdapter.ShopViewHolder) holder).special.setVisibility(View.GONE);
 
         Log.e("logo", shop.getLogo());
 
@@ -80,6 +89,9 @@ public class ShopsAdapter extends RecyclerView.Adapter {
     private class ShopViewHolder extends RecyclerView.ViewHolder {
 
         ViewGroup wrapper;
+        ViewGroup special;
+        ImageView rectangle;
+        ImageView triangle;
         ImageView logo;
         TextView name;
         ImageView showOnMap;
@@ -87,6 +99,9 @@ public class ShopsAdapter extends RecyclerView.Adapter {
         public ShopViewHolder(View itemView) {
             super(itemView);
             wrapper = (ViewGroup) itemView.findViewById(R.id.wrapper);
+            special = (ViewGroup) itemView.findViewById(R.id.special);
+            rectangle = (ImageView) itemView.findViewById(R.id.rectangle);
+            triangle = (ImageView) itemView.findViewById(R.id.triangle);
             logo = (ImageView) itemView.findViewById(R.id.logo);
             name = (TextView) itemView.findViewById(R.id.name);
             showOnMap = (ImageView) itemView.findViewById(R.id.show_on_map);

@@ -13,6 +13,7 @@ public class Shop {
     private String name;
     private String content;
     private boolean like;
+    private boolean special;
 
     private List<Photo> photos;
     private List<Complement> complements;
@@ -98,6 +99,14 @@ public class Shop {
 
     public void setLike(boolean like) {
         this.like = like;
+    }
+
+    public boolean isSpecial() {
+        return special;
+    }
+
+    public void setSpecial(boolean special) {
+        this.special = special;
     }
 
     public static class Photo {

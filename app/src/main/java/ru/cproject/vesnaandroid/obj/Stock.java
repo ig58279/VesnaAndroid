@@ -108,6 +108,7 @@ public class Stock {
         this.coupon = coupon;
     }
 
+
     public static class Photo {
 
         private String small;

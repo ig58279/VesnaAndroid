@@ -90,25 +90,17 @@ public class ResponseParser {
         JsonParser parser = new JsonParser();
         JsonObject response = (JsonObject) parser.parse(json);
 
-        String SHOP = "shop";
-        if (response.has(SHOP) && !response.get(SHOP).isJsonNull())
-            stock.setShop(parseShop(response.get(SHOP).toString()));
+        String NAME = "name";
+        if (response.has(NAME) && !response.get(NAME).isJsonNull())
+            stock.setTitle(response.get(NAME).getAsString());
 
-        String ID = "id";
-        if (response.has(ID) && !response.get(ID).isJsonNull())
-            stock.setId(response.get(ID).getAsInt());
+        String DESC = "desc";
+        if (response.has(DESC) && !response.get(DESC).isJsonNull())
+            stock.setContent(response.get(DESC).getAsString());
 
-        String TITLE = "title";
-        if (response.has(TITLE) && !response.get(TITLE).isJsonNull())
-            stock.setTitle(response.get(TITLE).getAsString());
-
-        String CONTENT = "content";
-        if (response.has(CONTENT) && !response.get(CONTENT).isJsonNull())
-            stock.setContent(response.get(CONTENT).getAsString());
-
-        String DATE = "date";
-        if (response.has(DATE) && !response.get(DATE).isJsonNull())
-            stock.setDate(response.get(DATE).getAsString());
+        String LOGO = "logo";
+        if (response.has(LOGO) && !response.get(LOGO).isJsonNull())
+            stock.setImage(response.get(LOGO).getAsString());
 
         String PHOTOS = "photos";
         if (response.has(PHOTOS) && !response.get(PHOTOS).isJsonNull()) {
@@ -151,25 +143,17 @@ public class ResponseParser {
         JsonParser parser = new JsonParser();
         JsonObject response = parser.parse(json).getAsJsonObject();
 
-        String ID = "id";
-        if (response.has(ID) && !response.get(ID).isJsonNull())
-            shop.setId(response.get(ID).getAsInt());
-
         String NAME = "name";
         if (response.has("name") && !response.get(NAME).isJsonNull())
             shop.setName(response.get(NAME).getAsString());
 
-        String CONTENT = "content";
-        if (response.has("content") && !response.get(CONTENT).isJsonNull())
-            shop.setContent(CONTENT);
+        String DESC = "desc";
+        if (response.has("desc") && !response.get(DESC).isJsonNull())
+            shop.setContent(response.get(DESC).getAsString());
 
-        String IMAGE = "image";
-        if (response.has(IMAGE) && !response.get(IMAGE).isJsonNull())
-            shop.setLogo(response.get(IMAGE).getAsString());
-
-        String LIKE = "like";
-        if (response.has(LIKE) && !response.get(LIKE).isJsonNull())
-            shop.setLike(response.get(LIKE).getAsBoolean());
+        String LOGO = "logo";
+        if (response.has(LOGO) && !response.get(LOGO).isJsonNull())
+            shop.setLogo(response.get(LOGO).getAsString());
 
         String PHOTOS = "photos";
         if (response.has(PHOTOS) && !response.get(PHOTOS).isJsonNull()) {
@@ -593,25 +577,25 @@ public class ResponseParser {
         }
 
         return response;
-    }
+    } //+
 
     public static List<Event> parseEvents(String json){
         List<Event> events = new ArrayList<>();
         JsonParser parser = new JsonParser();
         JsonObject response = parser.parse(json).getAsJsonObject();
 
-        String ITEMS = "items";
-        if (response.has(ITEMS) && !response.get(ITEMS).isJsonNull()) {
-            JsonArray items = response.get(ITEMS).getAsJsonArray();
+        String LIST = "list";
+        if (response.has(LIST) && !response.get(LIST).isJsonNull()) {
+            JsonArray list = response.get(LIST).getAsJsonArray();
 
-            for (JsonElement element: items) {
+            for (JsonElement element: list) {
                 events.add(parseEvent(element.toString()));
             }
 
         }
 
         return events;
-    }
+    } //+
 
     public static Event parseEvent(String json) {
         Event event = new Event();
@@ -622,23 +606,19 @@ public class ResponseParser {
         if (eventJson.has(ID) && !eventJson.get(ID).isJsonNull())
             event.setId(eventJson.get(ID).getAsInt());
 
-        String TITLE = "title";
-        if (eventJson.has(TITLE) && !eventJson.get(TITLE).isJsonNull())
-            event.setTitle(eventJson.get(TITLE).getAsString());
+        String IMG = "img";
+        if (eventJson.has(IMG) && !eventJson.get(IMG).isJsonNull())
+            event.setImage(eventJson.get(IMG).getAsString());
 
-        String CONTENT = "content";
-        if (eventJson.has(CONTENT) && !eventJson.get(CONTENT).isJsonNull())
-            event.setDescription(eventJson.get(CONTENT).getAsString());
+        String NAME = "name";
+        if (eventJson.has(NAME) && !eventJson.get(NAME).isJsonNull())
+            event.setTitle(eventJson.get(NAME).getAsString());
 
-        String PHOTO = "photo";
-        if (eventJson.has(PHOTO) && !eventJson.get(PHOTO).isJsonNull())
-            event.setPhoto(eventJson.get(PHOTO).getAsString());
-
-        String DATE = "date";
-        if (eventJson.has(DATE) && !eventJson.get(DATE).isJsonNull())
-            event.setTimestamp(eventJson.get(DATE).getAsString());
+        String DESC = "desc";
+        if (eventJson.has(DESC) && !eventJson.get(DESC).isJsonNull())
+            event.setDescription(eventJson.get(DESC).getAsString());
 
         return event;
-    }
+    } //+
 
 }

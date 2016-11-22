@@ -15,8 +15,8 @@ public class Stock {
     private boolean special;
     private boolean like = false;
 
-    private List<Photo> photos;
-    private Shop shop;
+    private List<String> photos;
+    private Shop shop = new Shop();
     private boolean coupon;
 
     public Stock() {
@@ -92,14 +92,6 @@ public class Stock {
         this.shop = shop;
     }
 
-    public List<Photo> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
-    }
-
     public boolean isCoupon() {
         return coupon;
     }
@@ -108,28 +100,11 @@ public class Stock {
         this.coupon = coupon;
     }
 
-    public static class Photo {
+    public List<String> getPhotos() {
+        return photos;
+    }
 
-        private String small;
-        private String original;
-
-        public  Photo() {
-        }
-
-        public String getSmall() {
-            return small;
-        }
-
-        public void setSmall(String small) {
-            this.small = small;
-        }
-
-        public String getOriginal() {
-            return original;
-        }
-
-        public void setOriginal(String original) {
-            this.original = original;
-        }
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
     }
 }

@@ -56,7 +56,7 @@ public class ServerApi {
      * cid - идентификатор категории
      * token - токен
      */
-    public static final String GET_SHOPS = SERVER_ADDRESS + "list?mod=shops";
+    public static final String GET_SHOPS = SERVER_ADDRESS + "shops";
 
     /**
      * Метод получения магазина

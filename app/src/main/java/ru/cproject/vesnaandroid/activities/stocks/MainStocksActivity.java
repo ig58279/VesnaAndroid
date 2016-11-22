@@ -23,7 +23,6 @@ import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.StocksAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Stock;
-import ru.cproject.vesnaandroid.obj.responses.StocksResponse;
 
 /**
  * Created by Bitizen on 26.10.16.
@@ -67,13 +66,12 @@ public class MainStocksActivity extends ProtoMainActivity {
     private void loadStocks() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("skip", stockList.size());
-        params.put("limit", LIMIT);
-        params.put("sort", "a"); // TODO sort
-        // TODO token
-        // TODO cid
+        params.put("mod", "stocks");
+        params.put("offset", stockList.size());
+        params.put("count", LIMIT);
+        params.setUseJsonStreamer(true);
 
-        client.get(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
+        client.post(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
@@ -85,12 +83,10 @@ public class MainStocksActivity extends ProtoMainActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Log.d(TAG, responseString);
-                StocksResponse response = ResponseParser.parseStocks(responseString);
-                int size = stockList.size();
-                List<Stock> loadedStocks = response.getItems();
-                for (int i = 0; i < loadedStocks.size(); i++)
-                    stockList.add(loadedStocks.get(i));
-                adapter.notifyItemRangeInserted(size, stockList.size());
+                List<Stock> stock = ResponseParser.parseStocks(responseString);
+                int prevSize = stockList.size();
+                for (Stock s : stock) stockList.add(s);
+                adapter.notifyItemRangeInserted(prevSize, stock.size());
             }
         });
 

@@ -90,7 +90,6 @@ public class SingleStockActivity extends ProtoSingleActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("id", id);
-//        params.put("token",); TODO токен
 
         client.get(ServerApi.GET_STOCK, params, new TextHttpResponseHandler() {
             @Override
@@ -145,7 +144,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
         for (int i = 0; i < stock.getPhotos().size(); i++) {
             DefaultSliderView slide = new DefaultSliderView(this);
             slide
-                    .image(stock.getPhotos().get(i).getSmall())
+                    .image(ServerApi.getImgUrl(stock.getPhotos().get(i), false))
                     .setScaleType(BaseSliderView.ScaleType.CenterInside);
 
             slider.addSlider(slide);

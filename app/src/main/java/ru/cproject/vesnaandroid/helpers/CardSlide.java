@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.CropTransformation;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 
@@ -33,8 +35,9 @@ public class CardSlide extends BaseSliderView {
                 .with(getContext())
                 .load(url)
                 .fit()
-                .centerInside()
-                .transform(new RoundedCornersTransformation((int)(4*dpi), 0)).into(image);
+                .centerCrop()
+                .transform(new RoundedCornersTransformation((int)(4*dpi), 0))
+                .into(image);
         bindEventAndShow(v, image);
         return v;
     }

@@ -11,7 +11,7 @@ public class Shop {
 
     private int id;
     private String logo;
-    private String name;
+    private String name = "";
     private String content;
     private boolean like;
 

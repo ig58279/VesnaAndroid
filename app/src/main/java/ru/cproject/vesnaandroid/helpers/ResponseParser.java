@@ -1,13 +1,9 @@
 package ru.cproject.vesnaandroid.helpers;
 
-import android.util.Log;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +24,6 @@ import ru.cproject.vesnaandroid.obj.mall.MallInfo;
 import ru.cproject.vesnaandroid.obj.mall.ShopMode;
 import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
 import ru.cproject.vesnaandroid.obj.responses.MallResponse;
-import ru.cproject.vesnaandroid.obj.responses.ShopsResponse;
-import ru.cproject.vesnaandroid.obj.responses.StocksResponse;
 
 /**
  * Created by Bitizen on 31.10.16.
@@ -37,53 +31,19 @@ import ru.cproject.vesnaandroid.obj.responses.StocksResponse;
 
 public class ResponseParser {
 
-    public static StocksResponse parseStocks(String json) {
-        StocksResponse response = new StocksResponse();
-        JsonParser parser = new JsonParser();
-        JsonObject responseJson = parser.parse(json).getAsJsonObject();
-
-        JsonArray categoriesJson = responseJson.get("categories").getAsJsonArray();
-        response.setCategories(parseCategories(categoriesJson.toString()));
-
+    public static List<Stock> parseStocks(String json) {
         List<Stock> stocks = new ArrayList<>();
-        JsonArray stocksJson = responseJson.get("items").getAsJsonArray();
-        for (int i = 0; i < stocksJson.size(); i++) {
-            Stock stock = new Stock();
-            JsonObject stockJson = stocksJson.get(i).getAsJsonObject();
+        JsonParser parser = new JsonParser();
+        JsonObject response = parser.parse(json).getAsJsonObject();
 
-            String ID = "id";
-            if (stockJson.has(ID) && !stockJson.get(ID).isJsonNull())
-                stock.setId(stockJson.get(ID).getAsInt());
+        String list = "list";
+        if (response.has(list) && !response.get(list).isJsonNull()) {
+            JsonArray stocksArray = response.get(list).getAsJsonArray();
 
-            String TITLE = "title";
-            if (stockJson.has(TITLE) && !stockJson.get(TITLE).isJsonNull())
-                stock.setTitle(stockJson.get(TITLE).getAsString());
-
-            String CONTENT = "content";
-            if (stockJson.has(CONTENT) && !stockJson.get(CONTENT).isJsonNull())
-                stock.setContent(stockJson.get(CONTENT).getAsString());
-
-            String PHOTO = "photo";
-            if (stockJson.has(PHOTO) && !stockJson.get(PHOTO).isJsonNull())
-                stock.setImage(stockJson.get(PHOTO).getAsString());
-
-            String DATE = "date";
-            if (stockJson.has(DATE) && !stockJson.get(DATE).isJsonNull())
-                stock.setDate(stockJson.get(DATE).getAsString());
-
-            String SPECIAL = "special";
-            if (stockJson.has(SPECIAL) && !stockJson.get(SPECIAL).isJsonNull())
-                stock.setSpecial(stockJson.get(SPECIAL).getAsBoolean());
-
-            String LIKE = "like";
-            if (stockJson.has(LIKE) && !stockJson.get(LIKE).isJsonNull())
-                stock.setLike(stockJson.get(LIKE).getAsBoolean());
-
-            stocks.add(stock);
+            for (JsonElement e : stocksArray)
+                stocks.add(parseStock(e.toString()));
         }
-        response.setItems(stocks);
-
-        return response;
+        return stocks;
     }
 
     public static Stock parseStock(String json) {
@@ -91,50 +51,34 @@ public class ResponseParser {
         JsonParser parser = new JsonParser();
         JsonObject response = (JsonObject) parser.parse(json);
 
-        String NAME = "name";
-        if (response.has(NAME) && !response.get(NAME).isJsonNull())
-            stock.setTitle(response.get(NAME).getAsString());
+        String id = "id";
+        if (response.has(id) && !response.get(id).isJsonNull())
+            stock.setId(response.get(id).getAsInt());
 
-        String DESC = "desc";
-        if (response.has(DESC) && !response.get(DESC).isJsonNull())
-            stock.setContent(response.get(DESC).getAsString());
-
-        String LOGO = "logo";
-        if (response.has(LOGO) && !response.get(LOGO).isJsonNull())
-            stock.setImage(response.get(LOGO).getAsString());
-
-        String PHOTOS = "photos";
-        if (response.has(PHOTOS) && !response.get(PHOTOS).isJsonNull()) {
-            JsonArray photosJson = response.get(PHOTOS).getAsJsonArray();
-            List<Stock.Photo> photos = new ArrayList<>();
-            for (int i = 0; i < photosJson.size(); i++) {
-                Stock.Photo photo = new Stock.Photo();
-                JsonObject photoJson = photosJson.get(i).getAsJsonObject();
-
-                String SMALL = "small";
-                if (photoJson.has(SMALL) && !photoJson.get(SMALL).isJsonNull())
-                    photo.setSmall(photoJson.get(SMALL).getAsString());
-
-                String ORIGINAL = "small";
-                if (photoJson.has(ORIGINAL) && !photoJson.get(ORIGINAL).isJsonNull())
-                    photo.setOriginal(photoJson.get(ORIGINAL).getAsString());
-
-                photos.add(photo);
-            }
-            stock.setPhotos(photos);
+        String img = "img";
+        if (response.has(img) && !response.get(img).isJsonNull())
+            stock.setImage(response.get(img).getAsString());
+        else {
+            img = "logo";
+            if (response.has(img) && !response.get(img).isJsonNull())
+                stock.setImage(response.get(img).getAsString());
         }
 
-        String SPECIAL = "special";
-        if (response.has(SPECIAL) && !response.get(SPECIAL).isJsonNull())
-            stock.setSpecial(response.get(SPECIAL).getAsBoolean());
+        String name = "name";
+        if (response.has(name) && !response.get(name).isJsonNull())
+            stock.setTitle(response.get(name).getAsString());
 
-        String LIKE = "like";
-        if (response.has(LIKE) && !response.get(LIKE).isJsonNull())
-            stock.setLike(response.get(LIKE).getAsBoolean());
+        String desc = "desc";
+        if (response.has(desc) && !response.get(desc).isJsonNull())
+            stock.setContent(response.get(desc).getAsString());
 
-        String COUPON = "coupon";
-        if (response.has(COUPON) && !response.get(COUPON).isJsonNull())
-            stock.setCoupon(response.get(COUPON).getAsBoolean());
+        String photos = "photos";
+        if (response.has(photos) && !response.get(photos).isJsonNull()) {
+            List<String> photosList = new ArrayList<>();
+            JsonArray photosArray = response.get(photos).getAsJsonArray();
+            for (JsonElement e : photosArray) photosList.add(e.getAsString());
+            stock.setPhotos(photosList);
+        }
 
         return stock;
     }
@@ -144,133 +88,63 @@ public class ResponseParser {
         JsonParser parser = new JsonParser();
         JsonObject response = parser.parse(json).getAsJsonObject();
 
-        String NAME = "name";
-        if (response.has("name") && !response.get(NAME).isJsonNull())
-            shop.setName(response.get(NAME).getAsString());
+        String idJson = "id";
+        if (response.has(idJson) && !response.get(idJson).isJsonNull())
+            shop.setId(response.get(idJson).getAsInt());
 
-        String DESC = "desc";
-        if (response.has("desc") && !response.get(DESC).isJsonNull())
-            shop.setContent(response.get(DESC).getAsString());
+        String logoJson = "img";
+        if (response.has(logoJson) && !response.get(logoJson).isJsonNull())
+            shop.setLogo(response.get(logoJson).getAsString());
+        else {
+            logoJson = "logo";
+            if (response.has(logoJson) && !response.get(logoJson).isJsonNull())
+                shop.setLogo(response.get(logoJson).getAsString());
+        }
 
-        String LOGO = "logo";
-        if (response.has(LOGO) && !response.get(LOGO).isJsonNull())
-            shop.setLogo(response.get(LOGO).getAsString());
+        String titleJson = "name";
+        if (response.has(titleJson) && !response.get(titleJson).isJsonNull())
+            shop.setName(response.get(titleJson).getAsString());
 
-        String PHOTOS = "photos";
-        if (response.has(PHOTOS) && !response.get(PHOTOS).isJsonNull()) {
-            JsonArray photosJson = response.get(PHOTOS).getAsJsonArray();
-            List<Shop.Photo> photos = new ArrayList<>();
-            for (int i = 0; i < photosJson.size(); i++) {
-                Shop.Photo photo = new Shop.Photo();
-                JsonObject photoJson = photosJson.get(i).getAsJsonObject();
+        String descJson = "desc";
+        if (response.has(descJson) && !response.get(descJson).isJsonNull())
+            shop.setContent(response.get(descJson).getAsString());
 
-                String SMALL = "small";
-                if (photoJson.has(SMALL) && !photoJson.get(SMALL).isJsonNull())
-                    photo.setSmall(photoJson.get(SMALL).getAsString());
-
-                String ORIGINAL = "small";
-                if (photoJson.has(ORIGINAL) && !photoJson.get(ORIGINAL).isJsonNull())
-                    photo.setOriginal(photoJson.get(ORIGINAL).getAsString());
-
-                photos.add(photo);
-            }
+        String photosJson = "photos";
+        if (response.has(photosJson) && !response.get(photosJson).isJsonNull()) {
+            List<String> photos = new ArrayList<>();
+            JsonArray photosArray = response.get(photosJson).getAsJsonArray();
+            for (JsonElement e : photosArray) photos.add(e.getAsString());
             shop.setPhotos(photos);
         }
 
-        String STOCKS = "stocks";
-        if (response.has(STOCKS) && !response.get(STOCKS).isJsonNull()) {
+        // TODO: 22.11.16 категории
 
-            List<Stock> stocks = new ArrayList<>();
-            JsonArray stocksJson = response.get(STOCKS).getAsJsonArray();
-            for (int i = 0; i < stocksJson.size(); i++) {
-                Stock stock = new Stock();
-                JsonObject stockJson = stocksJson.get(i).getAsJsonObject();
+        List<Shop.Complement> complements = new ArrayList<>();
+        String phoneJson = "phone";
+        if (response.has(phoneJson) && !response.get(phoneJson).isJsonNull())
+            complements.add(new Shop.Complement("phone", response.get(phoneJson).getAsString()));
 
-                String ID1 = "id";
-                if (stockJson.has(ID1) && !stockJson.get(ID1).isJsonNull())
-                    stock.setId(stockJson.get(ID1).getAsInt());
+        String siteJson = "site";
+        if (response.has(siteJson) && !response.get(siteJson).isJsonNull())
+            complements.add(new Shop.Complement("site", response.get(phoneJson).getAsString()));
 
-                String TITLE = "title";
-                if (stockJson.has(TITLE) && !stockJson.get(TITLE).isJsonNull())
-                    stock.setTitle(stockJson.get(TITLE).getAsString());
+        shop.setComplements(complements);
 
-                String CONTENT1 = "content";
-                if (stockJson.has(CONTENT1) && !stockJson.get(CONTENT1).isJsonNull())
-                    stock.setContent(stockJson.get(CONTENT1).getAsString());
-
-                String PHOTO = "photo";
-                if (stockJson.has(PHOTO) && !stockJson.get(PHOTO).isJsonNull())
-                    stock.setImage(stockJson.get(PHOTO).getAsString());
-
-                String DATE = "date";
-                if (stockJson.has(DATE) && !stockJson.get(DATE).isJsonNull())
-                    stock.setDate(stockJson.get(DATE).getAsString());
-
-                String SPECIAL = "special";
-                if (stockJson.has(SPECIAL) && !stockJson.get(SPECIAL).isJsonNull())
-                    stock.setSpecial(stockJson.get(SPECIAL).getAsBoolean());
-
-                String LIKE1 = "like";
-                if (stockJson.has(LIKE1) && !stockJson.get(LIKE1).isJsonNull())
-                    stock.setLike(stockJson.get(LIKE1).getAsBoolean());
-
-                stocks.add(stock);
-            }
-            shop.setStocks(stocks);
-        }
-
-        String COMPLEMENTS = "complements";
-        if (response.has(COMPLEMENTS) && !response.get(COMPLEMENTS).isJsonNull()) {
-            List<Shop.Complement> complements = new ArrayList<>();
-            JsonArray complementsJson = response.get(COMPLEMENTS).getAsJsonArray();
-            for (int i = 0; i < complementsJson.size(); i++) {
-                Shop.Complement complemet = new Shop.Complement();
-
-                complemet.setKey(complementsJson.get(i).getAsJsonObject().get("type").getAsString());
-                complemet.setParametr(complementsJson.get(i).getAsJsonObject().get("parameter").getAsString());
-
-                complements.add(complemet);
-            }
-            shop.setComplements(complements);
-        }
-
-        String CATEGORIES = "categories";
-        if (response.has(CATEGORIES) && !response.get(CATEGORIES).isJsonNull()) {
-            JsonArray categoriesJson = response.get(CATEGORIES).getAsJsonArray();
-            shop.setCategories(parseCategories(categoriesJson.toString()));
-        }
+        String likeJson = "like";
+        if (response.has(likeJson) && !response.get(likeJson).getAsBoolean())
+            shop.setLike(response.get(likeJson).getAsBoolean());
 
 
         return shop;
     }
 
-    public static ShopsResponse parseShops(String json) {
-        ShopsResponse response = new ShopsResponse();
+    public static List<Shop> parseShops(String json) {
+        List<Shop> response = new ArrayList<>();
         JsonParser parser = new JsonParser();
-        JsonObject responseJson = parser.parse(json).getAsJsonObject();
+        JsonArray shopList = parser.parse(json).getAsJsonArray();
 
-        String CATEGORIES = "categories";
-        if (responseJson.has(CATEGORIES) && !responseJson.get(CATEGORIES).isJsonNull())
-            response.setCategories(parseCategories(responseJson.get(CATEGORIES).getAsJsonArray().toString()));
-
-        String CHOOSE = "categories";
-        if (responseJson.has(CHOOSE) && !responseJson.get(CHOOSE).isJsonNull())
-            response.setChoose(parseCategories(responseJson.get(CHOOSE).getAsJsonArray().toString()));
-
-        String SHOWS = "shows";
-        if (responseJson.has(SHOWS) && !responseJson.get(SHOWS).isJsonNull())
-            response.setShows(parseShows(responseJson.get(SHOWS).getAsJsonArray().toString()));
-
-        String ITEMS = "items";
-        if (responseJson.has(ITEMS) && !responseJson.get(ITEMS).isJsonNull()) {
-            List<Shop> shops = new ArrayList<>();
-            JsonArray itemsJson = responseJson.get(ITEMS).getAsJsonArray();
-            for (int i = 0; i < itemsJson.size(); i++) {
-                shops.add(parseShop(itemsJson.get(i).getAsJsonObject().toString()));
-            }
-            response.setShops(shops);
-        }
-
+        for (JsonElement e : shopList)
+            response.add(parseShop(e.toString()));
 
         return response;
     }
@@ -596,7 +470,7 @@ public class ResponseParser {
         }
 
         return events;
-    } //+
+    }
 
     public static Event parseEvent(String json) {
         Event event = new Event();
@@ -620,7 +494,7 @@ public class ResponseParser {
             event.setDescription(eventJson.get(DESC).getAsString());
 
         return event;
-    } //+
+    }
 
     public static List<Search> parseSearch(String json) {
         List<Search> searches = new ArrayList<>();

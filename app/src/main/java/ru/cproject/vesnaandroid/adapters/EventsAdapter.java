@@ -3,7 +3,6 @@ package ru.cproject.vesnaandroid.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.events.SingleEventActivity;
 import ru.cproject.vesnaandroid.obj.Event;
 
@@ -58,7 +56,7 @@ public class EventsAdapter extends RecyclerView.Adapter {
 
         Picasso
                 .with(context)
-                .load(event.getImage())
+                .load(ServerApi.getImgUrl(event.getImage(), true))
                 .fit()
                 .centerCrop()
                 .transform(new RoundedCornersTransformation((int)(4*dpi), 0, RoundedCornersTransformation.CornerType.TOP))

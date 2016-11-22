@@ -32,7 +32,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoSingleActivity;
-import ru.cproject.vesnaandroid.adapters.FilmsAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.TabBar;
 import ru.cproject.vesnaandroid.obj.Film;

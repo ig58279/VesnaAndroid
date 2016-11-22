@@ -13,13 +13,11 @@ import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Transformers.ForegroundToBackgroundTransformer;
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
 import ru.cproject.vesnaandroid.activities.login.LoginActivity;
 import ru.cproject.vesnaandroid.helpers.CardSlide;
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         slider.setPagerTransformer(false, new ForegroundToBackgroundTransformer());
 
         for (Show show : shows) {
-            CardSlide slide = new CardSlide(this, show.getImage());
+            CardSlide slide = new CardSlide(this, ServerApi.getImgUrl(show.getImage(), false));
             slider.addSlider(slide);
             slider.setOnClickListener(new SlideOnClickListener(this, show.getType(), show.getId()));
         }

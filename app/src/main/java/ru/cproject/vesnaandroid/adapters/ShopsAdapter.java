@@ -13,13 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
-import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
 
 import static ru.cproject.vesnaandroid.R.id.stock;
@@ -61,13 +62,10 @@ public class ShopsAdapter extends RecyclerView.Adapter {
         } else
             ((ShopsAdapter.ShopViewHolder) holder).special.setVisibility(View.GONE);
 
-        Log.e("logo", shop.getLogo());
-
-        Picasso
+        Glide
                 .with(context)
-                .load(shop.getLogo())
-                .fit()
-                .centerInside()
+                .load(ServerApi.getImgUrl(shop.getLogo(), true))
+                .fitCenter()
                 .into(((ShopViewHolder) holder).logo);
 
         ((ShopViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {

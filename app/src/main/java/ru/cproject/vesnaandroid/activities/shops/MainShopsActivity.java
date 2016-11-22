@@ -2,16 +2,11 @@ package ru.cproject.vesnaandroid.activities.shops;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -19,7 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -28,15 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.message.BufferedHeader;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
-import ru.cproject.vesnaandroid.activities.categories.CategoriesActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.ShopsAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
-import ru.cproject.vesnaandroid.obj.responses.ShopsResponse;
 
 /**
  * Created by Bitizen on 29.10.16.
@@ -44,6 +39,8 @@ import ru.cproject.vesnaandroid.obj.responses.ShopsResponse;
 
 public class MainShopsActivity extends ProtoMainActivity {
     private static final String TAG = "MainShopsActivity";
+
+    private static final int LIMIT = 20;
 
     private ViewGroup loading;
     private ViewGroup errorMessage;
@@ -60,6 +57,7 @@ public class MainShopsActivity extends ProtoMainActivity {
     private List<Category> choose;
 
     private int style;
+    private String mode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +66,8 @@ public class MainShopsActivity extends ProtoMainActivity {
         setTheme(style);
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_main_shops, contentFrame);
+
+        mode = intent.getStringExtra("mod");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String category = intent.getExtras().getString("category", "Магазины");
@@ -123,7 +123,11 @@ public class MainShopsActivity extends ProtoMainActivity {
     private void loadShops() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        client.get(ServerApi.GET_SHOPS, params, new TextHttpResponseHandler() {
+        params.put("mod", mode);
+        params.put("count", LIMIT);
+        params.put("offset", shopList.size());
+        params.setUseJsonStreamer(true);
+        client.post(ServerApi.GET_SHOPS, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
@@ -136,43 +140,16 @@ public class MainShopsActivity extends ProtoMainActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Log.d(TAG, responseString);
+                JsonParser parser = new JsonParser();
+                JsonObject response = parser.parse(responseString).getAsJsonObject();
 
-                ShopsResponse response = ResponseParser.parseShops(responseString);
-                List<Shop> buf = response.getShops();
-                int size = shopList.size();
-                for (int i = 0; i < buf.size(); i++) {
-                    shopList.add(buf.get(i));
+                String list = "list";
+                if (response.has(list) && !response.get(list).isJsonNull()) {
+                    List<Shop> buf = ResponseParser.parseShops(response.get(list).toString());
+                    int prevSize = shopList.size();
+                    for (Shop s : buf) shopList.add(s);
+                    adapter.notifyItemRangeInserted(prevSize, buf.size());
                 }
-                adapter.notifyItemRangeInserted(size, buf.size());
-
-                List<Category> categories = response.getCategories();
-                if (categories != null && categories.size() != 0) {
-                    String categoriesString = categories.get(0).getName();
-                    for (int i = 1; i < categories.size(); i++)
-                        categoriesString += " # " + categories.get(i).getName();
-                    SpannableString span = new SpannableString(categoriesString);
-                    Drawable arrow = ContextCompat.getDrawable(MainShopsActivity.this, R.drawable.ic_category_separator);
-                    float dpi = getResources().getDisplayMetrics().density;
-                    arrow.setBounds(0, (int)(4 * dpi), arrow.getIntrinsicWidth(), arrow.getIntrinsicHeight());
-                    while (categoriesString.contains("#")) {
-                        span.setSpan(new ImageSpan(arrow), categoriesString.indexOf("#"), categoriesString.indexOf("#") + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        categoriesString = categoriesString.replaceFirst("#", "!");
-                    }
-                    categoriesView.setTransformationMethod(null);
-                    categoriesView.setText(span);
-                }
-
-                choose = response.getChoose();
-                filter.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(MainShopsActivity.this, CategoriesActivity.class);
-                        Gson gson = new Gson();
-                        intent.putExtra("categories", gson.toJson(choose.toArray(), Category[].class));
-                        intent.putExtra("style", style);
-                        startActivity(intent);
-                    }
-                });
 
                 loading.setVisibility(View.GONE);
                 content.setVisibility(View.VISIBLE);

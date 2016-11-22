@@ -1,5 +1,6 @@
 package ru.cproject.vesnaandroid.obj;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,13 +15,12 @@ public class Shop {
     private String content;
     private boolean like;
 
-    private List<Photo> photos;
+    private List<String> photos = new ArrayList<>();
     private List<Complement> complements;
-    private List<Stock> stocks;
-    private List<Category> categories;
+    private List<Stock> stocks = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
 
-    public Shop() {
-    }
+    public Shop() {}
 
     public Shop(int id, String logo, String name) {
         this.id = id;
@@ -60,11 +60,11 @@ public class Shop {
         this.stocks = stocks;
     }
 
-    public List<Photo> getPhotos() {
+    public List<String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
 
@@ -100,32 +100,18 @@ public class Shop {
         this.like = like;
     }
 
-    public static class Photo {
-
-        private String small;
-        private String original;
-
-        public String getSmall() {
-            return small;
-        }
-
-        public void setSmall(String small) {
-            this.small = small;
-        }
-
-        public String getOriginal() {
-            return original;
-        }
-
-        public void setOriginal(String original) {
-            this.original = original;
-        }
-    }
 
     public static class Complement {
 
         private String key;
         private String parametr;
+
+        public Complement() {}
+
+        public Complement(String key, String parametr) {
+            this.key = key;
+            this.parametr = parametr;
+        }
 
         public String getKey() {
             return key;

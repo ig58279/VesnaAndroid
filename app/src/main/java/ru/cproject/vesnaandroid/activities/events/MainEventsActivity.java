@@ -13,7 +13,6 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;

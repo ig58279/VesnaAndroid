@@ -123,6 +123,7 @@ public class ViewCreatorHelper {
                         public void onClick(View v) {
                             Intent intent = new Intent(context, MainShopsActivity.class);
                             intent.putExtra("style", R.style.ShopsTheme);
+                            intent.putExtra("mod", "shops");
                             context.startActivity(intent);
                         }
                     };
@@ -147,6 +148,7 @@ public class ViewCreatorHelper {
                             Intent intent = new Intent(context, MainShopsActivity.class);
                             intent.putExtra("style", R.style.FoodTheme);
                             intent.putExtra("category", "Рестораны");
+                            intent.putExtra("mod", "food");
                             context.startActivity(intent);
                         }
                     };
@@ -190,6 +192,7 @@ public class ViewCreatorHelper {
                             Intent intent = new Intent(context, MainShopsActivity.class);
                             intent.putExtra("style", R.style.FunTheme);
                             intent.putExtra("category", "Развлечения");
+                            intent.putExtra("mod", "fun");
                             context.startActivity(intent);
                         }
                     };

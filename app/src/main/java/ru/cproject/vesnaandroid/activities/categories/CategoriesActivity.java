@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
-import java.util.List;
-
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.obj.Category;

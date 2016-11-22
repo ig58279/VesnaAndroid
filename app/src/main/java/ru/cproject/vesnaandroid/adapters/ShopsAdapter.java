@@ -12,13 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
-import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
 
 /**
@@ -52,13 +53,10 @@ public class ShopsAdapter extends RecyclerView.Adapter {
         ((ShopViewHolder) holder).name.setText(shop.getName());
         ((ShopViewHolder) holder).showOnMap.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
-        Log.e("logo", shop.getLogo());
-
-        Picasso
+        Glide
                 .with(context)
-                .load(shop.getLogo())
-                .fit()
-                .centerInside()
+                .load(ServerApi.getImgUrl(shop.getLogo(), true))
+                .fitCenter()
                 .into(((ShopViewHolder) holder).logo);
 
         ((ShopViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {

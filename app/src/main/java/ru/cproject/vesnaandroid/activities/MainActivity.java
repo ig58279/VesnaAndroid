@@ -13,11 +13,8 @@ import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Transformers.ForegroundToBackgroundTransformer;
 import com.google.gson.Gson;
-
-import java.util.List;
 
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.Settings;

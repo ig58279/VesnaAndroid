@@ -155,7 +155,7 @@ public class SingleShopActivity extends ProtoSingleActivity {
 
         Picasso
                 .with(this)
-                .load(shop.getLogo())
+                .load(ServerApi.getImgUrl(shop.getLogo(), false))
                 .into(logo);
 
         name.setText(shop.getName());
@@ -212,7 +212,7 @@ public class SingleShopActivity extends ProtoSingleActivity {
             for (int i = 0; i < shop.getPhotos().size(); i++) {
                 DefaultSliderView slide = new DefaultSliderView(this);
                 slide
-                        .image(shop.getPhotos().get(i).getSmall())
+                        .image(ServerApi.getImgUrl(shop.getPhotos().get(i),false))
                         .setScaleType(BaseSliderView.ScaleType.CenterInside);
                 slider.addSlider(slide);
             }

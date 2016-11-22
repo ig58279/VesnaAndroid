@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
 
-
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import ru.cproject.vesnaandroid.R;

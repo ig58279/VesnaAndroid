@@ -5,15 +5,11 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
@@ -25,22 +21,13 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import cz.msebera.android.httpclient.Header;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoSingleActivity;
-import ru.cproject.vesnaandroid.adapters.StocksAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.TabBar;
 import ru.cproject.vesnaandroid.helpers.ViewCreatorHelper;
-import ru.cproject.vesnaandroid.obj.Category;
-import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.Stock;
 
 /**

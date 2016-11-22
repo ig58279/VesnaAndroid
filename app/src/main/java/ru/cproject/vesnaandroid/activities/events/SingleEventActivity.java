@@ -7,8 +7,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.daimajia.slider.library.Indicators.PagerIndicator;
-import com.daimajia.slider.library.SliderLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;

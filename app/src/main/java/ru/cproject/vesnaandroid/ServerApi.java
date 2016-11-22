@@ -10,7 +10,7 @@ public class ServerApi {
 
 
     public static String getImgUrl(String id, boolean min) {
-        return SERVER_ADDRESS + "img/?id=" + id + "&min=" + String.valueOf(min);
+        return SERVER_ADDRESS + "imgs/?id=" + id + "&min=" + String.valueOf(min);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ServerApi {
      * cid - идентификатор категории
      * token - токен
      */
-    public static final String GET_SHOPS = SERVER_ADDRESS + "shops";
+    public static final String GET_SHOPS = SERVER_ADDRESS + "list?mod=shops";
 
     /**
      * Метод получения магазина

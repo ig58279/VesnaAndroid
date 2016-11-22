@@ -63,8 +63,6 @@ public class SearchAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Search search = list.get(position);
 
-
-
         float dpi = context.getResources().getDisplayMetrics().density;
         Picasso.with(context)
                 .load(ServerApi.getImgUrl(search.getImageURL(), true))

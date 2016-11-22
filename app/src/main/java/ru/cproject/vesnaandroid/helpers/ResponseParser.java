@@ -452,7 +452,7 @@ public class ResponseParser {
         }
 
         return response;
-    } //+
+    }
 
     public static List<Event> parseEvents(String json){
         List<Event> events = new ArrayList<>();
@@ -493,6 +493,14 @@ public class ResponseParser {
         if (eventJson.has(DESC) && !eventJson.get(DESC).isJsonNull())
             event.setDescription(eventJson.get(DESC).getAsString());
 
+        String photos = "photos";
+        if (eventJson.has(photos) && !eventJson.get(photos).isJsonNull()) {
+            List<String> photosList = new ArrayList<>();
+            JsonArray photosArray = eventJson.get(photos).getAsJsonArray();
+            for (JsonElement e : photosArray) photosList.add(e.getAsString());
+            event.setPhotos(photosList);
+        }
+
         return event;
     }
 
@@ -508,6 +516,10 @@ public class ResponseParser {
             for (int i = 0; i < searchResults.size(); i++) {
                 Search search = new Search();
                 JsonObject searchJson = searchResults.get(i).getAsJsonObject();
+
+                String ID = "id";
+                if (searchJson.has(ID) && !searchJson.get(ID).isJsonNull())
+                    search.setId(searchJson.get(ID).getAsInt());
 
                 String TYPE = "type";
                 if (searchJson.has(TYPE) && !searchJson.get(TYPE).isJsonNull())

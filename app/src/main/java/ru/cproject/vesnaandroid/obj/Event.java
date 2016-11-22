@@ -1,5 +1,7 @@
 package ru.cproject.vesnaandroid.obj;
 
+import java.util.List;
+
 /**
  * Created by Bitizen on 03.11.16.
  */
@@ -11,7 +13,7 @@ public class Event {
     private String title;
     private String timestamp;
     private String description;
-    private String photo;
+    private List<String> photos;
 
     public int getId() {
         return id;
@@ -53,11 +55,11 @@ public class Event {
         this.image = image;
     }
 
-    public String getPhoto() {
-        return photo;
+    public List<String> getPhotos() {
+        return photos;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
     }
 }

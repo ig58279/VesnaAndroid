@@ -3,14 +3,13 @@ package ru.cproject.vesnaandroid.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -25,9 +24,6 @@ import ru.cproject.vesnaandroid.activities.films.SingleFilmActivity;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
 import ru.cproject.vesnaandroid.obj.Search;
-
-import static ru.cproject.vesnaandroid.R.id.shop;
-import static ru.cproject.vesnaandroid.R.id.stock;
 
 
 /**
@@ -70,6 +66,8 @@ public class SearchAdapter extends RecyclerView.Adapter {
                 .centerInside()
                 .transform(new RoundedCornersTransformation((int)(2*dpi), 0))
                 .into(((SearchViewHolder) holder).image);
+
+        Log.e("id", String.valueOf(search.getId()));
 
         switch (search.getType()) {
             case "shops":

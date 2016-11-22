@@ -1,16 +1,20 @@
 package ru.cproject.vesnaandroid.activities.events;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.ImageView;
+import android.util.TypedValue;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.Indicators.PagerIndicator;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 
 import cz.msebera.android.httpclient.Header;
 import ru.cproject.vesnaandroid.R;
@@ -26,7 +30,8 @@ import ru.cproject.vesnaandroid.obj.Event;
 public class SingleEventActivity extends ProtoSingleActivity {
     private static final String TAG = "SingleEventActivity";
 
-    private ImageView image;
+    private SliderLayout slider;
+    private PagerIndicator pagerIndicator;
 
     private TextView title;
     private TextView timestamp;
@@ -47,8 +52,12 @@ public class SingleEventActivity extends ProtoSingleActivity {
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         getLayoutInflater().inflate(R.layout.activity_single_event, contentFrame);
+
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        int color = typedValue.data;
+        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         title = (TextView) findViewById(R.id.title);
         timestamp = (TextView) findViewById(R.id.timestamp);
@@ -81,17 +90,24 @@ public class SingleEventActivity extends ProtoSingleActivity {
 
     private void showInfo() {
         getSupportActionBar().setTitle(event.getTitle());
-        getLayoutInflater().inflate(R.layout.header_image, headerFrame);
+        getLayoutInflater().inflate(R.layout.header_slider, headerFrame);
 
-        image = (ImageView) findViewById(R.id.image);
 
-        Picasso
-                .with(this)
-                .load(event.getPhoto())
-                .fit()
-                .centerCrop()
-                .into(image);
+        slider = (SliderLayout) findViewById(R.id.slider);
+        pagerIndicator = (PagerIndicator) findViewById(R.id.pager_indicator);
 
+        pagerIndicator.setIndicatorStyleResource(R.drawable.pager_indicator_active, R.drawable.pager_indicator_inactive);
+        slider.setCustomIndicator(pagerIndicator);
+
+        if (event.getPhotos() != null) {
+            for (int i = 0; i < event.getPhotos().size(); i++) {
+                DefaultSliderView slide = new DefaultSliderView(this);
+                slide
+                        .image(ServerApi.getImgUrl(event.getPhotos().get(i),false))
+                        .setScaleType(BaseSliderView.ScaleType.CenterInside);
+                slider.addSlider(slide);
+            }
+        }
         title.setText(event.getTitle());
         timestamp.setText(event.getTimestamp());
         description.setText(event.getDescription());

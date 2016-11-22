@@ -30,6 +30,8 @@ import ru.cproject.vesnaandroid.obj.Event;
 public class MainEventsActivity extends ProtoMainActivity {
     private static final String TAG = "MainEventsActivity";
 
+    private static final int LIMIT = 20;
+
     private RecyclerView eventsView;
     private EventsAdapter adapter;
     private List<Event> eventList = new ArrayList<>();
@@ -60,8 +62,12 @@ public class MainEventsActivity extends ProtoMainActivity {
     private void loadEvents() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
+        params.put("mod", "events");
+        params.put("offset", eventList.size());
+        params.put("count", LIMIT);
+        params.setUseJsonStreamer(true);
 
-        client.get(ServerApi.GET_EVENTS, params, new TextHttpResponseHandler() {
+        client.post(ServerApi.GET_EVENTS, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
@@ -73,9 +79,9 @@ public class MainEventsActivity extends ProtoMainActivity {
                 Log.d(TAG, responseString);
 
                 List<Event> buf = ResponseParser.parseEvents(responseString);
-                for (Event event : buf)
-                    eventList.add(event);
-                adapter.notifyDataSetChanged();
+                int prevSize = eventList.size();
+                for (Event event : buf) eventList.add(event);
+                adapter.notifyItemRangeInserted(prevSize, buf.size());
             }
         });
     }

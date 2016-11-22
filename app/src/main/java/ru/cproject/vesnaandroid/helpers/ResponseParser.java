@@ -469,7 +469,7 @@ public class ResponseParser {
         }
 
         return events;
-    } //+
+    }
 
     public static Event parseEvent(String json) {
         Event event = new Event();
@@ -493,6 +493,6 @@ public class ResponseParser {
             event.setDescription(eventJson.get(DESC).getAsString());
 
         return event;
-    } //+
+    }
 
 }

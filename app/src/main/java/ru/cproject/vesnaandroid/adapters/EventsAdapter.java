@@ -15,6 +15,7 @@ import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.events.SingleEventActivity;
 import ru.cproject.vesnaandroid.obj.Event;
 
@@ -55,7 +56,7 @@ public class EventsAdapter extends RecyclerView.Adapter {
 
         Picasso
                 .with(context)
-                .load(event.getImage())
+                .load(ServerApi.getImgUrl(event.getImage(), true))
                 .fit()
                 .centerCrop()
                 .transform(new RoundedCornersTransformation((int)(4*dpi), 0, RoundedCornersTransformation.CornerType.TOP))

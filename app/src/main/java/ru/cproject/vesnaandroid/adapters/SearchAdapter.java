@@ -1,4 +1,4 @@
-package ru.cproject.vesnaandroid.adapters.holders;
+package ru.cproject.vesnaandroid.adapters;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -11,9 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.obj.Search;
 
 /**
@@ -48,6 +52,14 @@ public class SearchAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Search search = list.get(position);
+
+        float dpi = context.getResources().getDisplayMetrics().density;
+        Picasso.with(context)
+                .load(ServerApi.getImgUrl(search.getImageURL(), true))
+                .fit()
+                .centerInside()
+                .transform(new RoundedCornersTransformation((int)(2*dpi), 0))
+                .into(((SearchViewHolder) holder).image);
 
         switch (search.getType()) {
             case "shops":

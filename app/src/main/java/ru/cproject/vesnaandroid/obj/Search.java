@@ -11,13 +11,6 @@ public class Search {
     private String name;
     private String imageURL;
 
-    public Search(int id, String type, String name, String imageURL) {
-        this.id = id;
-        this.type = type;
-        this.name = name;
-        this.imageURL = imageURL;
-    }
-
     public int getId() {
         return id;
     }

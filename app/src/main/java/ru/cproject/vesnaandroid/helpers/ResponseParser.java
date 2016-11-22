@@ -17,6 +17,7 @@ import java.util.Set;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Event;
 import ru.cproject.vesnaandroid.obj.Film;
+import ru.cproject.vesnaandroid.obj.Search;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.Show;
 import ru.cproject.vesnaandroid.obj.Stock;
@@ -620,5 +621,36 @@ public class ResponseParser {
 
         return event;
     } //+
+
+    public static List<Search> parseSearch(String json) {
+        List<Search> searches = new ArrayList<>();
+        JsonParser parser = new JsonParser();
+        JsonObject searchesJson = parser.parse(json).getAsJsonObject();
+
+        String list = "list";
+        if (searchesJson.has(list) && !searchesJson.get(list).isJsonNull()) {
+            JsonArray searchResults = searchesJson.get(list).getAsJsonArray();
+
+            for (int i = 0; i < searchResults.size(); i++) {
+                Search search = new Search();
+                JsonObject searchJson = searchResults.get(i).getAsJsonObject();
+
+                String TYPE = "type";
+                if (searchJson.has(TYPE) && !searchJson.get(TYPE).isJsonNull())
+                    search.setType(searchJson.get(TYPE).getAsString());
+
+                String NAME = "name";
+                if (searchJson.has(NAME) && !searchJson.get(NAME).isJsonNull())
+                    search.setName(searchJson.get(NAME).getAsString());
+
+                String IMAGE = "img";
+                if (searchJson.has(IMAGE) && !searchJson.get(IMAGE).isJsonNull())
+                    search.setImageURL(searchJson.get(IMAGE).getAsString());
+
+                searches.add(search);
+            }
+        }
+        return searches;
+    }
 
 }

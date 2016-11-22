@@ -17,10 +17,13 @@
             android:layout_height="?attr/actionBarSize" >
 
             <EditText
+                android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Поиск"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:inputType="textShortMessage"
+                android:imeOptions="actionDone"/>
 
         </android.support.v7.widget.Toolbar>
 

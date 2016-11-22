@@ -10,7 +10,7 @@ public class ServerApi {
 
 
     public static String getImgUrl(String id, boolean min) {
-        return SERVER_ADDRESS + "img/?id=" + id + "&min=" + String.valueOf(min);
+        return SERVER_ADDRESS + "imgs/?id=" + id + "&min=" + String.valueOf(min);
     }
 
     /**
@@ -91,4 +91,9 @@ public class ServerApi {
      * Метод получения события
      */
     public static final String GET_EVENT = SERVER_ADDRESS + "event";
+
+    /**
+     * Метод для поиска
+     */
+    public static final String SEARCH = SERVER_ADDRESS + "list";
 }

@@ -1,6 +1,7 @@
 package ru.cproject.vesnaandroid.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.media.Image;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -18,7 +20,15 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
+import ru.cproject.vesnaandroid.activities.events.SingleEventActivity;
+import ru.cproject.vesnaandroid.activities.films.SingleFilmActivity;
+import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
+import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
 import ru.cproject.vesnaandroid.obj.Search;
+
+import static ru.cproject.vesnaandroid.R.id.shop;
+import static ru.cproject.vesnaandroid.R.id.stock;
+
 
 /**
  * Created by andro on 22.11.2016.
@@ -51,7 +61,9 @@ public class SearchAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Search search = list.get(position);
+        final Search search = list.get(position);
+
+
 
         float dpi = context.getResources().getDisplayMetrics().density;
         Picasso.with(context)
@@ -65,18 +77,51 @@ public class SearchAdapter extends RecyclerView.Adapter {
             case "shops":
                 ((SearchViewHolder) holder).type.setText("Магазин");
                 ((SearchViewHolder) holder).shape.setColorFilter(colors[0], PorterDuff.Mode.SRC_IN);
+                ((SearchViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, SingleShopActivity.class);
+                        intent.putExtra("id", search.getId());
+                        intent.putExtra("style", R.style.ShopsTheme);
+                        context.startActivity(intent);
+                    }
+                });
                 break;
             case "events":
                 ((SearchViewHolder) holder).type.setText("События");
                 ((SearchViewHolder) holder).shape.setColorFilter(colors[1], PorterDuff.Mode.SRC_IN);
+                ((SearchViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, SingleEventActivity.class);
+                        intent.putExtra("id", search.getId());
+                        context.startActivity(intent);
+                    }
+                });
                 break;
             case "stocks":
                 ((SearchViewHolder) holder).type.setText("Акции");
                 ((SearchViewHolder) holder).shape.setColorFilter(colors[2], PorterDuff.Mode.SRC_IN);
+                ((SearchViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, SingleStockActivity.class);
+                        intent.putExtra("id", search.getId());
+                        context.startActivity(intent);
+                    }
+                });
                 break;
             case "films":
                 ((SearchViewHolder) holder).type.setText("Фильмы");
                 ((SearchViewHolder) holder).shape.setColorFilter(colors[3], PorterDuff.Mode.SRC_IN);
+                ((SearchViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, SingleFilmActivity.class);
+                        intent.putExtra("id", search.getId());
+                        context.startActivity(intent);
+                    }
+                });
                 break;
         }
         ((SearchViewHolder) holder).name.setText(search.getName());
@@ -88,7 +133,7 @@ public class SearchAdapter extends RecyclerView.Adapter {
     }
 
     private class SearchViewHolder extends RecyclerView.ViewHolder {
-
+        ViewGroup wrapper;
         ImageView image;
         TextView type;
         TextView name;
@@ -97,6 +142,7 @@ public class SearchAdapter extends RecyclerView.Adapter {
         public SearchViewHolder(View itemView) {
             super(itemView);
 
+            wrapper = (ViewGroup) itemView.findViewById(R.id.wrapper);
             image = (ImageView) itemView.findViewById(R.id.image);
             type = (TextView) itemView.findViewById(R.id.type);
             name = (TextView) itemView.findViewById(R.id.name);

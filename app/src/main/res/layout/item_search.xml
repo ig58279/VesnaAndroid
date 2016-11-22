@@ -5,6 +5,7 @@
     android:layout_marginBottom="-4dp">
     
     <LinearLayout
+        android:id="@+id/wrapper"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

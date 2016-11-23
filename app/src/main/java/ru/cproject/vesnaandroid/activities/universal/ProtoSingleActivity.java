@@ -1,9 +1,11 @@
 package ru.cproject.vesnaandroid.activities.universal;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
@@ -45,6 +47,12 @@ public abstract class ProtoSingleActivity extends AppCompatActivity {
         float dpi = getResources().getDisplayMetrics().density;
         drawer.setPanelHeight((int)(43 * dpi));
         ViewCreatorHelper.createMenu(this, menu);
+
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        int color = typedValue.data;
+        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
     }
 
     @Override

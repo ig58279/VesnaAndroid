@@ -83,7 +83,6 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         shadow = findViewById(R.id.slider_shadow);
         background = findViewById(R.id.background);

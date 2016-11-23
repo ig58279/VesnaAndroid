@@ -62,10 +62,6 @@ public class SingleStockActivity extends ProtoSingleActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Весна");
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         Intent intent = getIntent();
         if (intent.hasExtra("id"))

@@ -59,8 +59,13 @@
 
         <activity android:name=".activities.categories.CategoriesActivity" />
 
-        <activity android:name=".activities.SearchActivity"
+        <activity
+            android:name=".activities.SearchActivity"
             android:theme="@style/SearchTheme"/>
+
+        <activity
+            android:name=".activities.map.MapActivity"
+            android:theme="@style/MapTheme"/>
 
     </application>
 

@@ -72,11 +72,6 @@ public class MainShopsActivity extends ProtoMainActivity {
         String category = intent.getExtras().getString("category", "Магазины");
         getSupportActionBar().setTitle(category);
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
-
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
@@ -85,6 +80,9 @@ public class MainShopsActivity extends ProtoMainActivity {
         filter = (ViewGroup) findViewById(R.id.filter);
         categoriesView = (TextView) findViewById(R.id.categories);
         shopView = (RecyclerView) findViewById(R.id.shops_view);
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        int color = typedValue.data;
         adapter = new ShopsAdapter(this, shopList, color, style);
         shopView.setAdapter(adapter);
         shopView.setLayoutManager(new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false));

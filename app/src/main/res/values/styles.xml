@@ -50,6 +50,12 @@
         <item name="colorAccent">@color/colorPrimaryFun</item>
     </style>
 
+    <style name="MapTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimaryMap</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryMapDark</item>
+        <item name="colorAccent">@color/colorPrimaryMap</item>
+    </style>
+
     <style name="SearchTheme" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#ffffff</item>

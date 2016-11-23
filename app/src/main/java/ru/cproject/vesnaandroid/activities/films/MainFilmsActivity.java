@@ -61,7 +61,6 @@ public class MainFilmsActivity extends ProtoMainActivity {
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         about = (ViewGroup) findViewById(R.id.about);
         filmsView = (RecyclerView) findViewById(R.id.films_view);

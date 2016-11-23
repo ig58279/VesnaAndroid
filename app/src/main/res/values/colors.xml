@@ -22,6 +22,9 @@
     <color name="colorPrimaryFun">#00AFDC</color>
     <color name="colorPrimaryFunDark">#0091b6</color>
 
+    <color name="colorPrimaryMap">#23B3B0</color>
+    <color name="colorPrimaryMapDark">#00897b</color>
+
 
     <color name="colorHighRating">#007B00</color>
     <color name="colorMiddleRating">#F1CB11</color>

@@ -45,10 +45,10 @@ public class MainEventsActivity extends ProtoMainActivity {
         getSupportActionBar().setTitle("События");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+//        TypedValue typedValue = new TypedValue();
+//        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+//        int color = typedValue.data;
+//        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         eventsView = (RecyclerView) findViewById(R.id.events_view);
         adapter = new EventsAdapter(this, eventList);

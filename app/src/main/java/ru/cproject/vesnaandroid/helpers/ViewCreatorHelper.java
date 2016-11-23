@@ -25,6 +25,7 @@ import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.Settings;
 import ru.cproject.vesnaandroid.activities.events.MainEventsActivity;
 import ru.cproject.vesnaandroid.activities.films.MainFilmsActivity;
+import ru.cproject.vesnaandroid.activities.map.MapActivity;
 import ru.cproject.vesnaandroid.activities.shops.MainShopsActivity;
 import ru.cproject.vesnaandroid.activities.stocks.MainStocksActivity;
 import ru.cproject.vesnaandroid.obj.Category;
@@ -111,7 +112,7 @@ public class ViewCreatorHelper {
                     this.onClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // TODO map
+                            context.startActivity(new Intent(context, MapActivity.class));
                         }
                     };
                     break;

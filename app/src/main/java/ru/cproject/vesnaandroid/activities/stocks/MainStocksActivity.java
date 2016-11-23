@@ -48,11 +48,6 @@ public class MainStocksActivity extends ProtoMainActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Акции");
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
-
         sort = (ViewGroup) findViewById(R.id.sort);
         stocksView = (RecyclerView) findViewById(R.id.stocks_view);
         adapter = new StocksAdapter(this, stockList);

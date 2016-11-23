@@ -20,6 +20,7 @@ import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.EventsAdapter;
+import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Event;
 
@@ -51,9 +52,16 @@ public class MainEventsActivity extends ProtoMainActivity {
         drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         eventsView = (RecyclerView) findViewById(R.id.events_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new EventsAdapter(this, eventList);
         eventsView.setAdapter(adapter);
-        eventsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        eventsView.setLayoutManager(linearLayoutManager);
+        eventsView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadEvents();
+            }
+        });
         eventsView.setHasFixedSize(false);
 
         loadEvents();

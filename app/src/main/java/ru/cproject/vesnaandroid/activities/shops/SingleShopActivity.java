@@ -104,6 +104,17 @@ public class SingleShopActivity extends ProtoSingleActivity {
 
         if (intent.hasExtra("id")) {
             id = intent.getIntExtra("id", 0);
+
+            retry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    errorMessage.setVisibility(View.GONE);
+                    contentView.setVisibility(View.GONE);
+                    progress.setVisibility(View.VISIBLE);
+                    loadShop();
+                }
+            });
+
             loadShop();
         } else if (intent.hasExtra("shop")) {
             Gson gson = new Gson();

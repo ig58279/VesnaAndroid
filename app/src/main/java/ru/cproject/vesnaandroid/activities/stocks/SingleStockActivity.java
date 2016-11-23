@@ -40,6 +40,11 @@ public class SingleStockActivity extends ProtoSingleActivity {
     private View sliderShadow;
     private View background;
 
+    private ViewGroup progress;
+    private ViewGroup errorMessage;
+        private Button retry;
+    private ViewGroup contentView;
+
     private SliderLayout slider;
     private PagerIndicator pagerIndicator;
 
@@ -56,7 +61,6 @@ public class SingleStockActivity extends ProtoSingleActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getLayoutInflater().inflate(R.layout.header_slider, headerFrame);
         getLayoutInflater().inflate(R.layout.activity_single_stock, contentFrame);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -67,14 +71,17 @@ public class SingleStockActivity extends ProtoSingleActivity {
         int color = typedValue.data;
         drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
+        progress = (ViewGroup) findViewById(R.id.progress);
+        errorMessage = (ViewGroup) findViewById(R.id.error_message);
+        retry = (Button) findViewById(R.id.retry);
+        contentView = (ViewGroup) findViewById(R.id.content_view);
+
         Intent intent = getIntent();
         if (intent.hasExtra("id"))
             id = intent.getIntExtra("id", 0);
         else
             finish();
 
-        slider = (SliderLayout) findViewById(R.id.slider);
-        pagerIndicator = (PagerIndicator) findViewById(R.id.pager_indicator);
         tabs = new TextView[]{
                 (TextView) findViewById(R.id.stock),
                 (TextView) findViewById(R.id.map),
@@ -82,6 +89,15 @@ public class SingleStockActivity extends ProtoSingleActivity {
         };
         content = (ViewGroup) findViewById(R.id.content);
 
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorMessage.setVisibility(View.GONE);
+                contentView.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                loadStock();
+            }
+        });
 
         loadStock();
     }
@@ -96,6 +112,9 @@ public class SingleStockActivity extends ProtoSingleActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
                     Log.e(TAG, responseString);
+                errorMessage.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.GONE);
+                contentView.setVisibility(View.GONE);
             }
 
             @Override
@@ -109,6 +128,12 @@ public class SingleStockActivity extends ProtoSingleActivity {
     }
 
     private void showInfo() {
+
+        getLayoutInflater().inflate(R.layout.header_slider, headerFrame);
+
+        slider = (SliderLayout) findViewById(R.id.slider);
+        pagerIndicator = (PagerIndicator) findViewById(R.id.pager_indicator);
+
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         int color = typedValue.data;
@@ -137,7 +162,6 @@ public class SingleStockActivity extends ProtoSingleActivity {
 
         tabBar = new TabBar(tabs, layouts, content, color, ContextCompat.getColor(this, R.color.colorTextGray));
 
-
         pagerIndicator.setIndicatorStyleResource(R.drawable.pager_indicator_active, R.drawable.pager_indicator_inactive);
         slider.setCustomIndicator(pagerIndicator);
 
@@ -155,6 +179,11 @@ public class SingleStockActivity extends ProtoSingleActivity {
             slider.stopAutoCycle();
             slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
         }
+
+        progress.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
+        contentView.setVisibility(View.VISIBLE);
+
     }
 
 

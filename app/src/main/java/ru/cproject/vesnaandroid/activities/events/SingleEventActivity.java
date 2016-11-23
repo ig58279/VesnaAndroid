@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.daimajia.slider.library.Transformers.BaseTransformer;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -106,6 +108,12 @@ public class SingleEventActivity extends ProtoSingleActivity {
                         .image(ServerApi.getImgUrl(event.getPhotos().get(i),false))
                         .setScaleType(BaseSliderView.ScaleType.CenterInside);
                 slider.addSlider(slide);
+            }
+            if (event.getPhotos().size() < 2) {
+                pagerIndicator.setVisibility(View.GONE);
+
+                slider.stopAutoCycle();
+                slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
             }
         }
         title.setText(event.getTitle());

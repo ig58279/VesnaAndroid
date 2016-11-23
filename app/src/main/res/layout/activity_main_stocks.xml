@@ -4,10 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
     <LinearLayout
+        android:id="@+id/error_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="14sp"
+            android:text="@string/error_message"/>
+
+        <Button
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:background="@drawable/retry_button"
+            android:textSize="14sp"
+            android:textColor="@color/colorWhite"
+            android:text="@string/retry" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -19,7 +60,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/category_arrow">
-                
+
             </android.support.v4.widget.NestedScrollView>
             <ImageView
                 android:layout_width="4dp"
@@ -60,8 +101,7 @@
                 android:textAllCaps="true"
                 android:text="Сортировка"/>
         </LinearLayout>
-    </LinearLayout>
-    
+
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
@@ -75,5 +115,7 @@
         android:layout_marginTop="-4dp"
         android:overScrollMode="never"
         android:layout_weight="1"/>
+
+    </LinearLayout>
 
 </LinearLayout>

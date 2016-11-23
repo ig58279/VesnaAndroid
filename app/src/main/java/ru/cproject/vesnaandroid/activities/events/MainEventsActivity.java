@@ -3,10 +3,14 @@ package ru.cproject.vesnaandroid.activities.events;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -32,6 +36,11 @@ public class MainEventsActivity extends ProtoMainActivity {
 
     private static final int LIMIT = 20;
 
+    private ViewGroup loading;
+    private ViewGroup errorMassage;
+        private Button retry;
+    private ViewGroup content;
+
     private RecyclerView eventsView;
     private EventsAdapter adapter;
     private List<Event> eventList = new ArrayList<>();
@@ -50,11 +59,26 @@ public class MainEventsActivity extends ProtoMainActivity {
         int color = typedValue.data;
         drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
+        loading = (ViewGroup) findViewById(R.id.progress);
+        errorMassage = (ViewGroup) findViewById(R.id.error_message);
+        retry = (Button) findViewById(R.id.retry);
+        content = (ViewGroup) findViewById(R.id.content);
+
         eventsView = (RecyclerView) findViewById(R.id.events_view);
         adapter = new EventsAdapter(this, eventList);
         eventsView.setAdapter(adapter);
         eventsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         eventsView.setHasFixedSize(false);
+
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorMassage.setVisibility(View.GONE);
+                content.setVisibility(View.GONE);
+                loading.setVisibility(View.VISIBLE);
+                loadEvents();
+            }
+        });
 
         loadEvents();
     }
@@ -72,6 +96,9 @@ public class MainEventsActivity extends ProtoMainActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
                     Log.e(TAG, responseString);
+                loading.setVisibility(View.GONE);
+                content.setVisibility(View.GONE);
+                errorMassage.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -82,6 +109,9 @@ public class MainEventsActivity extends ProtoMainActivity {
                 int prevSize = eventList.size();
                 for (Event event : buf) eventList.add(event);
                 adapter.notifyItemRangeInserted(prevSize, buf.size());
+
+                loading.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
             }
         });
     }

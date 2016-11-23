@@ -31,38 +31,39 @@ public class VesnaApplication extends Application {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork.isConnectedOrConnecting();
-        // TODO: 04.11.16 тест соединения и резервный json
-        final SharedPreferences mallInfo = getSharedPreferences(Settings.MALL_INFO, MODE_PRIVATE);
-        if (isConnected) {
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.setMaxRetriesAndTimeout(1, 5000);
-            RequestParams params = new RequestParams();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            // TODO: 04.11.16 тест соединения и резервный json
+            final SharedPreferences mallInfo = getSharedPreferences(Settings.MALL_INFO, MODE_PRIVATE);
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.setMaxRetriesAndTimeout(1, 5000);
+                RequestParams params = new RequestParams();
 
-            client.get(ServerApi.MALL, params, new TextHttpResponseHandler() {
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    if (responseString != null)
-                        Log.e(TAG, responseString);
+                client.get(ServerApi.MALL, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        if (responseString != null)
+                            Log.e(TAG, responseString);
 
-                }
+                    }
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    Log.d(TAG, responseString);
-                    MallResponse response = ResponseParser.parseMall(responseString);
-                    Gson gson = new Gson();
-                    SharedPreferences.Editor editor = mallInfo.edit();
-                    editor.putString(Settings.MallInfo.MALL,
-                            gson.toJson(response.getMallInfo()));
-                    editor.putString(Settings.MallInfo.FUNCTIONAL,
-                            gson.toJson(response.getFunctional().toArray()));
-                    editor.putString(Settings.MallInfo.SHOWS,
-                            gson.toJson(response.getShows().toArray()));
-                    editor.apply();
-                }
-            });
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        MallResponse response = ResponseParser.parseMall(responseString);
+                        Gson gson = new Gson();
+                        SharedPreferences.Editor editor = mallInfo.edit();
+                        editor.putString(Settings.MallInfo.MALL,
+                                gson.toJson(response.getMallInfo()));
+                        editor.putString(Settings.MallInfo.FUNCTIONAL,
+                                gson.toJson(response.getFunctional().toArray()));
+                        editor.putString(Settings.MallInfo.SHOWS,
+                                gson.toJson(response.getShows().toArray()));
+                        editor.apply();
+                    }
+                });
+            }
         }
-
     }
 }

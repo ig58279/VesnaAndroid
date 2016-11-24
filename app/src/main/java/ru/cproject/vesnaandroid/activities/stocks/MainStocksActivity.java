@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Button;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -23,6 +24,7 @@ import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.StocksAdapter;
+import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Stock;
 
@@ -67,9 +69,16 @@ public class MainStocksActivity extends ProtoMainActivity {
 
         sort = (ViewGroup) findViewById(R.id.sort);
         stocksView = (RecyclerView) findViewById(R.id.stocks_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new StocksAdapter(this, stockList);
         stocksView.setAdapter(adapter);
-        stocksView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        stocksView.setLayoutManager(linearLayoutManager);
+        stocksView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadStocks();
+            }
+        });
         stocksView.setHasFixedSize(false);
 
         retry.setOnClickListener(new View.OnClickListener() {

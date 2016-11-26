@@ -12,6 +12,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -26,6 +27,7 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
+import ru.cproject.vesnaandroid.activities.categories.FilterActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.ShopsAdapter;
 import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
@@ -47,8 +49,8 @@ public class MainShopsActivity extends ProtoMainActivity {
         private Button retry;
     private ViewGroup content;
 
-    private ViewGroup filter;
     private TextView categoriesView;
+    private ImageView openCategories;
 
     private RecyclerView shopView;
     private ShopsAdapter adapter;
@@ -78,12 +80,10 @@ public class MainShopsActivity extends ProtoMainActivity {
         retry = (Button) findViewById(R.id.retry);
         content = (ViewGroup) findViewById(R.id.content);
 
-        filter = (ViewGroup) findViewById(R.id.filter);
+        openCategories = (ImageView) findViewById(R.id.open_categories);
         categoriesView = (TextView) findViewById(R.id.categories);
         shopView = (RecyclerView) findViewById(R.id.shops_view);
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
         adapter = new ShopsAdapter(this, shopList, color, style);
         shopView.setAdapter(adapter);
@@ -96,19 +96,13 @@ public class MainShopsActivity extends ProtoMainActivity {
             }
         });
 
-        categoriesView.setOnClickListener(new View.OnClickListener() {
+        openCategories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                filter.callOnClick();
-            }
-        });
-
-        ViewGroup scroll = (ViewGroup) findViewById(R.id.category_view);
-        scroll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e(TAG, "click!");
-                filter.callOnClick();
+                Intent intent = new Intent(MainShopsActivity.this, FilterActivity.class);
+                intent.putExtra("style", style);
+                intent.putExtra("mod", mode);
+                startActivity(intent);
             }
         });
 
@@ -132,7 +126,7 @@ public class MainShopsActivity extends ProtoMainActivity {
         params.put("count", LIMIT);
         params.put("offset", shopList.size());
         params.setUseJsonStreamer(true);
-        client.post(ServerApi.GET_SHOPS, params, new TextHttpResponseHandler() {
+        client.post(ServerApi.GET_SHOPS + mode, params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)

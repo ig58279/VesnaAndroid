@@ -1,7 +1,6 @@
 package ru.cproject.vesnaandroid.activities.films;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +44,6 @@ public class MainFilmsActivity extends ProtoMainActivity {
     private FilmsAdapter adapter;
 
     private int sort = 0;
-    private int color;
 
     private Shop cinema;
 
@@ -57,10 +55,6 @@ public class MainFilmsActivity extends ProtoMainActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Люксор");
-
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        color = typedValue.data;
 
         about = (ViewGroup) findViewById(R.id.about);
         filmsView = (RecyclerView) findViewById(R.id.films_view);

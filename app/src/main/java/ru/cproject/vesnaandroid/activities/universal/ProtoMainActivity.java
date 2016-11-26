@@ -1,8 +1,12 @@
 package ru.cproject.vesnaandroid.activities.universal;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -30,6 +34,8 @@ public abstract class ProtoMainActivity extends AppCompatActivity {
 
     private TableLayout menu;
 
+    protected int color;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +53,14 @@ public abstract class ProtoMainActivity extends AppCompatActivity {
         ViewCreatorHelper.createMenu(this, menu);
 
         TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
+            color = typedValue.data;
+        } else {
+            // TODO вычисление цвета для андроидов нижу 21
+            color = ContextCompat.getColor(this, R.color.colorPrimary);
+        }
+        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN); // TODO и даБ эта хрень тоже не работает ниже 21
 
     }
 

@@ -80,9 +80,6 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Весна");
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
 
         shadow = findViewById(R.id.slider_shadow);
         background = findViewById(R.id.background);

@@ -72,8 +72,12 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                reset();
-                search();
+                if (search.getText().length() >= 2) {
+                    reset();
+                    search();
+                } else {
+                    reset();
+                }
             }
 
             @Override
@@ -95,7 +99,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private void search() {
         RequestParams params = new RequestParams();
-        params.put("q", "*" + search.getText() + "*");
+        Log.e(TAG, "search: " + search.getText());
+        params.put("q", search.getText());
         params.put("offset", list.size());
         params.put("count", LIMIT);
         params.setUseJsonStreamer(true);

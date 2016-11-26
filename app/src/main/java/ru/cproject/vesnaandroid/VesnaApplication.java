@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.StrictMode;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import cz.msebera.android.httpclient.Header;
+import io.fabric.sdk.android.Fabric;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.responses.MallResponse;
 
@@ -26,6 +29,7 @@ public class VesnaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -34,18 +38,21 @@ public class VesnaApplication extends Application {
         if (activeNetwork != null) {
             boolean isConnected = activeNetwork.isConnectedOrConnecting();
             // TODO: 04.11.16 тест соединения и резервный json
-            final SharedPreferences mallInfo = getSharedPreferences(Settings.MALL_INFO, MODE_PRIVATE);
             if (isConnected) {
-                AsyncHttpClient client = new AsyncHttpClient();
+                SyncHttpClient client = new SyncHttpClient();
                 client.setMaxRetriesAndTimeout(1, 5000);
                 RequestParams params = new RequestParams();
+
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
 
                 client.get(ServerApi.MALL, params, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         if (responseString != null)
                             Log.e(TAG, responseString);
-
+                        else
+                            throwable.printStackTrace();
                     }
 
                     @Override
@@ -53,7 +60,7 @@ public class VesnaApplication extends Application {
                         Log.d(TAG, responseString);
                         MallResponse response = ResponseParser.parseMall(responseString);
                         Gson gson = new Gson();
-                        SharedPreferences.Editor editor = mallInfo.edit();
+                        SharedPreferences.Editor editor = getSharedPreferences(Settings.MALL_INFO, MODE_PRIVATE).edit();
                         editor.putString(Settings.MallInfo.MALL,
                                 gson.toJson(response.getMallInfo()));
                         editor.putString(Settings.MallInfo.FUNCTIONAL,
@@ -65,5 +72,6 @@ public class VesnaApplication extends Application {
                 });
             }
         }
+
     }
 }

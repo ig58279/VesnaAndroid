@@ -9,7 +9,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Button;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -56,11 +55,6 @@ public class MainStocksActivity extends ProtoMainActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Акции");
-
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMassage = (ViewGroup) findViewById(R.id.error_message);

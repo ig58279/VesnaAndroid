@@ -57,7 +57,7 @@
 
         <activity android:name=".activities.login.RegisterActivity" />
 
-        <activity android:name=".activities.categories.CategoriesActivity" />
+        <activity android:name=".activities.categories.FilterActivity" />
 
         <activity
             android:name=".activities.SearchActivity"
@@ -67,6 +67,9 @@
             android:name=".activities.map.MapActivity"
             android:theme="@style/MapTheme"/>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="41946e57059c5c3e930d2c8931be616f4bda650a" />
     </application>
 
 </manifest>

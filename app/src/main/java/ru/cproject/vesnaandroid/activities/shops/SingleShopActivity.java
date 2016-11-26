@@ -79,9 +79,6 @@ public class SingleShopActivity extends ProtoSingleActivity {
         getSupportActionBar().setTitle("Весна");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
 
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);

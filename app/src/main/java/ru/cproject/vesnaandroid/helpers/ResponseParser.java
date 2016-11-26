@@ -126,7 +126,7 @@ public class ResponseParser {
 
         String siteJson = "site";
         if (response.has(siteJson) && !response.get(siteJson).isJsonNull())
-            complements.add(new Shop.Complement("site", response.get(phoneJson).getAsString()));
+            complements.add(new Shop.Complement("site", response.get(siteJson).getAsString()));
 
         shop.setComplements(complements);
 

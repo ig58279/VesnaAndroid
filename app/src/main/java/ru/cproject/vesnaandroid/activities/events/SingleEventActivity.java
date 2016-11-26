@@ -63,11 +63,6 @@ public class SingleEventActivity extends ProtoSingleActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getLayoutInflater().inflate(R.layout.activity_single_event, contentFrame);
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
-
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);

@@ -1,13 +1,10 @@
 package ru.cproject.vesnaandroid.activities.events;
 
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -54,11 +51,6 @@ public class MainEventsActivity extends ProtoMainActivity {
 
         getSupportActionBar().setTitle("События");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        TypedValue typedValue = new TypedValue();
-//        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-//        int color = typedValue.data;
-//        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMassage = (ViewGroup) findViewById(R.id.error_message);

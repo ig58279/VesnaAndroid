@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.daimajia.slider.library.Transformers.BaseTransformer;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -32,6 +36,11 @@ public class SingleEventActivity extends ProtoSingleActivity {
 
     private SliderLayout slider;
     private PagerIndicator pagerIndicator;
+
+    private ViewGroup progress;
+    private ViewGroup errorMessage;
+        private Button retry;
+    private ViewGroup contentView;
 
     private TextView title;
     private TextView timestamp;
@@ -54,9 +63,29 @@ public class SingleEventActivity extends ProtoSingleActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getLayoutInflater().inflate(R.layout.activity_single_event, contentFrame);
 
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        int color = typedValue.data;
+        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
+        progress = (ViewGroup) findViewById(R.id.progress);
+        errorMessage = (ViewGroup) findViewById(R.id.error_message);
+        retry = (Button) findViewById(R.id.retry);
+        contentView = (ViewGroup) findViewById(R.id.content_view);
+
         title = (TextView) findViewById(R.id.title);
         timestamp = (TextView) findViewById(R.id.timestamp);
         description = (TextView) findViewById(R.id.description);
+
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorMessage.setVisibility(View.GONE);
+                contentView.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                loadEvent();
+            }
+        });
 
         loadEvent();
     }
@@ -71,6 +100,9 @@ public class SingleEventActivity extends ProtoSingleActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
                     Log.e(TAG, responseString);
+                errorMessage.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.GONE);
+                contentView.setVisibility(View.GONE);
             }
 
             @Override
@@ -102,9 +134,19 @@ public class SingleEventActivity extends ProtoSingleActivity {
                         .setScaleType(BaseSliderView.ScaleType.CenterInside);
                 slider.addSlider(slide);
             }
+            if (event.getPhotos().size() < 2) {
+                pagerIndicator.setVisibility(View.GONE);
+
+                slider.stopAutoCycle();
+                slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
+            }
         }
         title.setText(event.getTitle());
         timestamp.setText(event.getTimestamp());
         description.setText(event.getDescription());
+
+        progress.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
+        contentView.setVisibility(View.VISIBLE);
     }
 }

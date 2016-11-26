@@ -354,6 +354,10 @@ public class ResponseParser {
 
         MallInfo mallInfo = new MallInfo();
 
+        String desc = "desc";
+        if (responseJson.has(desc) && !responseJson.get(desc).isJsonNull())
+            mallInfo.setContent(responseJson.get(desc).getAsString());
+
         Address address = new Address();
 
         String addressJson = "address";

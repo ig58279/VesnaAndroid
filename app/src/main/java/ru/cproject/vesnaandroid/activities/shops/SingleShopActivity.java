@@ -20,6 +20,7 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.daimajia.slider.library.Transformers.BaseTransformer;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -103,6 +104,17 @@ public class SingleShopActivity extends ProtoSingleActivity {
 
         if (intent.hasExtra("id")) {
             id = intent.getIntExtra("id", 0);
+
+            retry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    errorMessage.setVisibility(View.GONE);
+                    contentView.setVisibility(View.GONE);
+                    progress.setVisibility(View.VISIBLE);
+                    loadShop();
+                }
+            });
+
             loadShop();
         } else if (intent.hasExtra("shop")) {
             Gson gson = new Gson();
@@ -214,6 +226,12 @@ public class SingleShopActivity extends ProtoSingleActivity {
                         .image(ServerApi.getImgUrl(shop.getPhotos().get(i),false))
                         .setScaleType(BaseSliderView.ScaleType.CenterInside);
                 slider.addSlider(slide);
+            }
+            if (shop.getPhotos().size() < 2) {
+                pagerIndicator.setVisibility(View.GONE);
+
+                slider.stopAutoCycle();
+                slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
             }
         }
 

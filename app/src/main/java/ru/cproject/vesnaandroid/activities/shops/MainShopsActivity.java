@@ -28,6 +28,7 @@ import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.ShopsAdapter;
+import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
@@ -39,7 +40,7 @@ import ru.cproject.vesnaandroid.obj.Shop;
 public class MainShopsActivity extends ProtoMainActivity {
     private static final String TAG = "MainShopsActivity";
 
-    private static final int LIMIT = 20;
+    private static final int LIMIT = 21;
 
     private ViewGroup loading;
     private ViewGroup errorMessage;
@@ -83,10 +84,17 @@ public class MainShopsActivity extends ProtoMainActivity {
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         int color = typedValue.data;
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
         adapter = new ShopsAdapter(this, shopList, color, style);
         shopView.setAdapter(adapter);
-        shopView.setLayoutManager(new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false));
+        shopView.setLayoutManager(gridLayoutManager);
 
+        shopView.addOnScrollListener(new EndlessRecyclerOnScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadShops();
+            }
+        });
 
         categoriesView.setOnClickListener(new View.OnClickListener() {
             @Override

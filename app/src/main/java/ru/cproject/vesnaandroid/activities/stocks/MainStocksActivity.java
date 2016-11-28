@@ -177,7 +177,6 @@ public class MainStocksActivity extends ProtoMainActivity {
                         if (typeOfSort != 0) {
                             sortImage.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                             sortText.setTextColor(color);
-                            Toast.makeText(MainStocksActivity.this ,"По умолчанию", Toast.LENGTH_SHORT).show();
                             sortText.setText(test[i]);
                         } else {
                             sortImage.clearColorFilter();

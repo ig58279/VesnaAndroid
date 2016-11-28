@@ -1,8 +1,13 @@
 package ru.cproject.vesnaandroid.activities.stocks;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +15,9 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -27,6 +35,14 @@ import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Stock;
 
+import static android.R.attr.defaultValue;
+import static android.R.attr.onClick;
+import static android.R.attr.showDefault;
+import static ru.cproject.vesnaandroid.R.color.colorTextGray;
+import static ru.cproject.vesnaandroid.R.id.sort_image;
+import static ru.cproject.vesnaandroid.R.id.sort_text;
+import static ru.cproject.vesnaandroid.R.layout.activity_main;
+
 /**
  * Created by Bitizen on 26.10.16.
  */
@@ -36,16 +52,27 @@ public class MainStocksActivity extends ProtoMainActivity {
 
     private static int LIMIT = 20;
 
+    private String[] test = {"По умолчанию", "По алфавиту (а-я)", "По алфавиту (я-а)", "Сначала эксклюзивные"};
+
+    private int typeOfSort = 0;
+    private static final int DEFAULT = 0;
+    private static final int NAME_ASC = 1;
+    private static final int NAME_DESC = 2;
+    private static final int SPECIAL_ASC = 3;
+
     private ViewGroup loading;
     private ViewGroup errorMassage;
         private Button retry;
     private ViewGroup content;
 
     private ViewGroup sort;
+    private ImageView sortImage;
+    private TextView sortText;
 
     private RecyclerView stocksView;
     private List<Stock> stockList = new ArrayList<>();
     private StocksAdapter adapter;
+    private EndlessRecyclerOnScrollListener scrollListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,17 +89,20 @@ public class MainStocksActivity extends ProtoMainActivity {
         content = (ViewGroup) findViewById(R.id.content);
 
         sort = (ViewGroup) findViewById(R.id.sort);
+        sortImage = (ImageView) findViewById(sort_image);
+        sortText = (TextView) findViewById(sort_text);
         stocksView = (RecyclerView) findViewById(R.id.stocks_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new StocksAdapter(this, stockList);
-        stocksView.setAdapter(adapter);
-        stocksView.setLayoutManager(linearLayoutManager);
-        stocksView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+        scrollListener = new EndlessRecyclerOnScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 loadStocks();
             }
-        });
+        };
+        stocksView.setAdapter(adapter);
+        stocksView.setLayoutManager(linearLayoutManager);
+        stocksView.addOnScrollListener(scrollListener);
         stocksView.setHasFixedSize(false);
 
         retry.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +115,13 @@ public class MainStocksActivity extends ProtoMainActivity {
             }
         });
 
+        sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortAlert();
+            }
+        });
+
         loadStocks();
     }
 
@@ -94,6 +131,17 @@ public class MainStocksActivity extends ProtoMainActivity {
         params.put("mod", "stocks");
         params.put("offset", stockList.size());
         params.put("count", LIMIT);
+        switch (typeOfSort) {
+            case NAME_ASC:
+                params.put("sort", "name asc");
+                break;
+            case NAME_DESC:
+                params.put("sort", "name desc");
+                break;
+            case SPECIAL_ASC:
+                params.put("sort", "special asc");
+                break;
+        }
         params.setUseJsonStreamer(true);
 
         client.post(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
@@ -118,6 +166,35 @@ public class MainStocksActivity extends ProtoMainActivity {
                 content.setVisibility(View.VISIBLE);
             }
         });
-
+    }
+    private void sortAlert() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainStocksActivity.this);
+        alertDialogBuilder.setTitle("Сортировка")
+                .setItems(test, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        typeOfSort = i;
+                        if (typeOfSort != 0) {
+                            sortImage.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                            sortText.setTextColor(color);
+                            Toast.makeText(MainStocksActivity.this ,"По умолчанию", Toast.LENGTH_SHORT).show();
+                            sortText.setText(test[i]);
+                        } else {
+                            sortImage.clearColorFilter();
+                            sortText.setTextColor(ContextCompat.getColor(MainStocksActivity.this, R.color.colorTextGray));
+                            sortText.setText("Сортировка");
+                        }
+                        stockList.clear();
+                        adapter.notifyDataSetChanged();
+                        scrollListener.resetState();
+                        loadStocks();
+                    }
+                })
+                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {}
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

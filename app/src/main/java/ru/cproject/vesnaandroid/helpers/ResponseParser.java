@@ -388,6 +388,10 @@ public class ResponseParser {
             mallInfo.setLinks(links);
         }
 
+        String mode = "mode";
+        if (responseJson.has(mode) && !responseJson.get(mode).isJsonNull())
+            mallInfo.setMode(responseJson.get(mode).getAsString());
+
         response.setMallInfo(mallInfo);
 
         String modulesJson = "modules";

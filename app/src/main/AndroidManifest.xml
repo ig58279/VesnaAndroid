@@ -25,6 +25,7 @@
 
         <activity
             android:name=".activities.stocks.MainStocksActivity"
+            android:launchMode="singleTask"
             android:theme="@style/StockTheme"/>
         <activity
             android:name=".activities.stocks.SingleStockActivity"
@@ -37,6 +38,8 @@
             android:theme="@style/AppTheme"/>
         <activity
             android:name=".activities.films.MainFilmsActivity"
+            android:launchMode="singleTask"
+
             android:theme="@style/FilmsTheme"/>
         <activity
             android:name=".activities.films.SingleFilmActivity"
@@ -44,6 +47,8 @@
 
         <activity
             android:name=".activities.events.MainEventsActivity"
+            android:launchMode="singleTask"
+
             android:theme="@style/EventsTheme" />
 
         <activity

@@ -73,6 +73,12 @@ public abstract class ProtoMainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        // TODO: 28.11.16 для магазинов нужно или закрывать меню(если в тот же пункт) или открывать по новой(если не)
+        drawer.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);

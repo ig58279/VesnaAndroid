@@ -13,6 +13,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.adapters.SearchAdapter;
@@ -98,14 +101,17 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void search() {
-        RequestParams params = new RequestParams();
-        Log.e(TAG, "search: " + search.getText());
-        params.put("q", search.getText());
-        params.put("offset", list.size());
-        params.put("count", LIMIT);
-        params.setUseJsonStreamer(true);
+        JsonObject params = new JsonObject();
+        params.addProperty("q", "*" + search.getText().toString() + "*");
+        params.addProperty("offset", list.size());
+        params.addProperty("count", LIMIT);
+        JsonArray qf = new JsonArray();
+        qf.add("name");
+        params.add("qf", qf);
 
-        client.post(ServerApi.SEARCH, params, new TextHttpResponseHandler() {
+        StringEntity entry = new StringEntity(params.toString(), "UTF-8");
+
+        client.post(this, ServerApi.SEARCH, entry, "application/json", new TextHttpResponseHandler() {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

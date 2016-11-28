@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -32,6 +33,7 @@ public class CardSlide extends BaseSliderView {
         Picasso
                 .with(getContext())
                 .load(url)
+                .placeholder(R.drawable.ic_big_placeholder)
                 .fit()
                 .centerCrop()
                 .transform(new RoundedCornersTransformation((int)(4*dpi), 0))

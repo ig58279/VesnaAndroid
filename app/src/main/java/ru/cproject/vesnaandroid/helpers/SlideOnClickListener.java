@@ -2,15 +2,19 @@ package ru.cproject.vesnaandroid.helpers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+
+import ru.cproject.vesnaandroid.activities.events.SingleEventActivity;
 import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
 
 /**
  * Created by Bitizen on 08.11.16.
  */
 
-public class SlideOnClickListener implements View.OnClickListener {
+public class SlideOnClickListener implements BaseSliderView.OnSliderClickListener {
 
     private Context context;
     private String type;
@@ -23,15 +27,18 @@ public class SlideOnClickListener implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onSliderClick(BaseSliderView slider) {
+        Log.e("slide", "CLICK");
         switch (type){
-            // TODO отработать все типы
-            case "stock":
-                Intent intent = new Intent(context, SingleStockActivity.class);
-                intent.putExtra("id", id);
-                context.startActivity(intent);
+            case "stocks":
+                Intent stocksIntent = new Intent(context, SingleStockActivity.class);
+                stocksIntent.putExtra("id", id);
+                context.startActivity(stocksIntent);
                 break;
-            case "event":
+            case "events":
+                Intent eventIntent = new Intent(context, SingleEventActivity.class);
+                eventIntent.putExtra("id", id);
+                context.startActivity(eventIntent);
                 break;
         }
     }

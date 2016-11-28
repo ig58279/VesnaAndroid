@@ -68,6 +68,7 @@ public class StocksAdapter extends RecyclerView.Adapter {
             Picasso
                     .with(context)
                     .load(ServerApi.getImgUrl(stock.getImage(), false))
+                    .placeholder(R.drawable.ic_big_placeholder)
                     .fit()
                     .centerCrop()
                     .transform(new RoundedCornersTransformation((int)(4*dpi),0, RoundedCornersTransformation.CornerType.TOP))

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
@@ -17,11 +18,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
 import ru.cproject.vesnaandroid.activities.events.MainEventsActivity;
 import ru.cproject.vesnaandroid.activities.films.MainFilmsActivity;
@@ -68,7 +71,7 @@ public class ViewCreatorHelper {
         }
     }
 
-    public static View createShopCard(Context context, ViewGroup content, Shop shop, int color) {
+    public static View createShopCard(final Context context, ViewGroup content, final Shop shop, int color) {
         View shopView = LayoutInflater.from(context).inflate(R.layout.tab_shop, content, false);
         TextView shopName = (TextView) shopView.findViewById(R.id.shop_name);
         shopName.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
@@ -79,21 +82,51 @@ public class ViewCreatorHelper {
                 View view = LayoutInflater.from(context).inflate(R.layout.info_complement, info, false);
                 ImageView icon = (ImageView) view.findViewById(R.id.icon);
                 TextView text = (TextView) view.findViewById(R.id.info);
-
+                final int finalI = i;
                 switch (shop.getComplements().get(i).getKey()) {
                     case "phone":
                         icon.setImageResource(R.drawable.ic_phone);
                         text.setText(shop.getComplements().get(i).getParametr());
                         text.setBackgroundResource(R.drawable.active_info_background);
                         info.addView(view);
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + shop.getComplements().get(finalI).getParametr()));
+                                context.startActivity(intent);
+                            }
+                        });
+                        break;
+                    case "site":
+                        icon.setImageResource(R.drawable.ic_site);
+                        text.setText(shop.getComplements().get(i).getParametr());
+                        text.setBackgroundResource(R.drawable.active_info_background);
+                        info.addView(view);
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(shop.getComplements().get(finalI).getParametr()));
+                                context.startActivity(i);
+                            }
+                        });
+                        break;
+                    case "mode":
+                        icon.setImageResource(R.drawable.ic_mode_watch);
+                        text.setText(shop.getComplements().get(i).getParametr());
+                        info.addView(view);
                 }
             }
         }
-        RecyclerView tags = (RecyclerView) shopView.findViewById(R.id.tags);
-        tags.setHasFixedSize(false);
-        tags.setNestedScrollingEnabled(false);
-        List<Category> categories = shop.getCategories(); // TODO: 09.11.16 ресайклер убери 
-        tags.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+
+        ImageView logo = (ImageView) shopView.findViewById(R.id.logo);
+        Picasso
+                .with(context)
+                .load(ServerApi.getImgUrl(shop.getLogo(), true))
+                .fit()
+                .centerInside()
+                .into(logo);
         return shopView;
     }
 

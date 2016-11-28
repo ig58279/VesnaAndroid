@@ -37,7 +37,8 @@ public class VesnaApplication extends Application {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork != null) {
             boolean isConnected = activeNetwork.isConnectedOrConnecting();
-            // TODO: 04.11.16 тест соединения и резервный json
+            // TODO: 04.11.16 резервный json
+            // TODO: 26.11.16 кеширование 
             if (isConnected) {
                 SyncHttpClient client = new SyncHttpClient();
                 client.setMaxRetriesAndTimeout(1, 5000);

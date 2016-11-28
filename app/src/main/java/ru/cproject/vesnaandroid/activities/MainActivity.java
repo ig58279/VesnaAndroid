@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         for (Show show : shows) {
             CardSlide slide = new CardSlide(this, ServerApi.getImgUrl(show.getImage(), false));
+            slide.setOnSliderClickListener(new SlideOnClickListener(this, show.getType(), show.getId()));
             slider.addSlider(slide);
-            slider.setOnClickListener(new SlideOnClickListener(this, show.getType(), show.getId()));
         }
 
         worktime.setText(mall.getMode());

@@ -32,6 +32,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/logo"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textColor="@color/colorTextBlack"
         android:background="@drawable/shop_name_background"
         android:paddingLeft="8dp"

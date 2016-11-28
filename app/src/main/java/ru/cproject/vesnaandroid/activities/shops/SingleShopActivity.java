@@ -2,6 +2,7 @@ package ru.cproject.vesnaandroid.activities.shops;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -164,6 +165,7 @@ public class SingleShopActivity extends ProtoSingleActivity {
         Picasso
                 .with(this)
                 .load(ServerApi.getImgUrl(shop.getLogo(), false))
+                .placeholder(R.drawable.ic_small_placeholder)
                 .into(logo);
 
         name.setText(shop.getName());
@@ -174,13 +176,40 @@ public class SingleShopActivity extends ProtoSingleActivity {
                 View line = getLayoutInflater().inflate(R.layout.info_complement, complements, false);
                 ImageView icon = (ImageView) line.findViewById(R.id.icon);
                 TextView info = (TextView) line.findViewById(R.id.info);
+                final int finalI = i;
                 switch (complement.getKey()) {
                     case "phone":
                         icon.setImageResource(R.drawable.ic_phone);
-                        info.setText(complement.getParametr());
+                        info.setText(shop.getComplements().get(i).getParametr());
                         info.setBackgroundResource(R.drawable.active_info_background);
                         complements.addView(line);
+                        line.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + shop.getComplements().get(finalI).getParametr()));
+                                startActivity(intent);
+                            }
+                        });
                         break;
+                    case "site":
+                        icon.setImageResource(R.drawable.ic_site);
+                        info.setText(shop.getComplements().get(i).getParametr());
+                        info.setBackgroundResource(R.drawable.active_info_background);
+                        complements.addView(line);
+                        line.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(shop.getComplements().get(finalI).getParametr()));
+                                startActivity(i);
+                            }
+                        });
+                        break;
+                    case "mode":
+                        icon.setImageResource(R.drawable.ic_mode_watch);
+                        info.setText(shop.getComplements().get(i).getParametr());
+                        complements.addView(line);
                 }
             }
         }

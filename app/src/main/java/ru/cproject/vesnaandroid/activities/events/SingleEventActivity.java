@@ -125,6 +125,7 @@ public class SingleEventActivity extends ProtoSingleActivity {
             for (int i = 0; i < event.getPhotos().size(); i++) {
                 DefaultSliderView slide = new DefaultSliderView(this);
                 slide
+                        .empty(R.drawable.ic_big_placeholder)
                         .image(ServerApi.getImgUrl(event.getPhotos().get(i),false))
                         .setScaleType(BaseSliderView.ScaleType.CenterInside);
                 slider.addSlider(slide);

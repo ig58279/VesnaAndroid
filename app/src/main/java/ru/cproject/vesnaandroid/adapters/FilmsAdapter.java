@@ -61,6 +61,7 @@ public class FilmsAdapter extends RecyclerView.Adapter {
         Picasso
                 .with(context)
                 .load(film.getPoster())
+                .placeholder(R.drawable.ic_small_placeholder)
                 .fit()
                 .centerCrop()
                 .into(((FilmViewHolder) holder).poster);

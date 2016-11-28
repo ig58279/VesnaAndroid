@@ -144,6 +144,7 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         for (int i = 0; i < film.getPhotos().size(); i++) {
             DefaultSliderView slide = new DefaultSliderView(this);
             slide
+                    .empty(R.drawable.ic_big_placeholder)
                     .image(film.getPhotos().get(i).getSmall())
                     .setScaleType(BaseSliderView.ScaleType.CenterInside);
 

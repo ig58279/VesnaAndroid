@@ -10,6 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
@@ -17,6 +19,7 @@ import android.widget.TableLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.activities.SearchActivity;
 import ru.cproject.vesnaandroid.helpers.ViewCreatorHelper;
 
 /**
@@ -58,15 +61,31 @@ public abstract class ProtoMainActivity extends AppCompatActivity {
             color = typedValue.data;
         } else {
             // TODO вычисление цвета для андроидов нижу 21
-            color = ContextCompat.getColor(this, R.color.colorPrimary);
+            color = ContextCompat.getColor(this, R.color.colorPrimary); // не решение
         }
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN); // TODO и даБ эта хрень тоже не работает ниже 21
-
+        drawerBack.setBackgroundColor(color);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.search:
+                startActivity(new Intent(this, SearchActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

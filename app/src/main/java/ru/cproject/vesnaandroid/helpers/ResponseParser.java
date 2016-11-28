@@ -80,6 +80,16 @@ public class ResponseParser {
             stock.setPhotos(photosList);
         }
 
+        String mode = "mode";
+        if (response.has(mode) && !response.get(mode).isJsonNull())
+            stock.setDate(response.get(mode).getAsString());
+
+        String shopJson = "shop";
+        if (response.has(shopJson) && !response.get(shopJson).isJsonNull()) {
+            Shop shop = parseShop(response.get(shopJson).toString());
+            stock.setShop(shop);
+        }
+
         return stock;
     }
 
@@ -128,10 +138,14 @@ public class ResponseParser {
         if (response.has(siteJson) && !response.get(siteJson).isJsonNull())
             complements.add(new Shop.Complement("site", response.get(siteJson).getAsString()));
 
+        String modeJson = "mode";
+        if (response.has(modeJson) && !response.get(modeJson).isJsonNull())
+            complements.add(new Shop.Complement("mode", response.get(modeJson).getAsString()));
+
         shop.setComplements(complements);
 
         String likeJson = "like";
-        if (response.has(likeJson) && !response.get(likeJson).getAsBoolean())
+        if (response.has(likeJson) && !response.get(likeJson).isJsonNull())
             shop.setLike(response.get(likeJson).getAsBoolean());
 
 
@@ -147,53 +161,6 @@ public class ResponseParser {
             response.add(parseShop(e.toString()));
 
         return response;
-    }
-
-    public static List<Category> parseCategories(String json) {
-        List<Category> categories = new ArrayList<>();
-        JsonParser parser = new JsonParser();
-        JsonArray categoriesJson = parser.parse(json).getAsJsonArray();
-        for (int i = 0; i < categoriesJson.size(); i++) {
-            Category category = new Category();
-            JsonObject categoryJson = categoriesJson.get(i).getAsJsonObject();
-
-            String ID = "id";
-            if (categoryJson.has(ID) && !categoryJson.get(ID).isJsonNull())
-                category.setId(categoryJson.get(ID).getAsInt());
-
-            String TITLE = "title";
-            if (categoryJson.has(TITLE) && !categoryJson.get(TITLE).isJsonNull())
-                category.setName(categoryJson.get(TITLE).getAsString());
-
-            categories.add(category);
-        }
-        return categories;
-    }
-
-    public static List<Show> parseShows(String json) {
-        List<Show> shows = new ArrayList<>();
-        JsonParser parser = new JsonParser();
-        JsonArray showsJson = parser.parse(json).getAsJsonArray();
-
-        for (int i = 0; i < showsJson.size(); i++) {
-            Show show = new Show();
-            JsonObject showJson = showsJson.get(i).getAsJsonObject();
-
-            String TYPE = "type";
-            if (showJson.has(TYPE) && !showJson.get(TYPE).isJsonNull())
-                show.setType(showJson.get(TYPE).getAsString());
-
-            String ID = "id";
-            if (showJson.has(ID) && !showJson.get(ID).isJsonNull())
-                show.setId(showJson.get(ID).getAsInt());
-
-            String IMAGE = "image";
-            if (showJson.has(IMAGE) && !showJson.get(IMAGE).isJsonNull())
-                show.setImage(showJson.get(IMAGE).getAsString());
-
-            shows.add(show);
-        }
-        return shows;
     }
 
     public static FilmsResponse parseFilms(String json) {

@@ -62,6 +62,7 @@ public class SearchAdapter extends RecyclerView.Adapter {
         float dpi = context.getResources().getDisplayMetrics().density;
         Picasso.with(context)
                 .load(ServerApi.getImgUrl(search.getImageURL(), true))
+                .placeholder(R.drawable.ic_small_placeholder)
                 .fit()
                 .centerInside()
                 .transform(new RoundedCornersTransformation((int)(2*dpi), 0))

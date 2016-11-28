@@ -75,7 +75,9 @@ public class TcInfoActivity extends ProtoSingleActivity {
 
         for (String s : mall.getPhotos()) {
             DefaultSliderView slide = new DefaultSliderView(this);
-            slide.image(ServerApi.getImgUrl(s, false));
+            slide
+                    .empty(R.drawable.ic_big_placeholder)
+                    .image(ServerApi.getImgUrl(s, false));
             slider.addSlider(slide);
         }
 

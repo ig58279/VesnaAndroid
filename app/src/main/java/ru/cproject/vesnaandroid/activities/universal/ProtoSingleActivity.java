@@ -60,8 +60,7 @@ public abstract class ProtoSingleActivity extends AppCompatActivity {
             // TODO вычисление цвета для андроидов нижу 21
             color = ContextCompat.getColor(this, R.color.colorPrimary);
         }
-        drawerBack.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN); // TODO и да, эта хрень тоже не работает ниже 21
-
+        drawerBack.setBackgroundColor(color);
     }
 
     @Override

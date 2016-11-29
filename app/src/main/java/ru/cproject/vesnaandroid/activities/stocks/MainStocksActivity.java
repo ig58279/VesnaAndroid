@@ -130,23 +130,6 @@ public class MainStocksActivity extends ProtoMainActivity {
     }
 
     private void loadStocks() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("mod", "stocks");
-        params.put("offset", stockList.size());
-        params.put("count", LIMIT);
-        switch (typeOfSort) {
-            case NAME_ASC:
-                params.put("sort", "name asc");
-                break;
-            case NAME_DESC:
-                params.put("sort", "name desc");
-                break;
-            case SPECIAL_ASC:
-                params.put("sort", "special asc");
-                break;
-        }
-        params.setUseJsonStreamer(true);
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -158,6 +141,17 @@ public class MainStocksActivity extends ProtoMainActivity {
                 params.put("mod", "stocks");
                 params.put("offset", stockList.size());
                 params.put("count", LIMIT);
+                switch (typeOfSort) {
+                    case NAME_ASC:
+                        params.put("sort", "name asc");
+                        break;
+                    case NAME_DESC:
+                        params.put("sort", "name desc");
+                        break;
+                    case SPECIAL_ASC:
+                        params.put("sort", "special asc");
+                        break;
+                }
                 params.setUseJsonStreamer(true);
 
                 client.post(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
@@ -183,17 +177,16 @@ public class MainStocksActivity extends ProtoMainActivity {
         } else
             onFailure(null);
     }
+
     private void onFailure(@Nullable String responseString) {
         if (responseString != null)
             Log.e(TAG, responseString);
         loading.setVisibility(View.GONE);
         content.setVisibility(View.GONE);
         errorMassage.setVisibility(View.VISIBLE);
-                loading.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-            }
-        });
     }
+
+
     private void sortAlert() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainStocksActivity.this);
         alertDialogBuilder.setTitle("Сортировка")

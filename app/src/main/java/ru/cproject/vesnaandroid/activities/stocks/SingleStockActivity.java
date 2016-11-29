@@ -1,6 +1,10 @@
 package ru.cproject.vesnaandroid.activities.stocks;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -69,6 +73,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         contentView = (ViewGroup) findViewById(R.id.content_view);
 
         Intent intent = getIntent();
@@ -98,28 +103,41 @@ public class SingleStockActivity extends ProtoSingleActivity {
     }
 
     private void loadStock() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("id", id);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("id", id);
 
-        client.get(ServerApi.GET_STOCK, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                errorMessage.setVisibility(View.VISIBLE);
-                progress.setVisibility(View.GONE);
-                contentView.setVisibility(View.GONE);
-            }
+                client.get(ServerApi.GET_STOCK, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        SingleStockActivity.this.onFailure(responseString);
+                    }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                stock = ResponseParser.parseStock(responseString);
-                showInfo();
-            }
-        });
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        stock = ResponseParser.parseStock(responseString);
+                        showInfo();
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
 
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        errorMessage.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     private void showInfo() {

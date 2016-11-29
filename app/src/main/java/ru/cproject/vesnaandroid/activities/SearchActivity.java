@@ -1,6 +1,9 @@
 package ru.cproject.vesnaandroid.activities;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -115,38 +118,51 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void search() {
-        JsonObject params = new JsonObject();
-        params.addProperty("q", "*" + search.getText().toString() + "*");
-        params.addProperty("offset", list.size());
-        params.addProperty("count", LIMIT);
-        JsonArray qf = new JsonArray();
-        qf.add("name");
-        params.add("qf", qf);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                JsonObject params = new JsonObject();
+                params.addProperty("q", "*" + search.getText().toString() + "*");
+                params.addProperty("offset", list.size());
+                params.addProperty("count", LIMIT);
+                JsonArray qf = new JsonArray();
+                qf.add("name");
+                params.add("qf", qf);
 
-        StringEntity entry = new StringEntity(params.toString(), "UTF-8");
+                StringEntity entry = new StringEntity(params.toString(), "UTF-8");
 
-        client.post(this, ServerApi.SEARCH, entry, "application/json", new TextHttpResponseHandler() {
+                client.post(this, ServerApi.SEARCH, entry, "application/json", new TextHttpResponseHandler() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                adapter.setState(SearchAdapter.ERROR);
-                adapter.notifyDataSetChanged();
-            }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        SearchActivity.this.onFailure(responseString);
+                    }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                List<Search> buf = ResponseParser.parseSearch(responseString);
-                if (buf.size() != 0) {
-                    adapter.setState(SearchAdapter.LOADING);
-                    for (Search s: buf) list.add(s);
-                } else {
-                    adapter.setState(SearchAdapter.DEFAULT);
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        List<Search> buf = ResponseParser.parseSearch(responseString);
+                        if (buf.size() != 0) {
+                            adapter.setState(SearchAdapter.LOADING);
+                            for (Search s : buf) list.add(s);
+                        } else {
+                            adapter.setState(SearchAdapter.DEFAULT);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        adapter.setState(SearchAdapter.ERROR);
+        adapter.notifyDataSetChanged();
     }
 }

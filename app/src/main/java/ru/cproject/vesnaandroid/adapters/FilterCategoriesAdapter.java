@@ -37,12 +37,13 @@ public class FilterCategoriesAdapter extends Adapter {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         ((CategoryViewHolder) holder).title.setText(categories.get(position));
         ((CategoryViewHolder) holder).wrapper.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                context.openFacetChose(categories.get(position));
+                context.setMain(categories.get(position));
             }
         });
     }

@@ -124,6 +124,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
                 if (text.contains("route")) {
                     //TODO qr для карты
                 }
+                notAppAlert();
             } else
                 notAppAlert();
         } else

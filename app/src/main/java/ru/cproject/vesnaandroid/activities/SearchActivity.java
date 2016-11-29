@@ -62,7 +62,7 @@ public class SearchActivity extends AppCompatActivity {
         search = (EditText) findViewById(R.id.search);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        adapter = new SearchAdapter(this, list);
+        adapter = new SearchAdapter(this, list, ContextCompat.getColor(this, R.color.colorPrimary));
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -117,17 +117,21 @@ public class SearchActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString != null)
                     Log.e(TAG, responseString);
-                // TODO: 22.11.2016 Обработка ошибки
+                adapter.setState(SearchAdapter.ERROR);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Log.d(TAG, responseString);
-
                 List<Search> buf = ResponseParser.parseSearch(responseString);
-                int prevSize = list.size();
-                for (Search s: buf) list.add(s);
-                adapter.notifyItemRangeInserted(prevSize, buf.size());
+                if (buf.size() != 0) {
+                    adapter.setState(SearchAdapter.LOADING);
+                    for (Search s: buf) list.add(s);
+                } else {
+                    adapter.setState(SearchAdapter.DEFAULT);
+                }
+                adapter.notifyDataSetChanged();
             }
         });
     }

@@ -129,7 +129,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
                 notAppAlert();
         } else
             notAppAlert();
-        }
+    }
 
 
     private void notAppAlert () {

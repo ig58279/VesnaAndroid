@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.google.gson.JsonArray;
@@ -71,6 +72,9 @@ public class FilterActivity extends ProtoMainActivity {
 
     private FrameLayout fragmentFrame;
 
+    private MenuItem ok;
+    private boolean okVisibility = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Intent intent = getIntent();
@@ -86,13 +90,25 @@ public class FilterActivity extends ProtoMainActivity {
         mod = intent.getStringExtra("mod");
 
         fragmentFrame = (FrameLayout) findViewById(R.id.fragment_frame);
-
         requestCats(null, null);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_filter, menu);
+        menu.findItem(R.id.ok).setVisible(okVisibility);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ok:
+                formResult();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -109,36 +125,60 @@ public class FilterActivity extends ProtoMainActivity {
         return true;
     }
 
+    private void formResult() {
+        Intent returnIntent = new Intent();
+        JsonObject result = new JsonObject();
+        if (main != null) {
+            JsonArray main = new JsonArray();
+            main.add(this.main);
+            result.add("main", main);
+        }
+        for (Map.Entry<String, String> e : chosenParams.entrySet()) {
+            JsonArray cat = new JsonArray();
+            cat.add(e.getValue());
+            result.add(e.getKey(), cat);
+        }
+        returnIntent.putExtra("result", result.toString());
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
     public void stepBack() {
         if (currentStep == FACETS_CHOSE)
             facets.clear();
         currentStep--;
-        showFragment(currentStep, null);
+        showFragment(currentStep, null, R.anim.transition_left_in, R.anim.transition_right_out);
     }
 
-    private void showFragment(int fragment, String facet) {
+    private void showFragment(int fragment, String facet, int enterAnim, int exitAnim) {
         switch (fragment) {
             case CATEGORY_CHOSE:
-                getSupportActionBar().setTitle(catsTitle);
+                okVisibility = false;
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(enterAnim, exitAnim)
                         .replace(fragmentFrame.getId(), new CategoriesFragment())
                         .commit();
                 break;
             case FACETS_CHOSE:
-                 getSupportFragmentManager()
+                okVisibility = true;
+                getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(enterAnim, exitAnim)
                         .replace(fragmentFrame.getId(), new FacetsFragment())
                         .commit();
                 break;
             case FACET_PARAM_CHOSE:
+                okVisibility = false;
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(enterAnim, exitAnim)
                         .replace(fragmentFrame.getId(), FacetParamFragment.newInstance(facet))
                         .commit();
                 break;
         }
         currentStep = fragment;
+        invalidateOptionsMenu();
     }
 
     public void requestCats(@Nullable final String main, @Nullable final String facet) {
@@ -191,22 +231,20 @@ public class FilterActivity extends ProtoMainActivity {
                     for (Map.Entry<String, JsonElement> j : entry){
                         if (j.getKey().equals("main")) {
                             catsTitle = j.getValue().getAsString();
-                            getSupportActionBar().setTitle(catsTitle);
                             JsonArray categoriesJson = vals.get(j.getKey()).getAsJsonArray();
                             for (JsonElement c : categoriesJson)
                                 categories.add(c.getAsString());
                             if (firstReqest) {
-                                showFragment(CATEGORY_CHOSE, null);
+                                showFragment(CATEGORY_CHOSE, null, R.anim.transition_right_in, R.anim.transition_left_out);
                                 topStep = CATEGORY_CHOSE;
                                 firstReqest = false;
                             }
                         } else {
                             if (firstReqest) {
-                                showFragment(FACETS_CHOSE, null);
+                                showFragment(FACETS_CHOSE, null, R.anim.transition_right_in, R.anim.transition_left_out);
                                 topStep = FACETS_CHOSE;
                                 firstReqest = false;
                             }
-                            getSupportActionBar().setTitle(main);
 
                             if (!isFacetContain(j.getKey()))
                                 facets.add(new Facet(j.getKey(), j.getValue().getAsString()));
@@ -225,12 +263,12 @@ public class FilterActivity extends ProtoMainActivity {
 
     public void openFacetChose(String main) {
         requestCats(main, null);
-        showFragment(FACETS_CHOSE, null);
+        showFragment(FACETS_CHOSE, null, R.anim.transition_right_in, R.anim.transition_left_out);
     }
 
     public void openFacetParams(String facet) {
         requestCats(this.main, facet);
-        showFragment(FACET_PARAM_CHOSE, facet);
+        showFragment(FACET_PARAM_CHOSE, facet, R.anim.transition_right_in, R.anim.transition_left_out);
     }
 
 

@@ -89,12 +89,11 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="98dp"
-                    android:layout_below="@id/title"
-                    android:layout_alignParentBottom="true"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_top_wave" />
+                    android:src="@drawable/ic_top_wave"
+                    android:layout_height="69dp"
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
 
@@ -148,20 +147,12 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="16dp"
                 android:background="@color/colorPrimary">
-                <ImageView
-                    android:id="@+id/waves"
-                    android:layout_width="match_parent"
-                    android:layout_height="98dp"
-                    android:rotation="180"
-                    android:layout_alignParentTop="true"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_top_wave" />
+
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_below="@id/waves">
+                    android:layout_below="@+id/waves">
                     <TableLayout
                         android:id="@+id/menu"
                         android:layout_width="wrap_content"
@@ -172,6 +163,18 @@
                         android:layout_marginLeft="-1dp"
                         android:layout_marginRight="-1dp"/>
                 </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/waves"
+                    android:layout_width="match_parent"
+                    android:rotation="180"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_top_wave"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_height="69dp" />
             </RelativeLayout>
             <View
                 android:layout_width="match_parent"

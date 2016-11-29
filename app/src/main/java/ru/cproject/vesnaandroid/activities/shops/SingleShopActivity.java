@@ -1,8 +1,11 @@
 package ru.cproject.vesnaandroid.activities.shops;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -80,10 +83,11 @@ public class SingleShopActivity extends ProtoSingleActivity {
         getSupportActionBar().setTitle("Весна");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         contentView = (ViewGroup) findViewById(R.id.content_view);
 
         cardBackground = findViewById(R.id.card_background);
@@ -124,29 +128,42 @@ public class SingleShopActivity extends ProtoSingleActivity {
     }
 
     private void loadShop() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("id", id);
-        // TODO token
-        Log.e(TAG, ServerApi.GET_SHOP);
-        client.get(ServerApi.GET_SHOP, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                errorMessage.setVisibility(View.VISIBLE);
-                progress.setVisibility(View.GONE);
-                contentView.setVisibility(View.GONE);
-            }
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("id", id);
+                // TODO token
+                Log.e(TAG, ServerApi.GET_SHOP);
+                client.get(ServerApi.GET_SHOP, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        SingleShopActivity.this.onFailure(responseString);
+                    }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                shop = ResponseParser.parseShop(responseString);
-                showInfo();
-            }
-        });
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        shop = ResponseParser.parseShop(responseString);
+                        showInfo();
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
 
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        errorMessage.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     private void showInfo() {

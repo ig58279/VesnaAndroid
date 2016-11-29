@@ -1,10 +1,14 @@
 package ru.cproject.vesnaandroid.helpers;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
@@ -26,6 +30,7 @@ import java.util.List;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
+import ru.cproject.vesnaandroid.activities.QRCodeReaderActivity;
 import ru.cproject.vesnaandroid.activities.events.MainEventsActivity;
 import ru.cproject.vesnaandroid.activities.films.MainFilmsActivity;
 import ru.cproject.vesnaandroid.activities.map.MapActivity;
@@ -34,6 +39,8 @@ import ru.cproject.vesnaandroid.activities.stocks.MainStocksActivity;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.mall.Function;
+
+import static ru.cproject.vesnaandroid.helpers.DinamicPermissionsHelper.CAMERA_REQUEST_CODE;
 
 /**
  * Created by Bitizen on 27.10.16.
@@ -193,7 +200,7 @@ public class ViewCreatorHelper {
                     this.onClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // TODO: 04.11.16 qr
+                            context.startActivity(new Intent(context, QRCodeReaderActivity.class));
                         }
                     };
                     break;

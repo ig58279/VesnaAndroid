@@ -1,7 +1,10 @@
 package ru.cproject.vesnaandroid.activities.events;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -66,6 +69,7 @@ public class SingleEventActivity extends ProtoSingleActivity {
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         contentView = (ViewGroup) findViewById(R.id.content_view);
 
         title = (TextView) findViewById(R.id.title);
@@ -86,28 +90,42 @@ public class SingleEventActivity extends ProtoSingleActivity {
     }
 
     private void loadEvent() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("id", id);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        client.get(ServerApi.GET_EVENT, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                errorMessage.setVisibility(View.VISIBLE);
-                progress.setVisibility(View.GONE);
-                contentView.setVisibility(View.GONE);
-            }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("id", id);
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                event = ResponseParser.parseEvent(responseString);
-                showInfo();
-            }
-        });
+                client.get(ServerApi.GET_EVENT, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        SingleEventActivity.this.onFailure(responseString);
+                    }
 
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        event = ResponseParser.parseEvent(responseString);
+                        showInfo();
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        errorMessage.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     private void showInfo() {

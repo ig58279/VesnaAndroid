@@ -1,7 +1,10 @@
 package ru.cproject.vesnaandroid.activities.films;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -110,25 +113,40 @@ public class SingleFilmActivity extends ProtoSingleActivity {
     }
 
     private void loadFilm() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("id", id);
-        // TODO token
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        client.get(ServerApi.GET_FILM, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-            }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("id", id);
+                // TODO token
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                film = ResponseParser.parseFilm(responseString);
-                showInfo();
-            }
-        });
+                client.get(ServerApi.GET_FILM, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        SingleFilmActivity.this.onFailure(responseString);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        film = ResponseParser.parseFilm(responseString);
+                        showInfo();
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
     }
 
     private void showInfo() {

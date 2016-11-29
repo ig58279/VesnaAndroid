@@ -1,7 +1,10 @@
 package ru.cproject.vesnaandroid.activities.shops;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -78,12 +81,12 @@ public class MainShopsActivity extends ProtoMainActivity {
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
 
         openCategories = (ImageView) findViewById(R.id.open_categories);
         categoriesView = (TextView) findViewById(R.id.categories);
         shopView = (RecyclerView) findViewById(R.id.shops_view);
-        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
         adapter = new ShopsAdapter(this, shopList, color, style);
         shopView.setAdapter(adapter);
@@ -120,39 +123,51 @@ public class MainShopsActivity extends ProtoMainActivity {
     }
 
     private void loadShops() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("mod", mode);
-        params.put("count", LIMIT);
-        params.put("offset", shopList.size());
-        params.setUseJsonStreamer(true);
-        client.post(ServerApi.GET_SHOPS + mode, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                loading.setVisibility(View.GONE);
-                content.setVisibility(View.GONE);
-                errorMessage.setVisibility(View.VISIBLE);
-            }
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("mod", mode);
+                params.put("count", LIMIT);
+                params.put("offset", shopList.size());
+                params.setUseJsonStreamer(true);
+                client.post(ServerApi.GET_SHOPS + mode, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        MainShopsActivity.this.onFailure(responseString);
+                    }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                JsonParser parser = new JsonParser();
-                JsonObject response = parser.parse(responseString).getAsJsonObject();
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        JsonParser parser = new JsonParser();
+                        JsonObject response = parser.parse(responseString).getAsJsonObject();
 
-                String list = "list";
-                if (response.has(list) && !response.get(list).isJsonNull()) {
-                    List<Shop> buf = ResponseParser.parseShops(response.get(list).toString());
-                    int prevSize = shopList.size();
-                    for (Shop s : buf) shopList.add(s);
-                    adapter.notifyItemRangeInserted(prevSize, buf.size());
-                }
-
-                loading.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-            }
-        });
+                        String list = "list";
+                        if (response.has(list) && !response.get(list).isJsonNull()) {
+                            List<Shop> buf = ResponseParser.parseShops(response.get(list).toString());
+                            int prevSize = shopList.size();
+                            for (Shop s : buf) shopList.add(s);
+                            adapter.notifyItemRangeInserted(prevSize, buf.size());
+                        }
+                        loading.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        loading.setVisibility(View.GONE);
+        content.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.VISIBLE);
     }
 }

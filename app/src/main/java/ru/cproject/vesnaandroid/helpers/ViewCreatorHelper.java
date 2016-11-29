@@ -242,7 +242,7 @@ public class ViewCreatorHelper {
                     };
                     break;
                 default:
-                    throw new IllegalArgumentException("No such type: " + function.getType()); // TODO: 04.11.16 можно как-то переделать
+                    isHome = false;
             }
             this.isHome = function.isHome();
         }

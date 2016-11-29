@@ -1,5 +1,9 @@
 package ru.cproject.vesnaandroid.activities.events;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +59,7 @@ public class MainEventsActivity extends ProtoMainActivity {
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMassage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
 
         eventsView = (RecyclerView) findViewById(R.id.events_view);
@@ -84,35 +89,49 @@ public class MainEventsActivity extends ProtoMainActivity {
     }
 
     private void loadEvents() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("mod", "events");
-        params.put("offset", eventList.size());
-        params.put("count", LIMIT);
-        params.setUseJsonStreamer(true);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        client.post(ServerApi.GET_EVENTS, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                loading.setVisibility(View.GONE);
-                content.setVisibility(View.GONE);
-                errorMassage.setVisibility(View.VISIBLE);
-            }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("mod", "events");
+                params.put("offset", eventList.size());
+                params.put("count", LIMIT);
+                params.setUseJsonStreamer(true);
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
+                client.post(ServerApi.GET_EVENTS, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        MainEventsActivity.this.onFailure(responseString);
+                    }
 
-                List<Event> buf = ResponseParser.parseEvents(responseString);
-                int prevSize = eventList.size();
-                for (Event event : buf) eventList.add(event);
-                adapter.notifyItemRangeInserted(prevSize, buf.size());
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
 
-                loading.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-            }
-        });
+                        List<Event> buf = ResponseParser.parseEvents(responseString);
+                        int prevSize = eventList.size();
+                        for (Event event : buf) eventList.add(event);
+                        adapter.notifyItemRangeInserted(prevSize, buf.size());
+
+                        loading.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+    private void onFailure (@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        loading.setVisibility(View.GONE);
+        content.setVisibility(View.GONE);
+        errorMassage.setVisibility(View.VISIBLE);
     }
 }

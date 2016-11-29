@@ -1,6 +1,9 @@
 package ru.cproject.vesnaandroid.activities.films;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,45 +70,59 @@ public class MainFilmsActivity extends ProtoMainActivity {
     }
 
     private void loadFilms() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, sort);
-//        params.put("sort", (long) (calendar.getTimeInMillis() / 1000));
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        client.get(ServerApi.GET_FILMS, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-            }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_MONTH, sort);
+                //        params.put("sort", (long) (calendar.getTimeInMillis() / 1000));
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-
-                FilmsResponse response = ResponseParser.parseFilms(responseString);
-                cinema = response.getCinema();
-                List<Film> films = response.getItems();
-                int size = filmList.size();
-                cinema = response.getCinema();
-                for (int i = 0; i < films.size(); i++) {
-                    filmList.add(films.get(i));
-                }
-                adapter.notifyItemRangeInserted(size, films.size());
-
-                about.setOnClickListener(new View.OnClickListener() {
+                client.get(ServerApi.GET_FILMS, params, new TextHttpResponseHandler() {
                     @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(MainFilmsActivity.this, SingleShopActivity.class);
-                        Gson gson = new Gson();
-                        intent.putExtra("shop", gson.toJson(cinema));
-                        intent.putExtra("style", R.style.FilmsTheme);
-                        intent.putExtra("background", color);
-                        startActivity(intent);
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        MainFilmsActivity.this.onFailure(responseString);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+
+                        FilmsResponse response = ResponseParser.parseFilms(responseString);
+                        cinema = response.getCinema();
+                        List<Film> films = response.getItems();
+                        int size = filmList.size();
+                        cinema = response.getCinema();
+                        for (int i = 0; i < films.size(); i++) {
+                            filmList.add(films.get(i));
+                        }
+                        adapter.notifyItemRangeInserted(size, films.size());
+
+                        about.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(MainFilmsActivity.this, SingleShopActivity.class);
+                                Gson gson = new Gson();
+                                intent.putExtra("shop", gson.toJson(cinema));
+                                intent.putExtra("style", R.style.FilmsTheme);
+                                intent.putExtra("background", color);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 });
-            }
-        });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
     }
 }

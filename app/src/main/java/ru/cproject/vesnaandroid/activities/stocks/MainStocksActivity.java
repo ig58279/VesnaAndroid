@@ -3,7 +3,10 @@ package ru.cproject.vesnaandroid.activities.stocks;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.content.Context;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -86,6 +89,7 @@ public class MainStocksActivity extends ProtoMainActivity {
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMassage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
 
         sort = (ViewGroup) findViewById(R.id.sort);
@@ -143,25 +147,48 @@ public class MainStocksActivity extends ProtoMainActivity {
                 break;
         }
         params.setUseJsonStreamer(true);
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient client = new AsyncHttpClient();
+                RequestParams params = new RequestParams();
+                params.put("mod", "stocks");
+                params.put("offset", stockList.size());
+                params.put("count", LIMIT);
+                params.setUseJsonStreamer(true);
 
-        client.post(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString != null)
-                    Log.e(TAG, responseString);
-                loading.setVisibility(View.GONE);
-                content.setVisibility(View.GONE);
-                errorMassage.setVisibility(View.VISIBLE);
-            }
+                client.post(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        MainStocksActivity.this.onFailure(responseString);
+                    }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(TAG, responseString);
-                List<Stock> stock = ResponseParser.parseStocks(responseString);
-                int prevSize = stockList.size();
-                for (Stock s : stock) stockList.add(s);
-                adapter.notifyItemRangeInserted(prevSize, stock.size());
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, responseString);
+                        List<Stock> stock = ResponseParser.parseStocks(responseString);
+                        int prevSize = stockList.size();
+                        for (Stock s : stock) stockList.add(s);
+                        adapter.notifyItemRangeInserted(prevSize, stock.size());
 
+                        loading.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else
+                onFailure(null);
+        } else
+            onFailure(null);
+    }
+    private void onFailure(@Nullable String responseString) {
+        if (responseString != null)
+            Log.e(TAG, responseString);
+        loading.setVisibility(View.GONE);
+        content.setVisibility(View.GONE);
+        errorMassage.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.GONE);
                 content.setVisibility(View.VISIBLE);
             }

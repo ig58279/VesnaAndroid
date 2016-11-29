@@ -62,11 +62,11 @@ public class MainStocksActivity extends ProtoMainActivity {
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMassage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
 
         sort = (ViewGroup) findViewById(R.id.sort);
         stocksView = (RecyclerView) findViewById(R.id.stocks_view);
-        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new StocksAdapter(this, stockList);
         stocksView.setAdapter(adapter);

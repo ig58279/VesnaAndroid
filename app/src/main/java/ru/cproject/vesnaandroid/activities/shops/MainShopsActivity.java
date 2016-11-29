@@ -81,12 +81,12 @@ public class MainShopsActivity extends ProtoMainActivity {
         loading = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
 
         openCategories = (ImageView) findViewById(R.id.open_categories);
         categoriesView = (TextView) findViewById(R.id.categories);
         shopView = (RecyclerView) findViewById(R.id.shops_view);
-        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
         adapter = new ShopsAdapter(this, shopList, color, style);
         shopView.setAdapter(adapter);

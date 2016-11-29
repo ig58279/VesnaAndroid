@@ -73,7 +73,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
-        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         contentView = (ViewGroup) findViewById(R.id.content_view);
 
         Intent intent = getIntent();

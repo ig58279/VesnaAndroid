@@ -81,12 +81,12 @@ public class SingleShopActivity extends ProtoSingleActivity {
 
         getSupportActionBar().setTitle("Весна");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
-
 
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
+
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         contentView = (ViewGroup) findViewById(R.id.content_view);
 
         cardBackground = findViewById(R.id.card_background);

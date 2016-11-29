@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:id="@+id/reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/reset_background">
+        <ImageView
+            android:layout_width="9dp"
+            android:layout_height="9dp"
+            android:src="@drawable/ic_reset"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:textAllCaps="true"
+            android:textColor="@color/colorTextGray"
+            android:textSize="13sp"
+            android:text="Сбросить"/>
+
+    </LinearLayout>
+
+</LinearLayout>

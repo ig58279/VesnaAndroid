@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.categories.FilterActivity;
@@ -58,11 +59,12 @@ public class MainShopsActivity extends ProtoMainActivity {
     private RecyclerView shopView;
     private ShopsAdapter adapter;
     private List<Shop> shopList = new ArrayList<>();
-
-    private List<Category> choose;
+    private EndlessRecyclerOnScrollListener scrollListener;
 
     private int style;
     private String mode;
+
+    private JsonObject cats;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,15 +91,16 @@ public class MainShopsActivity extends ProtoMainActivity {
         shopView = (RecyclerView) findViewById(R.id.shops_view);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
         adapter = new ShopsAdapter(this, shopList, color, style);
-        shopView.setAdapter(adapter);
-        shopView.setLayoutManager(gridLayoutManager);
-
-        shopView.addOnScrollListener(new EndlessRecyclerOnScrollListener(gridLayoutManager) {
+        scrollListener = new EndlessRecyclerOnScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 loadShops();
             }
-        });
+        };
+        shopView.setAdapter(adapter);
+        shopView.setLayoutManager(gridLayoutManager);
+
+        shopView.addOnScrollListener(scrollListener);
 
         openCategories.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +108,7 @@ public class MainShopsActivity extends ProtoMainActivity {
                 Intent intent = new Intent(MainShopsActivity.this, FilterActivity.class);
                 intent.putExtra("style", style);
                 intent.putExtra("mod", mode);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -122,6 +125,23 @@ public class MainShopsActivity extends ProtoMainActivity {
         loadShops();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            JsonParser parser = new JsonParser();
+            String result = data.getStringExtra("result");
+            cats = parser.parse(result).getAsJsonObject();
+        }
+        if (requestCode == 0 && resultCode == RESULT_CANCELED) {
+            cats = null;
+        }
+        shopList.clear();
+        adapter.notifyDataSetChanged();
+        scrollListener.resetState();
+        loadShops();
+    }
+
     private void loadShops() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -130,12 +150,17 @@ public class MainShopsActivity extends ProtoMainActivity {
             boolean isConnected = activeNetwork.isConnectedOrConnecting();
             if (isConnected) {
                 AsyncHttpClient client = new AsyncHttpClient();
-                RequestParams params = new RequestParams();
-                params.put("mod", mode);
-                params.put("count", LIMIT);
-                params.put("offset", shopList.size());
-                params.setUseJsonStreamer(true);
-                client.post(ServerApi.GET_SHOPS + mode, params, new TextHttpResponseHandler() {
+
+                JsonObject params = new JsonObject();
+                params.addProperty("mod", mode);
+                params.addProperty("count", LIMIT);
+                params.addProperty("offset", shopList.size());
+                if (cats != null)
+                    params.add("cats", cats);
+
+                StringEntity entity = new StringEntity(params.toString(), "UTF-8");
+
+                client.post(this, ServerApi.GET_SHOPS + mode, entity, "application/json", new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         MainShopsActivity.this.onFailure(responseString);

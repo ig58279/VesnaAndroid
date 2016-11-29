@@ -27,8 +27,11 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.adapters.SearchAdapter;
+import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Search;
+
+import static android.R.interpolator.linear;
 
 /**
  * Created by andro on 22.11.2016.
@@ -47,6 +50,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private AsyncHttpClient client = new AsyncHttpClient();
 
+    private EndlessRecyclerOnScrollListener scrollListener;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +67,19 @@ public class SearchActivity extends AppCompatActivity {
         search = (EditText) findViewById(R.id.search);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new SearchAdapter(this, list);
+        scrollListener = new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                search();
+            }
+        };
 
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.setHasFixedSize(false);
 
         adapter.notifyDataSetChanged();
 

@@ -42,7 +42,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Search> list;
     private int color;
 
-    private int state = 0;
+    private int state = 1;
     public static final int DEFAULT = 0;
     public static final int LOADING = 1;
     public static final int ERROR = 2;

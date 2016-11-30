@@ -2,9 +2,11 @@ package ru.cproject.vesnaandroid.activities.stocks;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,6 +15,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -22,12 +27,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
 import ru.cproject.vesnaandroid.R;
@@ -38,6 +49,7 @@ import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Stock;
 
+import static android.R.attr.category;
 import static android.R.attr.defaultValue;
 import static android.R.attr.onClick;
 import static android.R.attr.showDefault;
@@ -72,10 +84,15 @@ public class MainStocksActivity extends ProtoMainActivity {
     private ImageView sortImage;
     private TextView sortText;
 
+    private TextView categoriesView;
+
     private RecyclerView stocksView;
     private List<Stock> stockList = new ArrayList<>();
     private StocksAdapter adapter;
     private EndlessRecyclerOnScrollListener scrollListener;
+
+    private JsonObject cats;
+    private String catsString;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,6 +108,7 @@ public class MainStocksActivity extends ProtoMainActivity {
         retry = (Button) findViewById(R.id.retry);
         retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
+        categoriesView = (TextView) findViewById(R.id.categories);
 
         sort = (ViewGroup) findViewById(R.id.sort);
         sortImage = (ImageView) findViewById(sort_image);
@@ -127,6 +145,50 @@ public class MainStocksActivity extends ProtoMainActivity {
         });
 
         loadStocks();
+        showCats();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            JsonParser parser = new JsonParser();
+            String result = data.getStringExtra("result");
+            cats = parser.parse(result).getAsJsonObject();
+            Log.e(TAG, result);
+        }
+        if (requestCode == 0 && resultCode == RESULT_CANCELED) {
+            cats = null;
+        }
+        stockList.clear();
+        adapter.notifyDataSetChanged();
+        scrollListener.resetState();
+        loadStocks();
+        showCats();
+    }
+
+    private void showCats() {
+        catsString = "Акции";
+        if (cats != null) {
+            Set<Map.Entry<String, JsonElement>> entries = cats.entrySet();
+            for (Map.Entry<String, JsonElement> e : entries) {
+                JsonArray cat = e.getValue().getAsJsonArray();
+                for (int i = 0; i < cat.size(); i++)
+                    catsString += " & " + cat.get(i).getAsString();
+            }
+        } else {
+            catsString += " & Все";
+        }
+        Spannable text = new SpannableString(catsString.toUpperCase());
+        while (catsString.contains("&")) {
+            Drawable arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right);
+            arrow.setBounds(0, 0, arrow.getIntrinsicWidth(), arrow.getIntrinsicHeight());
+            ImageSpan image = new ImageSpan(arrow, ImageSpan.ALIGN_BOTTOM);
+            text.setSpan(image, catsString.indexOf("&"), catsString.indexOf("&") + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            catsString = catsString.replaceFirst("&", "*");
+        }
+        categoriesView.setTransformationMethod(null);
+        categoriesView.setText(text);
     }
 
     private void loadStocks() {

@@ -59,14 +59,27 @@
                 android:layout_height="44dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
-                <android.support.v4.widget.NestedScrollView
+                <HorizontalScrollView
                     android:id="@+id/category_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/category_arrow">
+                    android:scrollbars="none"
+                    android:overScrollMode="never"
+                    android:layout_toLeftOf="@+id/open_categories">
 
-                </android.support.v4.widget.NestedScrollView>
+                    <TextView
+                        android:id="@+id/categories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingRight="16dp"
+                        android:gravity="center_vertical"
+                        android:fontFamily="sans-serif-medium"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorTextGray"
+                        android:textSize="13sp"/>
+
+                </HorizontalScrollView>
                 <ImageView
                     android:layout_width="4dp"
                     android:layout_height="match_parent"

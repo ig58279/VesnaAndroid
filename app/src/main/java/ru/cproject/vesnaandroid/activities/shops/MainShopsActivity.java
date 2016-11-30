@@ -3,13 +3,19 @@ package ru.cproject.vesnaandroid.activities.shops;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -18,6 +24,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.loopj.android.http.AsyncHttpClient;
@@ -26,6 +34,8 @@ import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -38,6 +48,9 @@ import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
+
+import static android.R.attr.category;
+import static android.R.attr.entries;
 
 /**
  * Created by Bitizen on 29.10.16.
@@ -65,6 +78,9 @@ public class MainShopsActivity extends ProtoMainActivity {
     private String mode;
 
     private JsonObject cats;
+    private String catsString;
+
+    private String category;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +93,7 @@ public class MainShopsActivity extends ProtoMainActivity {
         mode = intent.getStringExtra("mod");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String category = intent.getExtras().getString("category", "Магазины");
+        category = intent.getExtras().getString("category", "Магазины");
         getSupportActionBar().setTitle(category);
 
         loading = (ViewGroup) findViewById(R.id.progress);
@@ -123,6 +139,7 @@ public class MainShopsActivity extends ProtoMainActivity {
         });
 
         loadShops();
+        showCats();
     }
 
     @Override
@@ -132,6 +149,7 @@ public class MainShopsActivity extends ProtoMainActivity {
             JsonParser parser = new JsonParser();
             String result = data.getStringExtra("result");
             cats = parser.parse(result).getAsJsonObject();
+            Log.e(TAG, result);
         }
         if (requestCode == 0 && resultCode == RESULT_CANCELED) {
             cats = null;
@@ -140,6 +158,31 @@ public class MainShopsActivity extends ProtoMainActivity {
         adapter.notifyDataSetChanged();
         scrollListener.resetState();
         loadShops();
+        showCats();
+    }
+
+    private void showCats() {
+        catsString = category;
+        if (cats != null) {
+            Set<Map.Entry<String, JsonElement>> entries = cats.entrySet();
+            for (Map.Entry<String, JsonElement> e : entries) {
+                JsonArray cat = e.getValue().getAsJsonArray();
+                for (int i = 0; i < cat.size(); i++)
+                    catsString += " & " + cat.get(i).getAsString();
+            }
+        } else {
+           catsString += " & Все";
+        }
+        Spannable text = new SpannableString(catsString.toUpperCase());
+        while (catsString.contains("&")) {
+            Drawable arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right);
+            arrow.setBounds(0, 0, arrow.getIntrinsicWidth(), arrow.getIntrinsicHeight());
+            ImageSpan image = new ImageSpan(arrow, ImageSpan.ALIGN_BOTTOM);
+            text.setSpan(image, catsString.indexOf("&"), catsString.indexOf("&") + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            catsString = catsString.replaceFirst("&", "*");
+        }
+        categoriesView.setTransformationMethod(null);
+        categoriesView.setText(text);
     }
 
     private void loadShops() {

@@ -1,5 +1,6 @@
 package ru.cproject.vesnaandroid.activities.stocks;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,8 +42,11 @@ import java.util.Map;
 import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
+import ru.cproject.vesnaandroid.activities.categories.FilterActivity;
+import ru.cproject.vesnaandroid.activities.shops.MainShopsActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.StocksAdapter;
 import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
@@ -51,6 +55,7 @@ import ru.cproject.vesnaandroid.obj.Stock;
 
 import static android.R.attr.category;
 import static android.R.attr.defaultValue;
+import static android.R.attr.mode;
 import static android.R.attr.onClick;
 import static android.R.attr.showDefault;
 import static ru.cproject.vesnaandroid.R.color.colorTextGray;
@@ -85,6 +90,7 @@ public class MainStocksActivity extends ProtoMainActivity {
     private TextView sortText;
 
     private TextView categoriesView;
+    private ImageView openCategories;
 
     private RecyclerView stocksView;
     private List<Stock> stockList = new ArrayList<>();
@@ -109,6 +115,7 @@ public class MainStocksActivity extends ProtoMainActivity {
         retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
         categoriesView = (TextView) findViewById(R.id.categories);
+        openCategories = (ImageView) findViewById(R.id.category_arrow);
 
         sort = (ViewGroup) findViewById(R.id.sort);
         sortImage = (ImageView) findViewById(sort_image);
@@ -126,6 +133,16 @@ public class MainStocksActivity extends ProtoMainActivity {
         stocksView.setLayoutManager(linearLayoutManager);
         stocksView.addOnScrollListener(scrollListener);
         stocksView.setHasFixedSize(false);
+
+        openCategories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainStocksActivity.this, FilterActivity.class);
+                intent.putExtra("style", R.style.StockTheme);
+                intent.putExtra("mod", mode);
+                startActivityForResult(intent, 0);
+            }
+        });
 
         retry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,24 +216,27 @@ public class MainStocksActivity extends ProtoMainActivity {
             boolean isConnected = activeNetwork.isConnectedOrConnecting();
             if (isConnected) {
                 AsyncHttpClient client = new AsyncHttpClient();
-                RequestParams params = new RequestParams();
-                params.put("mod", "stocks");
-                params.put("offset", stockList.size());
-                params.put("count", LIMIT);
+                JsonObject params = new JsonObject();
+                params.addProperty("mod", "stocks");
+                params.addProperty("offset", stockList.size());
+                params.addProperty("count", LIMIT);
                 switch (typeOfSort) {
                     case NAME_ASC:
-                        params.put("sort", "name asc");
+                        params.addProperty("sort", "name asc");
                         break;
                     case NAME_DESC:
-                        params.put("sort", "name desc");
+                        params.addProperty("sort", "name desc");
                         break;
                     case SPECIAL_ASC:
-                        params.put("sort", "special asc");
+                        params.addProperty("sort", "special asc");
                         break;
                 }
-                params.setUseJsonStreamer(true);
+                if (cats != null)
+                    params.add("cats", cats);
 
-                client.post(ServerApi.GET_STOCKS, params, new TextHttpResponseHandler() {
+                StringEntity entity = new StringEntity(params.toString(), "UTF-8");
+
+                client.post(this, ServerApi.GET_STOCKS, entity, "application/json", new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         MainStocksActivity.this.onFailure(responseString);

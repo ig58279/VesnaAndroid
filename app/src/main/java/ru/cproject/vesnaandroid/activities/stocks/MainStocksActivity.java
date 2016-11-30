@@ -268,7 +268,6 @@ public class MainStocksActivity extends ProtoMainActivity {
         errorMassage.setVisibility(View.VISIBLE);
     }
 
-
     private void sortAlert() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainStocksActivity.this);
         alertDialogBuilder.setTitle("Сортировка")

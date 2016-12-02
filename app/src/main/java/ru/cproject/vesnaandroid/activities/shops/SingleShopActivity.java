@@ -37,6 +37,7 @@ import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoSingleActivity;
 import ru.cproject.vesnaandroid.adapters.MiniStocksAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.helpers.TabBar;
 import ru.cproject.vesnaandroid.helpers.TagsViewHelper;
 import ru.cproject.vesnaandroid.obj.Shop;
@@ -45,7 +46,7 @@ import ru.cproject.vesnaandroid.obj.Shop;
  * Created by Bitizen on 30.10.16.
  */
 
-public class SingleShopActivity extends ProtoSingleActivity {
+public class SingleShopActivity extends ProtoSingleActivity implements RetryInterface{
     private static final String TAG = "SingleShopActivity";
 
     private View cardBackground;
@@ -77,7 +78,7 @@ public class SingleShopActivity extends ProtoSingleActivity {
         Intent intent = getIntent();
         setTheme(intent.getIntExtra("style", R.style.AppTheme));
         super.onCreate(savedInstanceState);
-
+//TODO доделать onscrolllistener
         getLayoutInflater().inflate(R.layout.activity_single_shop, contentFrame);
 
         getSupportActionBar().setTitle("Весна");
@@ -249,7 +250,7 @@ public class SingleShopActivity extends ProtoSingleActivity {
 
         View stocks = getLayoutInflater().inflate(R.layout.tab_shop_stocks, content, false);
         RecyclerView stocksView = (RecyclerView) stocks.findViewById(R.id.stocks_view);
-        stocksView.setAdapter(new MiniStocksAdapter(this, shop.getStocks()));
+        stocksView.setAdapter(new MiniStocksAdapter(this, shop.getStocks(), ContextCompat.getColor(this, R.color.colorPrimary), this));
         stocksView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         View map = getLayoutInflater().inflate(R.layout.tab_map, content, false);
@@ -282,5 +283,9 @@ public class SingleShopActivity extends ProtoSingleActivity {
         errorMessage.setVisibility(View.GONE);
         contentView.setVisibility(View.VISIBLE);
 
+    }
+
+    @Override
+    public void retry() {
     }
 }

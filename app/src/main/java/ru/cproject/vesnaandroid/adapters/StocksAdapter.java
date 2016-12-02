@@ -20,7 +20,9 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
+import ru.cproject.vesnaandroid.adapters.holders.ErrorViewHolder;
 import ru.cproject.vesnaandroid.adapters.holders.LoadingViewHolder;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Stock;
 
 /**
@@ -29,32 +31,46 @@ import ru.cproject.vesnaandroid.obj.Stock;
 
 public class StocksAdapter extends RecyclerView.Adapter {
 
-    protected static final int ITEM = 0;
-    protected static final int LOADER = 1;
+    protected final int STOCKS_ITEM = 0;
+    protected final int LOADING_ITEM = 1;
+    protected final int ERROR_ITEM = 2;
+
+    private int state = 1;
+    public static final int DEFAULT = 0;
+    public static final int LOADING = 1;
+    public static final int ERROR = 2;
 
     private Context context;
     private List<Stock> stocksList;
+    protected int color;
+
+    private RetryInterface retryInterface;
 
     private boolean showLoader = false;
 
-    public StocksAdapter(Context context, List<Stock> stocksList) {
+    public StocksAdapter(Context context, List<Stock> stocksList, int color, RetryInterface retryInterface) {
         this.context = context;
         this.stocksList = stocksList;
+        this.color = color;
+        this.retryInterface = retryInterface;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater lf = LayoutInflater.from(parent.getContext());
-        if (viewType == ITEM)
-            return new StockViewHolder(lf.inflate(R.layout.item_stock, parent, false));
-        if (viewType == LOADER)
-            return new LoadingViewHolder(lf.inflate(R.layout.item_loading, parent, false));
-        return null;
+        if (viewType == STOCKS_ITEM)
+            return new StocksAdapter.StockViewHolder(lf.inflate(R.layout.item_stock, parent, false));
+        else if (viewType == LOADING_ITEM)
+            return new StocksAdapter.StockViewHolder(lf.inflate(R.layout.item_loading, parent, false));
+        else if (viewType == ERROR_ITEM)
+            return new ErrorViewHolder(lf.inflate(R.layout.item_error_message, parent, false));
+        else
+            return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == ITEM) {
+        if (getItemViewType(position) == STOCKS_ITEM) {
             final Stock stock = stocksList.get(position);
             ((StockViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,21 +105,45 @@ public class StocksAdapter extends RecyclerView.Adapter {
             } else
                 ((StockViewHolder) holder).special.setVisibility(View.GONE);
         }
+        if (getItemViewType(position) == ERROR_ITEM) {
+            ((ErrorViewHolder) holder).retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            ((ErrorViewHolder) holder).retry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    retryInterface.retry();
+                }
+            });
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (showLoader && position == getItemCount() + 1)
-                return LOADER;
-        return ITEM;
+        if (position != getItemCount() - 1)
+            return STOCKS_ITEM;
+        else {
+            if (state == ERROR)
+                return ERROR_ITEM;
+            else if (state == LOADING)
+                return LOADING_ITEM;
+            else
+                return STOCKS_ITEM;
+        }
     }
 
     @Override
     public int getItemCount() {
-        if (showLoader)
-            return stocksList.size() + 1;
-        else
+        if (state == DEFAULT)
             return stocksList.size();
+        else
+            return stocksList.size() + 1;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     protected class StockViewHolder extends RecyclerView.ViewHolder {
@@ -118,7 +158,7 @@ public class StocksAdapter extends RecyclerView.Adapter {
         TextView description;
         ImageButton like;
 
-        StockViewHolder(View itemView) {
+        public StockViewHolder(View itemView) {
             super(itemView);
             wrapper = (ViewGroup) itemView.findViewById(R.id.wrapper);
             special = (ViewGroup) itemView.findViewById(R.id.special);

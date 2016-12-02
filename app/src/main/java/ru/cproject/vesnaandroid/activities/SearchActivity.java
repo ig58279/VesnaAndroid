@@ -32,6 +32,7 @@ import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.adapters.SearchAdapter;
 import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Search;
 
 import static android.R.interpolator.linear;
@@ -40,7 +41,7 @@ import static android.R.interpolator.linear;
  * Created by andro on 22.11.2016.
  */
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements RetryInterface {
     private static final String TAG = "SearchActivity";
     private static final int LIMIT = 20;
 
@@ -77,7 +78,7 @@ public class SearchActivity extends AppCompatActivity {
                 search();
             }
         };
-        adapter = new SearchAdapter(this, list, ContextCompat.getColor(this, R.color.colorPrimary));
+        adapter = new SearchAdapter(this, list, ContextCompat.getColor(this, R.color.colorPrimary), this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -164,5 +165,12 @@ public class SearchActivity extends AppCompatActivity {
             Log.e(TAG, responseString);
         adapter.setState(SearchAdapter.ERROR);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void retry() {
+        adapter.setState(SearchAdapter.LOADING);
+        adapter.notifyItemChanged(list.size());
+        search();
     }
 }

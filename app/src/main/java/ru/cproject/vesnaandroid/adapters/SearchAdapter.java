@@ -24,6 +24,7 @@ import ru.cproject.vesnaandroid.activities.films.SingleFilmActivity;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
 import ru.cproject.vesnaandroid.adapters.holders.ErrorViewHolder;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Search;
 
 
@@ -47,12 +48,15 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static final int LOADING = 1;
     public static final int ERROR = 2;
 
+    private RetryInterface retryInterface;
+
     private int[] colors;
 
-    public SearchAdapter(Context context, List<Search> list, int color) {
+    public SearchAdapter(Context context, List<Search> list, int color, RetryInterface retryInterface) {
         this.context = context;
         this.list = list;
         this.color = color;
+        this.retryInterface = retryInterface;
 
         colors = new int[]{
                 ContextCompat.getColor(context, R.color.colorPrimaryShops),  // магазины
@@ -149,7 +153,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ((ErrorViewHolder) holder).retry.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    retryInterface.retry();
                 }
             });
         }

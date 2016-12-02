@@ -48,9 +48,11 @@ import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.categories.FilterActivity;
 import ru.cproject.vesnaandroid.activities.shops.MainShopsActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
+import ru.cproject.vesnaandroid.adapters.SearchAdapter;
 import ru.cproject.vesnaandroid.adapters.StocksAdapter;
 import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Stock;
 
 import static android.R.attr.category;
@@ -61,16 +63,17 @@ import static android.R.attr.showDefault;
 import static ru.cproject.vesnaandroid.R.color.colorTextGray;
 import static ru.cproject.vesnaandroid.R.id.sort_image;
 import static ru.cproject.vesnaandroid.R.id.sort_text;
+import static ru.cproject.vesnaandroid.R.id.stock;
 import static ru.cproject.vesnaandroid.R.layout.activity_main;
 
 /**
  * Created by Bitizen on 26.10.16.
  */
 
-public class MainStocksActivity extends ProtoMainActivity {
+public class MainStocksActivity extends ProtoMainActivity implements RetryInterface {
     public static final String TAG = MainStocksActivity.class.getSimpleName();
 
-    private static int LIMIT = 20;
+    private static final int LIMIT = 1;
 
     private String[] test = {"По умолчанию", "По алфавиту (а-я)", "По алфавиту (я-а)", "Сначала эксклюзивные"};
 
@@ -122,7 +125,7 @@ public class MainStocksActivity extends ProtoMainActivity {
         sortText = (TextView) findViewById(sort_text);
         stocksView = (RecyclerView) findViewById(R.id.stocks_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        adapter = new StocksAdapter(this, stockList);
+        adapter = new StocksAdapter(this, stockList, ContextCompat.getColor(this, R.color.colorPrimaryStocks), this);
         scrollListener = new EndlessRecyclerOnScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -246,9 +249,13 @@ public class MainStocksActivity extends ProtoMainActivity {
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
                         Log.d(TAG, responseString);
                         List<Stock> stock = ResponseParser.parseStocks(responseString);
-                        int prevSize = stockList.size();
-                        for (Stock s : stock) stockList.add(s);
-                        adapter.notifyItemRangeInserted(prevSize, stock.size());
+                        if (stock.size() != 0) {
+                            adapter.setState(StocksAdapter.LOADING);
+                            for (Stock s : stock) stockList.add(s);
+                        } else {
+                            adapter.setState(StocksAdapter.DEFAULT);
+                        }
+                        adapter.notifyDataSetChanged();
 
                         loading.setVisibility(View.GONE);
                         content.setVisibility(View.VISIBLE);
@@ -263,9 +270,14 @@ public class MainStocksActivity extends ProtoMainActivity {
     private void onFailure(@Nullable String responseString) {
         if (responseString != null)
             Log.e(TAG, responseString);
-        loading.setVisibility(View.GONE);
-        content.setVisibility(View.GONE);
-        errorMassage.setVisibility(View.VISIBLE);
+        if (stockList.size() != 0) {
+            adapter.setState(StocksAdapter.ERROR);
+            adapter.notifyDataSetChanged();
+        } else {
+            loading.setVisibility(View.GONE);
+            content.setVisibility(View.GONE);
+            errorMassage.setVisibility(View.VISIBLE);
+        }
     }
 
     private void sortAlert() {
@@ -296,5 +308,12 @@ public class MainStocksActivity extends ProtoMainActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void retry() {
+        adapter.setState(StocksAdapter.LOADING);
+        adapter.notifyItemChanged(stockList.size());
+        loadStocks();
     }
 }

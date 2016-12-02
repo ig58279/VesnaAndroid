@@ -18,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
@@ -28,6 +29,7 @@ import ru.cproject.vesnaandroid.activities.events.SingleEventActivity;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
 
+import static android.R.attr.breadCrumbShortTitle;
 import static android.R.attr.data;
 import static ru.cproject.vesnaandroid.R.id.stock;
 import static ru.cproject.vesnaandroid.helpers.DinamicPermissionsHelper.CAMERA_REQUEST_CODE;
@@ -53,18 +55,13 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     CAMERA_REQUEST_CODE);
-            return;
+        } else {
+            setContentView(R.layout.activity_qr_reader);
+            decoderview = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
+            decoderview.setOnQRCodeReadListener(this);
+            context = this;
+            decoderview.setBackCamera();
         }
-        setContentView(R.layout.activity_qr_reader);
-        decoderview = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
-        decoderview.setOnQRCodeReadListener(this);
-        context = this;
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -150,30 +147,36 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
     }
 
     @Override
-    public void cameraNotFound() {
-
-    }
-
-
-    @Override
-    public void QRCodeNotFoundOnCamImage() {
-
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        decoderview.getCameraManager().startPreview();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            decoderview.startCamera();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        decoderview.getCameraManager().stopPreview();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            decoderview.stopCamera();
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        onCreate(null);
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setContentView(R.layout.activity_qr_reader);
+                    decoderview = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
+                    decoderview.setOnQRCodeReadListener(this);
+                    context = this;
+                    decoderview.setBackCamera();
+                    onResume();
+                } else {
+                    finish();
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,15 +26,17 @@ import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.EventsAdapter;
+import ru.cproject.vesnaandroid.adapters.StocksAdapter;
 import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Event;
 
 /**
  * Created by Bitizen on 03.11.16.
  */
 
-public class MainEventsActivity extends ProtoMainActivity {
+public class MainEventsActivity extends ProtoMainActivity implements RetryInterface {
     private static final String TAG = "MainEventsActivity";
 
     private static final int LIMIT = 20;
@@ -64,7 +67,7 @@ public class MainEventsActivity extends ProtoMainActivity {
 
         eventsView = (RecyclerView) findViewById(R.id.events_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        adapter = new EventsAdapter(this, eventList);
+        adapter = new EventsAdapter(this, eventList, ContextCompat.getColor(this, R.color.colorPrimaryEvents), this);
         eventsView.setAdapter(adapter);
         eventsView.setLayoutManager(linearLayoutManager);
         eventsView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
@@ -112,11 +115,14 @@ public class MainEventsActivity extends ProtoMainActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
                         Log.d(TAG, responseString);
-
                         List<Event> buf = ResponseParser.parseEvents(responseString);
-                        int prevSize = eventList.size();
-                        for (Event event : buf) eventList.add(event);
-                        adapter.notifyItemRangeInserted(prevSize, buf.size());
+                        if (buf.size() != 0) {
+                            adapter.setState(EventsAdapter.LOADING);
+                            for (Event event : buf) eventList.add(event);
+                        } else {
+                            adapter.setState(EventsAdapter.DEFAULT);
+                        }
+                        adapter.notifyDataSetChanged();
 
                         loading.setVisibility(View.GONE);
                         content.setVisibility(View.VISIBLE);
@@ -130,8 +136,20 @@ public class MainEventsActivity extends ProtoMainActivity {
     private void onFailure (@Nullable String responseString) {
         if (responseString != null)
             Log.e(TAG, responseString);
-        loading.setVisibility(View.GONE);
-        content.setVisibility(View.GONE);
-        errorMassage.setVisibility(View.VISIBLE);
+        if (eventList.size() != 0) {
+            adapter.setState(EventsAdapter.ERROR);
+            adapter.notifyDataSetChanged();
+        } else {
+            loading.setVisibility(View.GONE);
+            content.setVisibility(View.GONE);
+            errorMassage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void retry() {
+        adapter.setState(EventsAdapter.LOADING);
+        adapter.notifyItemChanged(eventList.size());
+        loadEvents();
     }
 }

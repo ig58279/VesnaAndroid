@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
@@ -43,6 +45,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
 
     private Context context;
     private Boolean readCode = false;
+    private ImageView circleButton;
 
     QRCodeReaderView decoderview;
     @Override
@@ -62,6 +65,13 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
             context = this;
             decoderview.setBackCamera();
         }
+        circleButton = (ImageView) findViewById(R.id.circle);
+        circleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

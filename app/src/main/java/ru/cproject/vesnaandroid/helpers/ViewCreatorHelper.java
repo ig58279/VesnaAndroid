@@ -5,12 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +30,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
+import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +49,7 @@ import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.mall.Function;
 
+import static ru.cproject.vesnaandroid.R.id.stock;
 import static ru.cproject.vesnaandroid.helpers.DinamicPermissionsHelper.CAMERA_REQUEST_CODE;
 
 /**
@@ -78,8 +88,33 @@ public class ViewCreatorHelper {
         }
     }
 
+    public static Spannable spannableText(Context context, List<Category> categories, String type, int color) {
+    //TODO Разобраться с type
+        String catsString = "";
+        if (categories.size() != 0) {
+            catsString = categories.get(0).getCategories();
+            for (int i = 1; i < categories.size(); i++) {
+                catsString += "  &  " + categories.get(i).getCategories();
+            }
+        }
+
+        Spannable text = new SpannableString(catsString + "\n");
+        while (catsString.contains("&")) {
+            Drawable dot = ContextCompat.getDrawable(context, R.drawable.item_categories_circle);
+            dot.setBounds(0, 0, dot.getIntrinsicWidth(), dot.getIntrinsicHeight());
+            dot.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            ImageSpan image = new ImageSpan(dot, ImageSpan.ALIGN_BASELINE);
+            text.setSpan(image, catsString.indexOf("&"), catsString.indexOf("&") + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            text.setSpan(new ForegroundColorSpan(color), 0, catsString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            catsString = catsString.replaceFirst("&", "*");
+        }
+        return text;
+    }
+
     public static View createShopCard(final Context context, ViewGroup content, final Shop shop, int color) {
         View shopView = LayoutInflater.from(context).inflate(R.layout.tab_shop, content, false);
+        TextView categories = (TextView) shopView.findViewById(R.id.categories);
+        categories.setText(spannableText(context, shop.getCategories(), "", color));
         TextView shopName = (TextView) shopView.findViewById(R.id.shop_name);
         shopName.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         shopName.setText(shop.getName());

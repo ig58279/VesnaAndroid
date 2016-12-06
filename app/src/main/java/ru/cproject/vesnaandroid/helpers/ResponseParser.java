@@ -25,6 +25,11 @@ import ru.cproject.vesnaandroid.obj.mall.ShopMode;
 import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
 import ru.cproject.vesnaandroid.obj.responses.MallResponse;
 
+import static android.R.attr.category;
+import static android.R.attr.mode;
+import static ru.cproject.vesnaandroid.R.id.complements;
+import static ru.cproject.vesnaandroid.R.id.shop;
+
 /**
  * Created by Bitizen on 31.10.16.
  */
@@ -80,6 +85,23 @@ public class ResponseParser {
             stock.setPhotos(photosList);
         }
 
+        String catsJson = "cats";
+        if (response.has(catsJson) && !response.get(catsJson).isJsonNull()) {
+            List<Category> categories = new ArrayList<>();
+            JsonArray categoriesArray = response.get(catsJson).getAsJsonArray();
+            for (JsonElement j : categoriesArray) {
+                JsonObject categoryObj = j.getAsJsonObject();
+                Set<Map.Entry<String, JsonElement>> entries = categoryObj.entrySet();
+                for (Map.Entry<String, JsonElement> e : entries) {
+                    Category category = new Category();
+                    category.setType(e.getKey());
+                    category.setCategories(e.getValue().getAsString());
+                    categories.add(category);
+                }
+            }
+            stock.setCategories(categories);
+        }
+
         String mode = "mode";
         if (response.has(mode) && !response.get(mode).isJsonNull())
             stock.setDate(response.get(mode).getAsString());
@@ -127,7 +149,22 @@ public class ResponseParser {
             shop.setPhotos(photos);
         }
 
-        // TODO: 22.11.16 категории
+        String catsJson = "cats";
+        if (response.has(catsJson) && !response.get(catsJson).isJsonNull()) {
+            List<Category> categories = new ArrayList<>();
+            JsonArray categoriesArray = response.get(catsJson).getAsJsonArray();
+            for (JsonElement j : categoriesArray) {
+                JsonObject categoryObj = j.getAsJsonObject();
+                Set<Map.Entry<String, JsonElement>> entries = categoryObj.entrySet();
+                for (Map.Entry<String, JsonElement> e : entries) {
+                    Category category = new Category();
+                    category.setType(e.getKey());
+                    category.setCategories(e.getValue().getAsString());
+                    categories.add(category);
+                }
+            }
+            shop.setCategories(categories);
+        }
 
         List<Shop.Complement> complements = new ArrayList<>();
         String phoneJson = "phone";

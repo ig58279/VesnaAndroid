@@ -31,6 +31,9 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.msebera.android.httpclient.Header;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
@@ -39,7 +42,8 @@ import ru.cproject.vesnaandroid.adapters.MiniStocksAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.helpers.TabBar;
-import ru.cproject.vesnaandroid.helpers.TagsViewHelper;
+import ru.cproject.vesnaandroid.helpers.ViewCreatorHelper;
+import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
 
 /**
@@ -62,7 +66,7 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
     private ImageView logo;
     private TextView name;
     private LinearLayout complements;
-    private LinearLayout categoriesView;
+    private TextView categoriesView;
 
     private TextView[] tabs;
     private View[] tabViews;
@@ -96,7 +100,7 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
         name = (TextView) findViewById(R.id.name);
         name.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         complements = (LinearLayout) findViewById(R.id.complements);
-        categoriesView = (LinearLayout) findViewById(R.id.categories);
+        categoriesView = (TextView) findViewById(R.id.categories);
 
         tabs = new TextView[]{
                 (TextView) findViewById(R.id.description),
@@ -174,11 +178,9 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
         slider = (SliderLayout) findViewById(R.id.slider);
         pagerIndicator = (PagerIndicator) findViewById(R.id.pager_indicator);
 
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        int color = typedValue.data;
-
         getSupportActionBar().setTitle(shop.getName());
+        //TODO Разобраться с type
+        categoriesView.setText(ViewCreatorHelper.spannableText(this, shop.getCategories(), "", color));
 
         Picasso
                 .with(this)
@@ -232,13 +234,6 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
             }
         }
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TagsViewHelper.fillTagsView(categoriesView, shop.getCategories());
-
-            }
-        });
 
 
         pagerIndicator.setIndicatorStyleResource(R.drawable.pager_indicator_active, R.drawable.pager_indicator_inactive);

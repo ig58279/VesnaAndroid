@@ -166,7 +166,6 @@ public class SingleStockActivity extends ProtoSingleActivity {
 
         View shopView = ViewCreatorHelper.createShopCard(this, content, stock.getShop(), color);
 
-
         layouts = new View[]{
                 stockView,
                 mapView,

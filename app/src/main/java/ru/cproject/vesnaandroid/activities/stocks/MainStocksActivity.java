@@ -60,6 +60,7 @@ import static android.R.attr.defaultValue;
 import static android.R.attr.mode;
 import static android.R.attr.onClick;
 import static android.R.attr.showDefault;
+import static android.app.Activity.RESULT_CANCELED;
 import static ru.cproject.vesnaandroid.R.color.colorTextGray;
 import static ru.cproject.vesnaandroid.R.id.sort_image;
 import static ru.cproject.vesnaandroid.R.id.sort_text;
@@ -73,7 +74,7 @@ import static ru.cproject.vesnaandroid.R.layout.activity_main;
 public class MainStocksActivity extends ProtoMainActivity implements RetryInterface {
     public static final String TAG = MainStocksActivity.class.getSimpleName();
 
-    private static final int LIMIT = 1;
+    private static final int LIMIT = 20;
 
     private String[] test = {"По умолчанию", "По алфавиту (а-я)", "По алфавиту (я-а)", "Сначала эксклюзивные"};
 

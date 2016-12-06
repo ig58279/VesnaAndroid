@@ -1,5 +1,6 @@
 package ru.cproject.vesnaandroid.obj;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public class Stock {
     private List<String> photos;
     private Shop shop = new Shop();
     private boolean coupon;
+
+    private List<Category> categories = new ArrayList<>();
 
     public Stock() {
     }
@@ -106,5 +109,13 @@ public class Stock {
 
     public void setPhotos(List<String> photos) {
         this.photos = photos;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

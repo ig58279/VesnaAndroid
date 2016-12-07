@@ -22,6 +22,8 @@ import ru.cproject.vesnaandroid.obj.mall.Function;
 import ru.cproject.vesnaandroid.obj.mall.Link;
 import ru.cproject.vesnaandroid.obj.mall.MallInfo;
 import ru.cproject.vesnaandroid.obj.mall.ShopMode;
+import ru.cproject.vesnaandroid.obj.map.MapData;
+import ru.cproject.vesnaandroid.obj.map.Vertex;
 import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
 import ru.cproject.vesnaandroid.obj.responses.MallResponse;
 
@@ -549,6 +551,29 @@ public class ResponseParser {
             }
         }
         return searches;
+    }
+
+    public static MapData parseMapInfo(String json) {
+        MapData mapData = new MapData();
+        JsonParser parser = new JsonParser();
+        JsonObject response = parser.parse(json).getAsJsonObject();
+
+        String vertexJson = "vertex";
+        if (response.has(vertexJson) && !response.get(vertexJson).isJsonNull()) {
+            List<Vertex> vertexList = new ArrayList<>();
+            JsonArray vertexArray = response.get(vertexJson).getAsJsonArray();
+            for (JsonElement e : vertexArray) {
+                Vertex vertex = new Vertex();
+                JsonObject vertexInfo = e.getAsJsonObject();
+                vertex.setX(vertexInfo.get("place").getAsJsonArray().get(0).getAsFloat());
+                vertex.setY(vertexInfo.get("place").getAsJsonArray().get(1).getAsFloat());
+                // TODO парсинг подробный инфо о вертексе
+            }
+            mapData.setVertexList(vertexList);
+        }
+
+        // TODO остальную часть парсера
+        return mapData;
     }
 
 }

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoSingleActivity;
+import ru.cproject.vesnaandroid.adapters.FilmsAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.TabBar;
 import ru.cproject.vesnaandroid.obj.Film;
@@ -51,6 +53,11 @@ public class SingleFilmActivity extends ProtoSingleActivity {
 
     private View shadow;
     private View background;
+
+    private ViewGroup progress;
+    private ViewGroup errorMessage;
+        private Button retry;
+    private ViewGroup contentView;
 
     private ImageView poster;
     private TextView title;
@@ -90,6 +97,11 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         shadow.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
         background.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
+        progress = (ViewGroup) findViewById(R.id.progress);
+        errorMessage = (ViewGroup) findViewById(R.id.error_message);
+        retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
+        contentView = (ViewGroup) findViewById(R.id.content_view); //TODO сделать фон синим
 
         poster = (ImageView) findViewById(R.id.poster);
         title = (TextView) findViewById(R.id.title);
@@ -106,8 +118,15 @@ public class SingleFilmActivity extends ProtoSingleActivity {
 
         content = (ViewGroup) findViewById(R.id.content_tabs);
 
-
-
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorMessage.setVisibility(View.GONE);
+                contentView.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                loadFilm();
+            }
+        });
 
         loadFilm();
     }
@@ -147,6 +166,9 @@ public class SingleFilmActivity extends ProtoSingleActivity {
     private void onFailure(@Nullable String responseString) {
         if (responseString != null)
             Log.e(TAG, responseString);
+        errorMessage.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
     }
 
     private void showInfo() {
@@ -158,36 +180,36 @@ public class SingleFilmActivity extends ProtoSingleActivity {
 
         pagerIndicator.setIndicatorStyleResource(R.drawable.pager_indicator_active, R.drawable.pager_indicator_inactive);
         slider.setCustomIndicator(pagerIndicator);
+        if (film.getPhotos() != null) {
+            for (int i = 0; i < film.getPhotos().size(); i++) {
+                DefaultSliderView slide = new DefaultSliderView(this);
+                slide
+                        .image(ServerApi.getImgUrl(film.getPhotos().get(i), false))
+                        .setScaleType(BaseSliderView.ScaleType.CenterInside);
 
-        for (int i = 0; i < film.getPhotos().size(); i++) {
-            DefaultSliderView slide = new DefaultSliderView(this);
-            slide
-                    .empty(R.drawable.ic_big_placeholder)
-                    .image(film.getPhotos().get(i).getSmall())
-                    .setScaleType(BaseSliderView.ScaleType.CenterInside);
+                slider.addSlider(slide);
+            }
+            if (film.getPhotos().size() < 2) {
+                pagerIndicator.setVisibility(View.GONE);
 
-            slider.addSlider(slide);
+                slider.stopAutoCycle();
+                slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
+            }
         }
-        if (film.getPhotos().size() < 2) {
-            pagerIndicator.setVisibility(View.GONE);
-
-            slider.stopAutoCycle();
-            slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
-        }
-
 
         float dpi = getResources().getDisplayMetrics().density;
         Picasso
                 .with(this)
-                .load(film.getPoster())
+                .load(ServerApi.getImgUrl(film.getPoster(), true))
                 .fit()
                 .centerCrop()
                 .transform(new RoundedCornersTransformation((int)(8*dpi), 0))
                 .into(poster);
 
         title.setText(film.getName());
+
         age.setText(film.getAge() + "+");
-        if (film.getGenre().size() != 0) {
+        if (film.getGenre() != null && film.getGenre().size() != 0) {
             String genre = film.getGenre().get(0);
             for (int i = 1; i < film.getGenre().size(); i++)
                 genre += ", " + film.getGenre().get(i);
@@ -195,7 +217,7 @@ public class SingleFilmActivity extends ProtoSingleActivity {
             this.genre.setText(genre);
         }
 
-        if (film.getCountry().size() != 0) {
+        if (film.getCountry() != null && film.getCountry().size() != 0) {
             String country = film.getCountry().get(0);
             for (int i = 1; i < film.getCountry().size(); i++)
                 country += ", " + film.getCountry().get(i);
@@ -203,42 +225,52 @@ public class SingleFilmActivity extends ProtoSingleActivity {
             this.country.setText(country);
         }
 
+        if (film.getSeanse() != null && film.getSeanse().size() != 0) {
+            String seanse = film.getSeanse().get(0);
+            for (int i = 1; i < film.getSeanse().size(); i++)
+                seanse += "    " + film.getSeanse().get(i);
+
+            this.seanseTable.setText(seanse);
+        }
         rating.setText(film.getRating() + " на КиноПоиске");
-        if (film.getRating() >= 7f)
-            rating.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorHighRating), PorterDuff.Mode.SRC_IN);
-        else if (film.getRating() >= 5f)
-            rating.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorMiddleRating), PorterDuff.Mode.SRC_IN);
-        else
-            rating.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorLowRating), PorterDuff.Mode.SRC_IN);
+        if (film.getRating() != null && film.getRating().length() != 0) {
+            if (Double.valueOf(film.getRating()) >= 7f)
+                rating.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorHighRating), PorterDuff.Mode.SRC_IN);
+            else if (Double.valueOf(film.getRating()) >= 5f)
+                rating.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorMiddleRating), PorterDuff.Mode.SRC_IN);
+            else
+                rating.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorLowRating), PorterDuff.Mode.SRC_IN);
+        } else
+            rating.setVisibility(View.GONE);
 
 
         TypedValue typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         int color = typedValue.data;
-        String seanses = "";
-        boolean span = false;
-        int spanFuture = 0;
-        Date date = new Date();
-        for (int i = 0; i < film.getSeanse().size(); i++) {
-            long seanse = film.getSeanse().get(i);
-            Calendar calendar = Calendar.getInstance();
-            if (new Date(seanse).after(date) && !span) {
-                spanFuture = seanses.length() - 1;
-                span = true;
-            }
-            calendar.setTimeInMillis(seanse);
-            String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
-            if (hour.length() == 1)
-                hour = "0" + hour;
-            String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-            if (minute.length() == 1)
-                minute = "0" + minute;
-            seanses += hour + ":" + minute + "   ";
-        }
-        SpannableString string = new SpannableString(seanses);
-        if (span)
-            string.setSpan(new ForegroundColorSpan(color), spanFuture, seanses.length(), 0);
-        seanseTable.setText(string);
+//        String seanses = "";
+//        boolean span = false;
+//        int spanFuture = 0;
+//        Date date = new Date();
+//        for (int i = 0; i < film.getSeanse().size(); i++) {
+//            long seanse = film.getSeanse().get(i);
+//            Calendar calendar = Calendar.getInstance();
+//            if (new Date(seanse).after(date) && !span) {
+//                spanFuture = seanses.length() - 1;
+//                span = true;
+//            }
+//            calendar.setTimeInMillis(seanse);
+//            String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+//            if (hour.length() == 1)
+//                hour = "0" + hour;
+//            String minute = String.valueOf(calendar.get(Calendar.MINUTE));
+//            if (minute.length() == 1)
+//                minute = "0" + minute;
+//            seanses += hour + ":" + minute + "   ";
+//        }
+//        SpannableString string = new SpannableString(seanses);
+//        if (span)
+//            string.setSpan(new ForegroundColorSpan(color), spanFuture, seanses.length(), 0);
+//        seanseTable.setText(string);
 
         View filmInfo = getLayoutInflater().inflate(R.layout.tab_film_info, content, false);
         ViewGroup director = (ViewGroup) filmInfo.findViewById(R.id.director);
@@ -278,9 +310,9 @@ public class SingleFilmActivity extends ProtoSingleActivity {
             actors.setVisibility(View.GONE);
 
         ViewGroup durationView = (ViewGroup) filmInfo.findViewById(R.id.length);
-        if (film.getDuration() != 0) {
+        if (film.getDuration() != null && film.getDuration().length() != 0) {
             TextView duration = (TextView) filmInfo.findViewById(R.id.length_view);
-            duration.setText( (film.getDuration() / 60)  + " ч " + film.getDuration() % 60 + " мин");
+            duration.setText(film.getDuration());
         } else
             durationView.setVisibility(View.GONE);
 
@@ -294,5 +326,9 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         };
 
         tabBar = new TabBar(tabs, tabsView, content, color, ContextCompat.getColor(this, R.color.colorTextGray));
+
+        progress.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
+        contentView.setVisibility(View.VISIBLE);
     }
 }

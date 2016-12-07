@@ -2,6 +2,7 @@ package ru.cproject.vesnaandroid.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -15,12 +16,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import ru.cproject.vesnaandroid.R;
+import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.films.SingleFilmActivity;
+import ru.cproject.vesnaandroid.adapters.holders.ErrorViewHolder;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Film;
 
 /**
@@ -42,7 +48,7 @@ public class FilmsAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new FilmViewHolder(inflater.inflate(R.layout.item_film, parent, false));
+        return new FilmsAdapter.FilmViewHolder(inflater.inflate(R.layout.item_film, parent, false));
     }
 
     @Override
@@ -60,58 +66,69 @@ public class FilmsAdapter extends RecyclerView.Adapter {
         Log.e("poster", film.getPoster());
         Picasso
                 .with(context)
-                .load(film.getPoster())
+                .load(ServerApi.getImgUrl(film.getPoster(), true))
                 .placeholder(R.drawable.ic_small_placeholder)
                 .fit()
                 .centerCrop()
                 .into(((FilmViewHolder) holder).poster);
 
         ((FilmViewHolder) holder).rating.setText(String.valueOf(film.getRating()));
-        if (film.getRating() >= 7f)
-            ((FilmViewHolder) holder).rating.setBackgroundColor(ContextCompat.getColor(context, R.color.colorHighRating));
-        else if (film.getRating() >= 5f)
-            ((FilmViewHolder) holder).rating.setBackgroundColor(ContextCompat.getColor(context, R.color.colorMiddleRating));
-        else
-            ((FilmViewHolder) holder).rating.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLowRating));
+        if (film.getRating() != null && film.getRating().length() != 0) {
+            if (Double.valueOf(film.getRating()) >= 7f)
+                ((FilmViewHolder) holder).rating.setBackgroundColor(ContextCompat.getColor(context, R.color.colorHighRating));
+            else if (Double.valueOf(film.getRating()) >= 5f)
+                ((FilmViewHolder) holder).rating.setBackgroundColor(ContextCompat.getColor(context, R.color.colorMiddleRating));
+            else
+                ((FilmViewHolder) holder).rating.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLowRating));
+        } else
+            ((FilmViewHolder) holder).rating.setVisibility(View.GONE);
 
         ((FilmViewHolder) holder).title.setText(film.getName() + ", " + film.getAge() + "+");
-        if (film.getGenre().size() != 0) {
+
+        if (film.getGenre() != null && film.getGenre().size() != 0) {
             String genre = film.getGenre().get(0);
             for (int i = 1; i < film.getGenre().size(); i++)
                 genre += ", " + film.getGenre().get(i);
             ((FilmViewHolder) holder).genre.setText(genre);
         }
-        if (film.getCountry().size() != 0) {
+        if (film.getCountry() != null && film.getCountry().size() != 0) {
             String country = film.getCountry().get(0);
             for (int i = 1; i < film.getCountry().size(); i++)
                 country += ", " + film.getCountry().get(i);
             ((FilmViewHolder) holder).country.setText(country);
         }
-        String seanses = "";
-        boolean span = false;
-        int spanFuture = 0;
-        Date date = new Date();
-        for (int i = 0; i < film.getSeanse().size(); i++) {
-            long seanse = film.getSeanse().get(i);
-            Calendar calendar = Calendar.getInstance();
-            if (new Date(seanse).after(date) && !span) {
-                spanFuture = seanses.length() - 1;
-                span = true;
-            }
-            calendar.setTimeInMillis(seanse);
-            String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
-            if (hour.length() == 1)
-                hour = "0" + hour;
-            String minute = String.valueOf(calendar.get(Calendar.MINUTE));
-            if (minute.length() == 1)
-                minute = "0" + minute;
-            seanses += hour + ":" + minute + "   ";
+        if (film.getSeanse() != null && film.getSeanse().size() != 0) {
+            String seanse = film.getSeanse().get(0);
+            for (int i = 1; i < film.getSeanse().size(); i++)
+                seanse += "    " + film.getSeanse().get(i);
+            ((FilmViewHolder) holder).seanseTable.setText(seanse);
         }
-        SpannableString string = new SpannableString(seanses);
-        if (span)
-            string.setSpan(new ForegroundColorSpan(futureColor), spanFuture, seanses.length(), 0);
-        ((FilmViewHolder) holder).seanseTable.setText(string);
 
+//        String seanses = "";
+//        boolean span = false;
+//        int spanFuture = 0;
+//        Date date = new Date();
+//        for (int i = 0; i < film.getSeanse().size(); i++) {
+//            String seanse = film.getSeanse().get(i);
+//            Calendar calendar = Calendar.getInstance();
+//            if (new Date(seanse).after(date) && !span) {
+//                spanFuture = seanses.length() - 1;
+//                span = true;
+//            }
+//            calendar.setTimeInMillis(seanse);
+//            String hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+//            if (hour.length() == 1)
+//                hour = "0" + hour;
+//            String minute = String.valueOf(calendar.get(Calendar.MINUTE));
+//            if (minute.length() == 1)
+//                minute = "0" + minute;
+//            seanses += hour + ":" + minute + "   ";
+//        }
+//        SpannableString string = new SpannableString(seanses);
+//        if (span)
+//            string.setSpan(new ForegroundColorSpan(futureColor), spanFuture, seanses.length(), 0);
+//        ((FilmViewHolder) holder).seanseTable.setText(string);
+//
     }
 
     @Override
@@ -126,6 +143,7 @@ public class FilmsAdapter extends RecyclerView.Adapter {
         TextView rating;
         TextView title;
         TextView genre;
+        TextView age;
         TextView country;
         TextView seanseTable;
 
@@ -138,6 +156,7 @@ public class FilmsAdapter extends RecyclerView.Adapter {
             rating = (TextView) itemView.findViewById(R.id.rating);
             title = (TextView) itemView.findViewById(R.id.title);
             genre = (TextView) itemView.findViewById(R.id.genre);
+            age = (TextView) itemView.findViewById(R.id.age);
             country = (TextView) itemView.findViewById(R.id.country);
             seanseTable = (TextView) itemView.findViewById(R.id.seanse_table);
         }

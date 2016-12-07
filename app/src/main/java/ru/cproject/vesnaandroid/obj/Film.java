@@ -10,19 +10,19 @@ public class Film {
 
     private int id;
     private String name;
-    private int age;
+    private String age;
     private List<String> genre;
     private List<String> country;
-    private List<Long> seanse;
-    private float rating;
+    private List<String> seanse;
+    private String rating;
     private String poster;
 
     private String content;
-    private int duration;
+    private String duration;
     private List<String> cast;
     private List<String> director;
     private List<String> producer;
-    private List<Photo> photos;
+    private List<String> photos;
     private String trailer;
 
 
@@ -42,6 +42,14 @@ public class Film {
         this.name = name;
     }
 
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
     public List<String> getGenre() {
         return genre;
     }
@@ -58,19 +66,19 @@ public class Film {
         this.country = country;
     }
 
-    public List<Long> getSeanse() {
+    public List<String> getSeanse() {
         return seanse;
     }
 
-    public void setSeanse(List<Long> seanse) {
+    public void setSeanse(List<String> seanse) {
         this.seanse = seanse;
     }
 
-    public float getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 
@@ -82,14 +90,6 @@ public class Film {
         this.poster = poster;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public String getContent() {
         return content;
     }
@@ -98,11 +98,11 @@ public class Film {
         this.content = content;
     }
 
-    public int getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
@@ -130,11 +130,11 @@ public class Film {
         this.producer = producer;
     }
 
-    public List<Photo> getPhotos() {
+    public List<String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
 
@@ -144,27 +144,5 @@ public class Film {
 
     public void setTrailer(String trailer) {
         this.trailer = trailer;
-    }
-
-    public static class Photo {
-
-        private String small;
-        private String original;
-
-        public String getSmall() {
-            return small;
-        }
-
-        public void setSmall(String small) {
-            this.small = small;
-        }
-
-        public String getOriginal() {
-            return original;
-        }
-
-        public void setOriginal(String original) {
-            this.original = original;
-        }
     }
 }

@@ -2,16 +2,19 @@ package ru.cproject.vesnaandroid.activities.films;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -28,7 +31,9 @@ import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.FilmsAdapter;
+import ru.cproject.vesnaandroid.helpers.EndlessRecyclerOnScrollListener;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
+import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Film;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
@@ -39,6 +44,11 @@ import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
 
 public class MainFilmsActivity extends ProtoMainActivity {
     private static final String TAG = "MainFilmsActivity";
+
+    private ViewGroup loading;
+    private ViewGroup errorMessage;
+    private Button retry;
+    private ViewGroup content;
 
     private ViewGroup about;
 
@@ -61,10 +71,27 @@ public class MainFilmsActivity extends ProtoMainActivity {
 
         about = (ViewGroup) findViewById(R.id.about);
         filmsView = (RecyclerView) findViewById(R.id.films_view);
-        adapter = new FilmsAdapter(this, filmList, color);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        adapter = new FilmsAdapter(this, filmList, ContextCompat.getColor(this, R.color.colorPrimaryCinema));
         filmsView.setAdapter(adapter);
-        filmsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        filmsView.setLayoutManager(linearLayoutManager);
+        filmsView.setHasFixedSize(false);
 
+        loading = (ViewGroup) findViewById(R.id.progress);
+        errorMessage = (ViewGroup) findViewById(R.id.error_message);
+        retry = (Button) findViewById(R.id.retry);
+        retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
+        content = (ViewGroup) findViewById(R.id.content);
+
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorMessage.setVisibility(View.GONE);
+                content.setVisibility(View.GONE);
+                loading.setVisibility(View.VISIBLE);
+                loadFilms();
+            }
+        });
 
         loadFilms();
     }
@@ -96,12 +123,12 @@ public class MainFilmsActivity extends ProtoMainActivity {
                         FilmsResponse response = ResponseParser.parseFilms(responseString);
                         cinema = response.getCinema();
                         List<Film> films = response.getItems();
-                        int size = filmList.size();
                         cinema = response.getCinema();
-                        for (int i = 0; i < films.size(); i++) {
-                            filmList.add(films.get(i));
-                        }
-                        adapter.notifyItemRangeInserted(size, films.size());
+                        for (Film f : films) filmList.add(f);
+                        adapter.notifyDataSetChanged();
+
+                        loading.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
 
                         about.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -124,5 +151,10 @@ public class MainFilmsActivity extends ProtoMainActivity {
     private void onFailure(@Nullable String responseString) {
         if (responseString != null)
             Log.e(TAG, responseString);
+
+        loading.setVisibility(View.GONE);
+        content.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.VISIBLE);
     }
+
 }

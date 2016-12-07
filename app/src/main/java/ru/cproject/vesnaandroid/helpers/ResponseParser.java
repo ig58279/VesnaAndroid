@@ -32,6 +32,10 @@ import static android.R.attr.mode;
 import static ru.cproject.vesnaandroid.R.id.complements;
 import static ru.cproject.vesnaandroid.R.id.shop;
 
+import static ru.cproject.vesnaandroid.R.id.genre;
+import static ru.cproject.vesnaandroid.R.id.shop;
+import static ru.cproject.vesnaandroid.R.id.stock;
+
 /**
  * Created by Bitizen on 31.10.16.
  */
@@ -207,20 +211,16 @@ public class ResponseParser {
         JsonParser parser = new JsonParser();
         JsonObject responseJson = parser.parse(json).getAsJsonObject();
 
-        String ITEMS = "items";
-        if (responseJson.has(ITEMS) && !responseJson.get(ITEMS).isJsonNull()) {
-            List<Film> films = new ArrayList<>();
-            JsonArray items = responseJson.get(ITEMS).getAsJsonArray();
-
-            for (int i = 0; i < items.size(); i++)
-                films.add(parseFilm(items.get(i).getAsJsonObject().toString()));
-
-            response.setItems(films);
+        String films = "films";
+        if (responseJson.has(films) && !responseJson.get(films).isJsonNull()) {
+            JsonArray filmsArray = responseJson.get(films).getAsJsonArray();
+            List<Film> filmList = new ArrayList<>();
+            for (JsonElement e : filmsArray)
+                filmList.add(parseFilm(e.toString()));
+            response.setItems(filmList);
         }
 
-        String CINEMA = "cinema";
-        if (responseJson.has(CINEMA) && !responseJson.get(CINEMA).isJsonNull())
-            response.setCinema(parseShop(responseJson.get(CINEMA).getAsJsonObject().toString()));
+        response.setCinema(parseShop(json));
 
         return response;
     }
@@ -234,122 +234,85 @@ public class ResponseParser {
         if (filmJson.has(ID) && !filmJson.get(ID).isJsonNull())
             film.setId(filmJson.get(ID).getAsInt());
 
-        String NAME = "name";
-        if (filmJson.has(NAME) && !filmJson.get(NAME).isJsonNull())
-            film.setName(filmJson.get(NAME).getAsString());
-
-        String CONTENT = "content";
-        if (filmJson.has(CONTENT) && !filmJson.get(CONTENT).isJsonNull())
-            film.setContent(filmJson.get(CONTENT).getAsString());
-
-        String AGE = "age";
-        if (filmJson.has(AGE) && !filmJson.get(AGE).isJsonNull())
-            film.setAge(filmJson.get(AGE).getAsInt());
-
-        String CAST = "cast";
-        if (filmJson.has(CAST) && !filmJson.get(CAST).isJsonNull()) {
-            List<String> cast = new ArrayList<>();
-            JsonArray castJson = filmJson.get(CAST).getAsJsonArray();
-
-            for (int i = 0; i < castJson.size(); i++)
-                cast.add(castJson.get(i).getAsString());
-
-            film.setCast(cast);
+        String img = "img";
+        if (filmJson.has(img) && !filmJson.get(img).isJsonNull())
+            film.setPoster(filmJson.get(img).getAsString());
+        else {
+            img = "logo";
+            if (filmJson.has(img) && !filmJson.get(img).isJsonNull())
+                film.setPoster(filmJson.get(img).getAsString());
         }
 
-        String DIRECTOR = "director";
-        if (filmJson.has(DIRECTOR) && !filmJson.get(DIRECTOR).isJsonNull()) {
-            List<String> director = new ArrayList<>();
-            JsonArray directorJson = filmJson.get(DIRECTOR).getAsJsonArray();
-
-            for (int i = 0; i < directorJson.size(); i++)
-                director.add(directorJson.get(i).getAsString());
-
-            film.setDirector(director);
+        String content = "desc";
+        if (filmJson.has(content) && !filmJson.get(content).isJsonNull()) {
+            film.setContent(filmJson.get(content).getAsString());
         }
 
-        String PRODUCER = "producer";
-        if (filmJson.has(PRODUCER) && !filmJson.get(PRODUCER).isJsonNull()) {
-            List<String> producer = new ArrayList<>();
-            JsonArray producerJson = filmJson.get(PRODUCER).getAsJsonArray();
-
-            for (int i = 0; i < producerJson.size(); i++)
-                producer.add(producerJson.get(i).getAsString());
-
-            film.setProducer(producer);
-        }
-
-        String GENRES = "genres";
-        if (filmJson.has(GENRES) && !filmJson.get(GENRES).isJsonNull()) {
-            List<String> genres = new ArrayList<>();
-            JsonArray genresJson = filmJson.get(GENRES).getAsJsonArray();
-
-            for (int i = 0; i < genresJson.size(); i++)
-                genres.add(genresJson.get(i).getAsString());
-
-            film.setGenre(genres);
-        }
-
-        String COUNTRY = "country";
-        if (filmJson.has(COUNTRY) && !filmJson.get(COUNTRY).isJsonNull()) {
-            List<String> country = new ArrayList<>();
-            JsonArray countryJson = filmJson.get(COUNTRY).getAsJsonArray();
-
-            for (int i = 0; i < countryJson.size(); i++)
-                country.add(countryJson.get(i).getAsString());
-
-            film.setCountry(country);
-        }
-
-        String SEANSE = "seanse";
-        if (filmJson.has(SEANSE) && !filmJson.get(SEANSE).isJsonNull()) {
-            List<Long> seanse = new ArrayList<>();
-            JsonArray seanseJson = filmJson.get(SEANSE).getAsJsonArray();
-
-            for (int i = 0; i < seanseJson.size(); i++)
-                seanse.add(seanseJson.get(i).getAsLong());
-
-            film.setSeanse(seanse);
-        }
-
-        String RATING = "rating";
-        if (filmJson.has(RATING) && !filmJson.get(RATING).isJsonNull())
-            film.setRating(filmJson.get(RATING).getAsFloat());
-
-        String POSTER = "poster";
-        if (filmJson.has(POSTER) && !filmJson.get(POSTER).isJsonNull())
-            film.setPoster(filmJson.get(POSTER).getAsString());
-
-        String PHOTOS = "photos";
-        if (filmJson.has(PHOTOS) && !filmJson.get(PHOTOS).isJsonNull()) {
-            JsonArray photosJson = filmJson.get(PHOTOS).getAsJsonArray();
-            List<Film.Photo> photos = new ArrayList<>();
-            for (int i = 0; i < photosJson.size(); i++) {
-                Film.Photo photo = new Film.Photo();
-                JsonObject photoJson = photosJson.get(i).getAsJsonObject();
-
-                String SMALL = "small";
-                if (photoJson.has(SMALL) && !photoJson.get(SMALL).isJsonNull())
-                    photo.setSmall(photoJson.get(SMALL).getAsString());
-
-                String ORIGINAL = "small";
-                if (photoJson.has(ORIGINAL) && !photoJson.get(ORIGINAL).isJsonNull())
-                    photo.setOriginal(photoJson.get(ORIGINAL).getAsString());
-
-                photos.add(photo);
-            }
+        String photosJson = "photos";
+        if (filmJson.has(photosJson) && !filmJson.get(photosJson).isJsonNull()) {
+            List<String> photos = new ArrayList<>();
+            JsonArray photosArray = filmJson.get(photosJson).getAsJsonArray();
+            for (JsonElement e : photosArray) photos.add(e.getAsString());
             film.setPhotos(photos);
         }
 
-
-        String TRAILER = "trailer";
-        if (filmJson.has(TRAILER) && !filmJson.get(TRAILER).isJsonNull())
-            film.setTrailer(filmJson.get(TRAILER).getAsString());
-
-        String DURATION = "duration";
-        if (filmJson.has(DURATION) && !filmJson.get(DURATION).isJsonNull())
-            film.setDuration(filmJson.get(DURATION).getAsInt());
-
+        String NAME = "name";
+        if (filmJson.has(NAME) && !filmJson.get(NAME).isJsonNull())
+            film.setName(filmJson.get(NAME).getAsString());
+        String attrsJson = "attrs";
+        if (filmJson.has(attrsJson) && !filmJson.get(attrsJson).isJsonNull()) {
+            JsonObject attributes = filmJson.get(attrsJson).getAsJsonObject();
+            Set<Map.Entry<String, JsonElement>> entries = attributes.entrySet();
+            for (Map.Entry<String, JsonElement> e : entries) {
+                switch (e.getKey()) {
+                    case "age":
+                        film.setAge(e.getValue().getAsString());
+                        break;
+                    case "duration":
+                        film.setDuration(e.getValue().getAsString());
+                        break;
+                    case "genre":
+                        List<String> genresList = new ArrayList<>();
+                        JsonArray genresArray = attributes.get("genre").getAsJsonArray();
+                        for (JsonElement j : genresArray) genresList.add(j.getAsString());
+                        film.setGenre(genresList);
+                        break;
+                    case "country":
+                        List<String> countriesList = new ArrayList<>();
+                        JsonArray countriesArray = attributes.get("country").getAsJsonArray();
+                        for (JsonElement j : countriesArray) countriesList.add(j.getAsString());
+                        film.setCountry(countriesList);
+                        break;
+                    case "seance":
+                        List<String> seancesList = new ArrayList<>();
+                        JsonArray seancesArray = attributes.get("seance").getAsJsonArray();
+                        for (JsonElement j : seancesArray) seancesList.add(j.getAsString());
+                        film.setSeanse(seancesList);
+                        break;
+                    case "rating":
+                        film.setRating(e.getValue().getAsString());
+                        break;
+                    case "actor":
+                        List<String> acrtorsList = new ArrayList<>();
+                        JsonArray actorsArray = attributes.get("actor").getAsJsonArray();
+                        for (JsonElement j : actorsArray) acrtorsList.add(j.getAsString());
+                        film.setCast(acrtorsList);
+                        break;
+                    case "director":
+                        List<String> directorsList = new ArrayList<>();
+                        JsonArray directorsArray = attributes.get("director").getAsJsonArray();
+                        for (JsonElement j : directorsArray) directorsList.add(j.getAsString());
+                        film.setDirector(directorsList);
+                        break;
+                    case "producer":
+                        List<String> producersList = new ArrayList<>();
+                        JsonArray producersArray = attributes.get("producer").getAsJsonArray();
+                        for (JsonElement j : producersArray) producersList.add(j.getAsString());
+                        film.setProducer(producersList);
+                        break;
+                }
+            }
+        }
         return film;
     }
 

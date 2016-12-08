@@ -84,7 +84,7 @@ public class EventsAdapter extends RecyclerView.Adapter {
                     .load(ServerApi.getImgUrl(event.getImage(), true))
                     .placeholder(R.drawable.ic_big_placeholder)
                     .fit()
-                    .centerCrop()
+                    .centerInside()
                     .transform(new RoundedCornersTransformation((int) (4 * dpi), 0, RoundedCornersTransformation.CornerType.TOP))
                     .into(((EventViewHolder) holder).image);
 

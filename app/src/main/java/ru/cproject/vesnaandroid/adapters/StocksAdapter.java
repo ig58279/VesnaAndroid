@@ -86,7 +86,7 @@ public class StocksAdapter extends RecyclerView.Adapter {
                     .load(ServerApi.getImgUrl(stock.getImage(), false))
                     .placeholder(R.drawable.ic_big_placeholder)
                     .fit()
-                    .centerCrop()
+                    .centerInside()
                     .transform(new RoundedCornersTransformation((int)(4*dpi),0, RoundedCornersTransformation.CornerType.TOP))
                     .into(((StockViewHolder) holder).image);
 

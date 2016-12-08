@@ -64,14 +64,14 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
             decoderview.setOnQRCodeReadListener(this);
             context = this;
             decoderview.setBackCamera();
+            circleButton = (ImageView) findViewById(R.id.circle);
+            circleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
         }
-        circleButton = (ImageView) findViewById(R.id.circle);
-        circleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     @Override
@@ -182,6 +182,13 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
                     decoderview.setOnQRCodeReadListener(this);
                     context = this;
                     decoderview.setBackCamera();
+                    circleButton = (ImageView) findViewById(R.id.circle);
+                    circleButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finish();
+                        }
+                    });
                     onResume();
                 } else {
                     finish();

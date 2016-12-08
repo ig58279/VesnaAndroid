@@ -27,14 +27,8 @@ import ru.cproject.vesnaandroid.activities.MainActivity;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    private EditText phoneField;
-    private EditText passwordField;
-
-    private TextView forgotPassword;
-
     private ImageView vk;
     private ImageView facebook;
-    private Button loginButton;
     private TextView skip;
     private Button register;
 
@@ -43,21 +37,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        phoneField = (EditText) findViewById(R.id.phone_field);
-        passwordField = (EditText) findViewById(R.id.password_field);
-        forgotPassword = (TextView) findViewById(R.id.forgot_password);
         vk = (ImageView) findViewById(R.id.vk);
         facebook = (ImageView) findViewById(R.id.facebook);
-        loginButton = (Button) findViewById(R.id.login_button);
         skip = (TextView) findViewById(R.id.skip);
         register = (Button) findViewById(R.id.register);
-
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 03.11.16 востановление пароля
-            }
-        });
 
         vk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,13 +53,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: 03.11.16 вход по фейсбуку
-            }
-        });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login();
             }
         });
 
@@ -102,8 +78,6 @@ public class LoginActivity extends AppCompatActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("type", "phone");
-        params.put("phone", phoneField.getText());
-        params.put("pass", passwordField.getText());
 
         client.get(ServerApi.AUTH, params, new TextHttpResponseHandler() {
             @Override

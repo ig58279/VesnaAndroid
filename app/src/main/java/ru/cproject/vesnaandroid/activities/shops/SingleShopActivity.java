@@ -142,6 +142,7 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
                 params.put("id", id);
+                params.put("types", "stocks");
                 // TODO token
                 Log.e(TAG, ServerApi.GET_SHOP);
                 client.get(ServerApi.GET_SHOP, params, new TextHttpResponseHandler() {

@@ -21,13 +21,14 @@ public class MiniStocksAdapter extends StocksAdapter {
 
     public MiniStocksAdapter(Context context, List<Stock> stocksList, int color, RetryInterface retryInterface) {
         super(context, stocksList, color, retryInterface);
+        state = DEFAULT;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater lf = LayoutInflater.from(parent.getContext());
         if (viewType == STOCKS_ITEM)
-            return new StockViewHolder(lf.inflate(R.layout.item_stock, parent, false));
+            return new StockViewHolder(lf.inflate(R.layout.item_mini_stock, parent, false));
         else if (viewType == LOADING_ITEM)
             return new StockViewHolder(lf.inflate(R.layout.item_loading, parent, false));
         else if (viewType == ERROR_ITEM)

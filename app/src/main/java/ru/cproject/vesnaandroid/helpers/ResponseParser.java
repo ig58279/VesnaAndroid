@@ -191,6 +191,14 @@ public class ResponseParser {
         if (response.has(likeJson) && !response.get(likeJson).isJsonNull())
             shop.setLike(response.get(likeJson).getAsBoolean());
 
+        String itemsJson = "items";
+        if (response.has(itemsJson) && !response.get(itemsJson).isJsonNull()) {
+            List<Stock> stockList = new ArrayList<>();
+            JsonArray stockArray = response.get(itemsJson).getAsJsonArray();
+            for (JsonElement e : stockArray)
+                stockList.add(parseStock(e.toString()));
+            shop.setStocks(stockList);
+        }
 
         return shop;
     }
@@ -221,6 +229,17 @@ public class ResponseParser {
         }
 
         response.setCinema(parseShop(json));
+
+        String stocksJson = "stocks";
+        if (responseJson.has(stocksJson) && !responseJson.get(stocksJson).isJsonNull()) {
+            List<Stock> stocksList = new ArrayList<>();
+            JsonArray stocksArray = responseJson.get(stocksJson).getAsJsonArray();
+            for (JsonElement e : stocksArray)
+                stocksList.add(parseStock(e.toString()));
+            Shop shop = response.getCinema();
+            shop.setStocks(stocksList);
+            response.setCinema(shop);
+        }
 
         return response;
     }

@@ -35,7 +35,7 @@ public class StocksAdapter extends RecyclerView.Adapter {
     protected final int LOADING_ITEM = 1;
     protected final int ERROR_ITEM = 2;
 
-    private int state = 1;
+    protected int state = 1;
     public static final int DEFAULT = 0;
     public static final int LOADING = 1;
     public static final int ERROR = 2;

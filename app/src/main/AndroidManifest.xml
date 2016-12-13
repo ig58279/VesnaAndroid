@@ -49,7 +49,6 @@
         <activity
             android:name=".activities.events.MainEventsActivity"
             android:launchMode="singleTask"
-
             android:theme="@style/EventsTheme" />
 
         <activity
@@ -63,6 +62,8 @@
         <activity android:name=".activities.login.LoginActivity" />
 
         <activity android:name=".activities.login.RegisterActivity" />
+
+        <activity android:name=".activities.login.RegisterCodeActivity" />
 
         <activity android:name=".activities.categories.FilterActivity" />
 

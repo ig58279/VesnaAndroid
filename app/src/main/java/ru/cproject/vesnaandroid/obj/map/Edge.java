@@ -1,9 +1,11 @@
 package ru.cproject.vesnaandroid.obj.map;
 
+import io.realm.RealmObject;
+
 /**
  * Created by Bitizen on 07.12.16.
  */
-public class Edge {
+public class Edge extends RealmObject {
 
     private int fromId;
     private int toId;

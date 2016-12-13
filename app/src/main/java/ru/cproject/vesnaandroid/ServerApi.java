@@ -18,6 +18,12 @@ public class ServerApi {
      */
     public static final String AUTH = SERVER_ADDRESS + "auth";
 
+    //TODO Убрать тестовую отправку SMS
+    /**
+     * Метод отправки SMS
+     */
+    public static final String SMS = SERVER_ADDRESS + "sms?test";
+
     /**
      * Метод получения информации о торговом центре
      */
@@ -72,4 +78,9 @@ public class ServerApi {
      * Метод для работы с категориям
      */
     public static final String CATS = SERVER_ADDRESS + "cats";
+
+    /**
+     * Метод получения графа и инфо о карте
+     */
+    public static final String ROUTES = SERVER_ADDRESS + "routes";
 }

@@ -12,5 +12,24 @@ public class Settings {
         public static final String FUNCTIONAL = "functional";
         public static final String SHOWS = "shows";
     }
+    public static final String REGISTRATION_INFO = "registrationInfo";
+    public class RegistrationInfo {
+        public static final String PHONE = "phone";
+        public static final String NAME = "name";
+        public static final String SURNAME = "surname";
+        public static final String ID = "id";
+        public static final String ROLE = "role";
+        public static final String PBS = "pbs";
+        public static final String PSS = "pss";
+
+    }
+
+    public static final String MAP_INFO = "mapInfo";
+    public class MapInfo {
+        public static final String VERSION = "version";
+        public static final String WIDTH = "width";
+        public static final String HEIGHT = "height";
+        public static final String STYLE_INFO = "styleInfo";
+    }
 
 }

@@ -1,5 +1,7 @@
 package ru.cproject.vesnaandroid.helpers;
 
+import android.graphics.Color;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,19 +24,12 @@ import ru.cproject.vesnaandroid.obj.mall.Function;
 import ru.cproject.vesnaandroid.obj.mall.Link;
 import ru.cproject.vesnaandroid.obj.mall.MallInfo;
 import ru.cproject.vesnaandroid.obj.mall.ShopMode;
-import ru.cproject.vesnaandroid.obj.map.MapData;
+import ru.cproject.vesnaandroid.obj.map.Edge;
+import ru.cproject.vesnaandroid.obj.map.StyleInfo;
 import ru.cproject.vesnaandroid.obj.map.Vertex;
 import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
 import ru.cproject.vesnaandroid.obj.responses.MallResponse;
-
-import static android.R.attr.category;
-import static android.R.attr.mode;
-import static ru.cproject.vesnaandroid.R.id.complements;
-import static ru.cproject.vesnaandroid.R.id.shop;
-
-import static ru.cproject.vesnaandroid.R.id.genre;
-import static ru.cproject.vesnaandroid.R.id.shop;
-import static ru.cproject.vesnaandroid.R.id.stock;
+import ru.cproject.vesnaandroid.obj.responses.MapResponse;
 
 /**
  * Created by Bitizen on 31.10.16.
@@ -535,27 +530,144 @@ public class ResponseParser {
         return searches;
     }
 
-    public static MapData parseMapInfo(String json) {
-        MapData mapData = new MapData();
+    public static MapResponse parseMapResponse(String json) {
+        MapResponse response = new MapResponse();
         JsonParser parser = new JsonParser();
-        JsonObject response = parser.parse(json).getAsJsonObject();
+        JsonObject routeInfo = parser.parse(json).getAsJsonObject();
 
-        String vertexJson = "vertex";
-        if (response.has(vertexJson) && !response.get(vertexJson).isJsonNull()) {
+        String vertex = "vertex";
+        if (routeInfo.has(vertex) && !routeInfo.get(vertex).isJsonNull()) {
             List<Vertex> vertexList = new ArrayList<>();
-            JsonArray vertexArray = response.get(vertexJson).getAsJsonArray();
-            for (JsonElement e : vertexArray) {
-                Vertex vertex = new Vertex();
-                JsonObject vertexInfo = e.getAsJsonObject();
-                vertex.setX(vertexInfo.get("place").getAsJsonArray().get(0).getAsFloat());
-                vertex.setY(vertexInfo.get("place").getAsJsonArray().get(1).getAsFloat());
-                // TODO парсинг подробный инфо о вертексе
+            JsonArray vertexsArray = routeInfo.get(vertex).getAsJsonArray();
+            for (int i = 0; i < vertexsArray.size(); i++) {
+                JsonObject vertexJson = vertexsArray.get(i).getAsJsonObject();
+                Vertex vertexObj = new Vertex();
+
+                vertexObj.setId(i);
+
+                String place = "place";
+                vertexObj.setX(vertexJson.get(place).getAsJsonArray().get(0).getAsFloat());
+                vertexObj.setY(vertexJson.get(place).getAsJsonArray().get(1).getAsFloat());
+
+                String type = "type";
+                if (vertexJson.has(type) && !vertexJson.get(type).isJsonNull())
+                    vertexObj.setType(vertexJson.get(type).getAsString());
+
+                String route = "route";
+                if (vertexJson.has(route) && !vertexJson.get(route).isJsonNull())
+                    vertexObj.setRouteId(vertexJson.get(route).getAsInt());
+
+                String shop = "shop";
+                if (vertexJson.has(shop) && !vertexJson.get(shop).isJsonNull())
+                    vertexObj.setShopId(vertexJson.get(shop).getAsInt());
+
+                String name = "name";
+                if (vertexJson.has(name) && !vertexJson.get(name).isJsonNull())
+                    vertexObj.setShopName(vertexJson.get(name).getAsString());
+
+                String cats = "cats";
+                if (vertexJson.has(cats) && !vertexJson.get(cats).isJsonNull()) {
+                    JsonArray catsJson = vertexJson.get(cats).getAsJsonArray();
+                    String catsBuf = catsJson.get(0).getAsString();
+                    for (int j = 1; j < catsJson.size(); j++)
+                        catsBuf += "," + catsJson.get(j);
+                    vertexObj.setCats(catsBuf);
+                }
+
+                vertexList.add(vertexObj);
             }
-            mapData.setVertexList(vertexList);
+            response.setVerstexs(vertexList);
         }
 
-        // TODO остальную часть парсера
-        return mapData;
+        String edge = "edges";
+        if (routeInfo.has(edge) && !routeInfo.get(edge).isJsonNull()) {
+            List<Edge> edgeList = new ArrayList<>();
+            JsonArray edgeArray = routeInfo.get(edge).getAsJsonArray();
+            for (JsonElement e :  edgeArray) {
+                JsonObject edgeJson = e.getAsJsonObject();
+                Edge edgeObj = new Edge();
+
+                String from = "from";
+                if (edgeJson.has(from) && !edgeJson.get(from).isJsonNull())
+                    edgeObj.setFromId(edgeJson.get(from).getAsInt());
+
+                String to = "to";
+                if (edgeJson.has(to) && !edgeJson.get(to).isJsonNull())
+                    edgeObj.setToId(edgeJson.get(to).getAsInt());
+
+                String bi = "bi";
+                if (edgeJson.has(bi) && !edgeJson.get(bi).isJsonNull())
+                    edgeObj.setBi(edgeJson.get(bi).getAsBoolean());
+                else
+                    edgeObj.setBi(false);
+
+                String cost = "cost";
+                if (edgeJson.has(cost) && !edgeJson.get(cost).isJsonNull())
+                    edgeObj.setCost(edgeJson.get(cost).getAsInt());
+
+                edgeList.add(edgeObj);
+            }
+
+            response.setEdges(edgeList);
+        }
+
+        String style = "style";
+        if (routeInfo.has(style) && !routeInfo.get(style).isJsonNull()) {
+            StyleInfo styleInfo = new StyleInfo();
+            JsonObject styleJson = routeInfo.get(style).getAsJsonObject();
+
+            String line = "line";
+            if (styleJson.has(line) && !styleJson.get(line).isJsonNull()) {
+                JsonArray lineInfo = styleJson.get(line).getAsJsonArray();
+
+                String rgba = lineInfo.get(0).getAsString();
+                String color = "#" + rgba.substring(6) + rgba.substring(0,6);
+                styleInfo.setLineColor(Color.parseColor(color));
+
+                styleInfo.setLineWidth(lineInfo.get(1).getAsInt());
+            }
+
+            String route = "route";
+            if (styleJson.has(route) && !styleJson.get(route).isJsonNull()) {
+                styleInfo.setStartIcon(styleJson.get(route).getAsJsonArray().get(0).getAsString());
+                styleInfo.setEndIcon(styleJson.get(route).getAsJsonArray().get(1).getAsString());
+            }
+
+            String lift = "lift";
+            if (styleJson.has(lift) && !styleJson.get(lift).isJsonNull())
+                styleInfo.setLiftIcon(styleJson.get(lift).getAsString());
+
+            String escalator = "escalator";
+            if (styleJson.has(escalator) && !styleJson.get(escalator).isJsonNull()) {
+                styleInfo.setEscalatorIcon(styleJson.get(escalator).getAsString());
+            }
+
+            String pipe = "pipe";
+            if (styleJson.has(pipe) && !styleJson.get(pipe).isJsonNull()) {
+                JsonArray pipeInfo = styleJson.get(pipe).getAsJsonArray();
+
+                String rgba = pipeInfo.get(0).getAsString();
+                String color = "#" + rgba.substring(6) + rgba.substring(0,6);
+                styleInfo.setPipeColor(Color.parseColor(color));
+
+                styleInfo.setPipeWidth(pipeInfo.get(1).getAsInt());
+            }
+            response.setStyleInfo(styleInfo);
+        }
+
+        String width = "width";
+        if (routeInfo.has(width) && !routeInfo.get(width).isJsonNull())
+            response.setWidth(routeInfo.get(width).getAsInt());
+
+        String height = "height";
+        if (routeInfo.has(height) && !routeInfo.get(height).isJsonNull())
+            response.setHeight(routeInfo.get(height).getAsInt());
+
+        String version = "version";
+        if (routeInfo.has(version) && !routeInfo.get(version).isJsonNull())
+            response.setVersion(routeInfo.get(version).getAsLong());
+
+        return response;
     }
 
 }

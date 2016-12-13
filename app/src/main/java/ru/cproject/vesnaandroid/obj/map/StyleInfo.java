@@ -10,7 +10,7 @@ public class StyleInfo {
     private String startIcon;
     private String endIcon;
     private String liftIcon;
-    private String elevatorIcon;
+    private String escalatorIcon;
     private int pipeColor;
     private int pipeWidth;
 
@@ -55,12 +55,12 @@ public class StyleInfo {
         this.liftIcon = liftIcon;
     }
 
-    public String getElevatorIcon() {
-        return elevatorIcon;
+    public String getEscalatorIcon() {
+        return escalatorIcon;
     }
 
-    public void setElevatorIcon(String elevatorIcon) {
-        this.elevatorIcon = elevatorIcon;
+    public void setEscalatorIcon(String escalatorIcon) {
+        this.escalatorIcon = escalatorIcon;
     }
 
     public int getPipeColor() {

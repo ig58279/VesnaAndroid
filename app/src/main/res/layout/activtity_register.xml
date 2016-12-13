@@ -79,6 +79,14 @@
             android:hint="Фамилия"
             android:fontFamily="sans-serif-light"/>
 
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/CircularProgress"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
         <Button
             android:id="@+id/register"
             android:layout_width="250dp"

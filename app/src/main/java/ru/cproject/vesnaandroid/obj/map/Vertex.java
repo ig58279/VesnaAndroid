@@ -1,18 +1,33 @@
 package ru.cproject.vesnaandroid.obj.map;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by Bitizen on 07.12.16.
  */
-public class Vertex {
+public class Vertex extends RealmObject {
+
+    @PrimaryKey
+    private int id;
 
     private float x;
     private float y;
 
     private String type;
-    private int id;
+    private int routeId;
 
-    private String name;
+    private int shopId;
+    private String shopName;
     private String cats;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public float getX() {
         return x;
@@ -38,20 +53,12 @@ public class Vertex {
         this.type = type;
     }
 
-    public int getId() {
-        return id;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setShopName(String name) {
+        this.shopName = name;
     }
 
     public String getCats() {
@@ -60,5 +67,21 @@ public class Vertex {
 
     public void setCats(String cats) {
         this.cats = cats;
+    }
+
+    public int getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(int routeId) {
+        this.routeId = routeId;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 }

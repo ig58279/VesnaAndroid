@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private PagerIndicator pagerIndicator;
     private TableLayout menu;
 
-
     private MallInfo mall;
     private Show[] shows;
 
@@ -97,5 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
+    }
+
+    private void requestMapInfo() {
+
     }
 }

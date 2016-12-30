@@ -434,8 +434,11 @@ public class ResponseParser {
             for (JsonElement element : showsArray) {
                 JsonObject showJson = element.getAsJsonObject();
                 Show show = new Show();
+                if(showJson.has("id") && !showJson.get("id").isJsonNull())
                 show.setId(showJson.get("id").getAsInt());
+                if(showJson.has("type") && !showJson.get("type").isJsonNull())
                 show.setType(showJson.get("type").getAsString());
+                if(showJson.has("img") && !showJson.get("img").isJsonNull())
                 show.setImage(showJson.get("img").getAsString());
                 shows.add(show);
             }

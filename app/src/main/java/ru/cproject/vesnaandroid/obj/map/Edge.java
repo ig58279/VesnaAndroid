@@ -11,6 +11,24 @@ public class Edge extends RealmObject {
     private int toId;
     private boolean bi;
     private int cost;
+    private Vertex source;
+    private Vertex destination;
+
+    public Vertex getSource() {
+        return source;
+    }
+
+    public void setSource(Vertex source) {
+        this.source = source;
+    }
+
+    public Vertex getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Vertex destination) {
+        this.destination = destination;
+    }
 
     public int getFromId() {
         return fromId;

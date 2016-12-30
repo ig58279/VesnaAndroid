@@ -13,6 +13,10 @@ public class ServerApi {
         return SERVER_ADDRESS + "imgs/?id=" + id + "&min=" + String.valueOf(min);
     }
 
+    public static String getTileUrl(int z, int x, int y, long v) {
+        return String.format(SERVER_ADDRESS + "map/%d/%d/%d.png?v=%d",z,x,y,v);
+    }
+
     /**
      * Метод авторизации
      */

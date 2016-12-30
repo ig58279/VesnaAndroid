@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,14 +44,16 @@ public class LoginActivity extends AppCompatActivity {
         vk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 03.11.16 вход по вк
+                startActivity(new Intent(LoginActivity.this, VkAuthActivity.class));
+                finish();
             }
         });
 
         facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 03.11.16 вход по фейсбуку
+                startActivity(new Intent(LoginActivity.this, FacebookAuthActivity.class));
+                finish();
             }
         });
 

@@ -21,6 +21,7 @@ public class Settings {
         public static final String ROLE = "role";
         public static final String PBS = "pbs";
         public static final String PSS = "pss";
+        public static final String PHOTO = "photo";
 
     }
 

@@ -1,5 +1,7 @@
 package ru.cproject.vesnaandroid.obj.map;
 
+import android.support.annotation.NonNull;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -83,5 +85,24 @@ public class Vertex extends RealmObject {
 
     public void setShopId(int shopId) {
         this.shopId = shopId;
+    }
+
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Vertex vertex = (Vertex)obj;
+        return this.id == vertex.getId();
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.getId();
     }
 }

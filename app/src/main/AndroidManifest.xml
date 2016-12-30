@@ -1,29 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.cproject.vesnaandroid">
+          package="ru.cproject.vesnaandroid">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
+        android:name=".VesnaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".VesnaApplication"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".activities.SplashActivity"
+        <activity
+            android:name=".activities.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.MainActivity"/>
-
         <activity
             android:name=".activities.stocks.MainStocksActivity"
             android:launchMode="singleTask"
@@ -40,48 +41,45 @@
         <activity
             android:name=".activities.films.MainFilmsActivity"
             android:launchMode="singleTask"
-
             android:theme="@style/FilmsTheme"/>
         <activity
             android:name=".activities.films.SingleFilmActivity"
-            android:theme="@style/FilmsTheme" />
-
+            android:theme="@style/FilmsTheme"/>
         <activity
             android:name=".activities.events.MainEventsActivity"
             android:launchMode="singleTask"
-            android:theme="@style/EventsTheme" />
-
+            android:theme="@style/EventsTheme"/>
         <activity
             android:name=".activities.events.SingleEventActivity"
             android:theme="@style/EventsTheme"/>
-
         <activity
             android:name=".activities.TcInfoActivity"
             android:theme="@style/AppTheme"/>
-
-        <activity android:name=".activities.login.LoginActivity" />
-
-        <activity android:name=".activities.login.RegisterActivity" />
-
-        <activity android:name=".activities.login.RegisterCodeActivity" />
-
-        <activity android:name=".activities.categories.FilterActivity" />
-
+        <activity android:name=".activities.login.LoginActivity"/>
+        <activity android:name=".activities.login.RegisterActivity"/>
+        <activity android:name=".activities.login.RegisterCodeActivity"/>
+        <activity android:name=".activities.categories.FilterActivity"/>
         <activity
             android:name=".activities.SearchActivity"
             android:theme="@style/SearchTheme"/>
-
         <activity
             android:name=".activities.map.MapActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/MapTheme"/>
-
         <activity
             android:name=".activities.QRCodeReaderActivity"
             android:theme="@style/QrTheme"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="41946e57059c5c3e930d2c8931be616f4bda650a" />
+            android:value="41946e57059c5c3e930d2c8931be616f4bda650a"/>
+
+        <activity android:name=".activities.login.VkAuthActivity">
+        </activity>
+        <activity android:name=".activities.login.FacebookAuthActivity">
+        </activity>
+        <activity android:name=".activities.AccountActivity">
+        </activity>
     </application>
 
 </manifest>

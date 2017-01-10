@@ -45,6 +45,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
+import ru.cproject.vesnaandroid.Settings;
 import ru.cproject.vesnaandroid.activities.categories.FilterActivity;
 import ru.cproject.vesnaandroid.activities.shops.MainShopsActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
@@ -165,8 +166,10 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
             }
         });
 
+        // TODO: 10.1.17 СДЕЛАТЬ ЧЕРЕЗ startActivityForResult
+/*
         loadStocks();
-        showCats();
+        showCats();*/
     }
 
     @Override
@@ -223,6 +226,7 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
                 JsonObject params = new JsonObject();
                 params.addProperty("mod", "stocks");
                 params.addProperty("offset", stockList.size());
+                params.addProperty("usr", getSharedPreferences(Settings.REGISTRATION_INFO,MODE_PRIVATE).getString(Settings.RegistrationInfo.ID,""));
                 params.addProperty("count", LIMIT);
                 switch (typeOfSort) {
                     case NAME_ASC:
@@ -316,5 +320,12 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
         adapter.setState(StocksAdapter.LOADING);
         adapter.notifyItemChanged(stockList.size());
         loadStocks();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadStocks();
+        showCats();
     }
 }

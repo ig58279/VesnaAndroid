@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -24,7 +23,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
-import ru.cproject.vesnaandroid.activities.login.LoginActivity;
+import ru.cproject.vesnaandroid.activities.account.AccountActivity;
+import ru.cproject.vesnaandroid.activities.account.LoginActivity;
 import ru.cproject.vesnaandroid.helpers.CardSlide;
 import ru.cproject.vesnaandroid.helpers.SlideOnClickListener;
 import ru.cproject.vesnaandroid.helpers.ViewCreatorHelper;
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         toCabinetTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
             }
         });
         myCouponsTextView.setOnClickListener(new View.OnClickListener() {

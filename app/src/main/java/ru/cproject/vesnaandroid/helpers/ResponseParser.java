@@ -19,6 +19,7 @@ import ru.cproject.vesnaandroid.obj.Search;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.Show;
 import ru.cproject.vesnaandroid.obj.Stock;
+import ru.cproject.vesnaandroid.obj.User;
 import ru.cproject.vesnaandroid.obj.mall.Address;
 import ru.cproject.vesnaandroid.obj.mall.Function;
 import ru.cproject.vesnaandroid.obj.mall.Link;
@@ -73,6 +74,10 @@ public class ResponseParser {
         String name = "name";
         if (response.has(name) && !response.get(name).isJsonNull())
             stock.setTitle(response.get(name).getAsString());
+
+        String like = "like";
+        if (response.has(like) && !response.get(like).isJsonNull())
+            stock.setLike(response.get(like).getAsBoolean());
 
         String desc = "desc";
         if (response.has(desc) && !response.get(desc).isJsonNull())
@@ -466,6 +471,7 @@ public class ResponseParser {
         return events;
     }
 
+
     public static Event parseEvent(String json) {
         Event event = new Event();
         JsonParser parser = new JsonParser();
@@ -671,6 +677,65 @@ public class ResponseParser {
             response.setVersion(routeInfo.get(version).getAsLong());
 
         return response;
+    }
+
+    public static User parseUser(String usr){
+        User user = new User();
+        JsonObject mainJsonObject = new JsonParser().parse(usr).getAsJsonObject();
+        String id = "id";
+        if (mainJsonObject.has(id) && !mainJsonObject.get(id).isJsonNull()) {
+            user.setId(mainJsonObject.get(id).getAsString());
+        }
+        String role = "role";
+        if (mainJsonObject.has(role) && !mainJsonObject.get(role).isJsonNull()) {
+            user.setRole(mainJsonObject.get(role).getAsString());
+        }
+        String pbs = "pbs";
+        if (mainJsonObject.has(pbs) && !mainJsonObject.get(pbs).isJsonNull()) {
+            user.setPbs(mainJsonObject.get(pbs).getAsString());
+        }
+        String pss = "pss";
+        if (mainJsonObject.has(pss) && !mainJsonObject.get(pss).isJsonNull()) {
+            user.setPss(mainJsonObject.get(pss).getAsString());
+        }
+        String fname = "fname";
+        if (mainJsonObject.has(fname) && !mainJsonObject.get(fname).isJsonNull()) {
+            user.setFname(mainJsonObject.get(fname).getAsString());
+        }
+        String lname = "lname";
+        if (mainJsonObject.has(lname) && !mainJsonObject.get(lname).isJsonNull()) {
+            user.setLname(mainJsonObject.get(lname).getAsString());
+        }
+        String photo = "photo";
+        if (mainJsonObject.has(photo) && !mainJsonObject.get(photo).isJsonNull()) {
+            user.setPhoto(mainJsonObject.get(photo).getAsString());
+        }
+        String shops = "shops";
+        if (mainJsonObject.has(shops) && !mainJsonObject.get(shops).isJsonNull()) {
+            ArrayList arrayList = new ArrayList();
+            JsonArray shopList = mainJsonObject.get("shops").getAsJsonArray();
+            for (JsonElement e : shopList)
+                arrayList.add(parseShop(e.toString()));
+            user.setShops(arrayList);
+        }
+        String stocks = "stocks";
+        if (mainJsonObject.has(stocks) && !mainJsonObject.get(stocks).isJsonNull()) {
+            ArrayList arrayList = new ArrayList();
+            JsonArray shopList = mainJsonObject.get("stocks").getAsJsonArray();
+            for (JsonElement e : shopList)
+                arrayList.add(parseStock(e.toString()));
+            user.setStocks(arrayList);
+        }
+        String coupons = "coupons";
+        if (mainJsonObject.has(coupons) && !mainJsonObject.get(coupons).isJsonNull()) {
+            ArrayList arrayList = new ArrayList();
+          /*  JsonArray shopList = mainJsonObject.get("stocks").getAsJsonArray();
+            for (JsonElement e : shopList)
+                arrayList.add(parseStocks(e.toString()));*/
+            user.setCoupons(arrayList);
+        }
+
+        return user;
     }
 
 }

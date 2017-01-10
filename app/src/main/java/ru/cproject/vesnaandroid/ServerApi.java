@@ -69,6 +69,11 @@ public class ServerApi {
     public static final String GET_EVENTS = SERVER_ADDRESS + "events";
 
     /**
+     * Метод получния событий
+     */
+    public static final String GET_USER = SERVER_ADDRESS + "user";
+
+    /**
      * Метод получения события
      */
     public static final String GET_EVENT = SERVER_ADDRESS + "event";
@@ -87,4 +92,14 @@ public class ServerApi {
      * Метод получения графа и инфо о карте
      */
     public static final String ROUTES = SERVER_ADDRESS + "routes";
+
+    /**
+     * Метод добавления магазина/акции в избранное
+     */
+    public static final String LIKE = SERVER_ADDRESS + "like";
+
+    /**
+     * Метод удаления магазина/акции из избранного
+     */
+    public static final String DISLIKE = SERVER_ADDRESS + "dislike";
 }

@@ -55,9 +55,9 @@
         <activity
             android:name=".activities.TcInfoActivity"
             android:theme="@style/AppTheme"/>
-        <activity android:name=".activities.login.LoginActivity"/>
-        <activity android:name=".activities.login.RegisterActivity"/>
-        <activity android:name=".activities.login.RegisterCodeActivity"/>
+        <activity android:name=".activities.account.LoginActivity"/>
+        <activity android:name=".activities.account.RegisterActivity"/>
+        <activity android:name=".activities.account.RegisterCodeActivity"/>
         <activity android:name=".activities.categories.FilterActivity"/>
         <activity
             android:name=".activities.SearchActivity"
@@ -74,11 +74,11 @@
             android:name="io.fabric.ApiKey"
             android:value="41946e57059c5c3e930d2c8931be616f4bda650a"/>
 
-        <activity android:name=".activities.login.VkAuthActivity">
+        <activity android:name=".activities.account.VkAuthActivity">
         </activity>
-        <activity android:name=".activities.login.FacebookAuthActivity">
+        <activity android:name=".activities.account.FacebookAuthActivity">
         </activity>
-        <activity android:name=".activities.AccountActivity">
+        <activity android:name=".activities.account.AccountActivity">
         </activity>
     </application>
 

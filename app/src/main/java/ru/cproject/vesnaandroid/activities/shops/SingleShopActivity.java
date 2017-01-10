@@ -88,6 +88,8 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
         getSupportActionBar().setTitle("Весна");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        likeButton.setVisibility(View.VISIBLE);
+
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
@@ -197,6 +199,16 @@ public class SingleShopActivity extends ProtoSingleActivity implements RetryInte
                 View line = getLayoutInflater().inflate(R.layout.info_complement, complements, false);
                 ImageView icon = (ImageView) line.findViewById(R.id.icon);
                 TextView info = (TextView) line.findViewById(R.id.info);
+                likeButton.setVisibility(View.VISIBLE);
+                displayLikeOrDislike(shop.isLike());
+
+                likeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean isLike = (int)likeButton.getTag() == R.drawable.ic_like;
+                        makeLikeOrDislike(String.valueOf(shop.getId()),!isLike);
+                    }
+                });
                 final int finalI = i;
                 switch (complement.getKey()) {
                     case "phone":

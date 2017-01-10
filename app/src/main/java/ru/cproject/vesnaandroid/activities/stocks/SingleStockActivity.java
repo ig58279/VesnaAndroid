@@ -27,6 +27,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
+import ru.cproject.vesnaandroid.Settings;
 import ru.cproject.vesnaandroid.activities.universal.ProtoSingleActivity;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.TabBar;
@@ -70,6 +71,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
         getSupportActionBar().setTitle("Весна");
 
 
+
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
         retry = (Button) findViewById(R.id.retry);
@@ -100,6 +102,8 @@ public class SingleStockActivity extends ProtoSingleActivity {
         });
 
         loadStock();
+
+
     }
 
     private void loadStock() {
@@ -112,7 +116,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
                 params.put("id", id);
-
+                params.put("usr", getSharedPreferences(Settings.REGISTRATION_INFO,MODE_PRIVATE).getString(Settings.RegistrationInfo.ID,""));
                 client.get(ServerApi.GET_STOCK, params, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -195,6 +199,17 @@ public class SingleStockActivity extends ProtoSingleActivity {
         progress.setVisibility(View.GONE);
         errorMessage.setVisibility(View.GONE);
         contentView.setVisibility(View.VISIBLE);
+
+        likeButton.setVisibility(View.VISIBLE);
+        displayLikeOrDislike(stock.isLike());
+
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isLike = (int)likeButton.getTag() == R.drawable.ic_like;
+                makeLikeOrDislike(String.valueOf(stock.getId()),!isLike);
+            }
+        });
 
     }
 

@@ -25,6 +25,7 @@ public class Stock {
     public Stock() {
     }
 
+
     public Stock(String title, String content, String image) {
         this.title = title;
         this.content = content;

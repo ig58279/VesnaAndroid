@@ -167,9 +167,9 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
         });
 
         // TODO: 10.1.17 СДЕЛАТЬ ЧЕРЕЗ startActivityForResult
-/*
+
         loadStocks();
-        showCats();*/
+        showCats();
     }
 
     @Override
@@ -325,7 +325,5 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
     @Override
     protected void onResume() {
         super.onResume();
-        loadStocks();
-        showCats();
     }
 }

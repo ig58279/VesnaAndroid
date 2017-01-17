@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,12 +40,18 @@ public class TcInfoActivity extends ProtoSingleActivity {
     private LinearLayout workTimes;
     private TextView phone;
     private TextView site;
+    private ImageView vk;
+    private ImageView fb;
+    private ImageView instagram;
     private LinearLayout social;
     private TextView address;
     private Button makeRoute;
     private TextView description;
 
     private MallInfo mall;
+
+    private String vkLink;
+    private String fbLink;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,10 +72,14 @@ public class TcInfoActivity extends ProtoSingleActivity {
         workTimes = (LinearLayout) findViewById(R.id.work_times);
         phone = (TextView) findViewById(R.id.phone);
         site = (TextView) findViewById(R.id.site);
+        vk = (ImageView) findViewById(R.id.vk);
+        instagram = (ImageView) findViewById(R.id.inst);
+        fb = (ImageView) findViewById(R.id.fb);
         social = (LinearLayout) findViewById(R.id.social);
         address = (TextView) findViewById(R.id.address);
         makeRoute = (Button) findViewById(R.id.route);
         description = (TextView) findViewById(R.id.description);
+
 
         pagerIndicator.setIndicatorStyleResource(R.drawable.pager_indicator_active, R.drawable.pager_indicator_inactive);
         slider.setCustomIndicator(pagerIndicator);
@@ -100,11 +111,54 @@ public class TcInfoActivity extends ProtoSingleActivity {
                 case "site":
                     site.setText(link.getParametr());
                     break;
-                // TODO: 08.11.16 другие типы
+                case "vk":
+                    vkLink = link.getParametr();
+                    break;
+                case "fb":
+                    fbLink = link.getParametr();
+                    break;
             }
         }
 
         address.setText(mall.getAddress().getTitle());
+
+        vk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(vkLink != null) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse(vkLink));
+                    startActivity(intent);
+                }
+            }
+        });
+
+        instagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String instagramUrl = "https://www.instagram.com/vesna_trk";
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse(instagramUrl));
+                startActivity(intent);
+            }
+        });
+
+        fb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(fbLink != null) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse(fbLink));
+                    startActivity(intent);
+                }
+            }
+        });
 
         makeRoute.setOnClickListener(new View.OnClickListener() {
             @Override

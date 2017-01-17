@@ -68,6 +68,7 @@
             android:theme="@style/MapTheme"/>
         <activity
             android:name=".activities.QRCodeReaderActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/QrTheme"/>
 
         <meta-data

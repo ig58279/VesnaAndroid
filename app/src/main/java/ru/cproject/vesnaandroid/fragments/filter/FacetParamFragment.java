@@ -45,4 +45,6 @@ public class FacetParamFragment extends Fragment {
             filtersView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         }
     }
+
+
 }

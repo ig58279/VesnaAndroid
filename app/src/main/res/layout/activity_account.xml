@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_account"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+
+    <RelativeLayout
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/error_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="14sp"
+            android:text="@string/error_message"/>
+
+        <Button
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:background="@drawable/retry_button"
+            android:textSize="14sp"
+            android:textColor="@color/colorWhite"
+            android:text="@string/retry" />
+    </LinearLayout>
+
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="9dp"
+        android:paddingBottom="157dp"
+        android:background="@color/colorPrimary">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_arrow_back"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="ЛИЧНЫЙ КАБИНЕТ"
+            android:textSize="18sp"
+            android:textColor="@color/colorWhite"
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/logout"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_exit"/>
+    </LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_top_wave"
+        android:layout_marginTop="117dp"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/rounded_corners_white_background"
+        android:layout_marginTop="60dp"
+        >
+
+        <TextView
+            android:id="@+id/name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="@color/colorTextBlack"
+            android:textAllCaps="true"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="13dp"
+            android:textSize="18dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingLeft="13dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bottom_rounded_corners_gray_background"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textSize="14dp"
+                android:text="БОНУСНЫХ БАЛЛОВ:"
+                />
+            <TextView
+                android:id="@+id/points_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextBlack"
+                android:layout_marginTop="1dp"
+                android:textSize="15dp"
+                android:text="-"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+    <ImageView
+        android:id="@+id/photo_image_view"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="48dp"
+        android:layout_marginRight="25dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        >
+    </ImageView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/rounded_corners_white_background"
+        android:layout_marginTop="178dp">
+
+
+        <LinearLayout
+            android:id="@+id/lin_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:weightSum="3"
+            android:layout_marginLeft="13dp"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:id="@+id/shop_button_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15dp"
+                android:text="МАГАЗИНЫ"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="23dp"
+                android:layout_marginRight="14dp"
+                android:background="@color/colorTextGray"
+                />
+
+            <TextView
+                android:id="@+id/share_button_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/colorTextGray"
+                android:textSize="15dp"
+                android:layout_weight="1"
+                android:text="АКЦИИ"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="23dp"
+                android:layout_marginLeft="14dp"
+                android:background="@color/colorTextGray"
+                />
+
+            <TextView
+                android:id="@+id/coupon_button_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/colorTextGray"
+                android:layout_weight="1"
+                android:paddingRight="14dp"
+                android:gravity="right|center_vertical"
+                android:textSize="15dp"
+                android:text="КУПОНЫ"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/account_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lin_layout"
+            android:layout_marginTop="8dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>

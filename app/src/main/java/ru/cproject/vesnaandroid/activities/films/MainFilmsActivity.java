@@ -124,6 +124,7 @@ public class MainFilmsActivity extends ProtoMainActivity {
                         cinema = response.getCinema();
                         List<Film> films = response.getItems();
                         cinema = response.getCinema();
+                        if(films != null)
                         for (Film f : films) filmList.add(f);
                         adapter.notifyDataSetChanged();
 

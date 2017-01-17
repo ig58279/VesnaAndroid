@@ -26,7 +26,7 @@ public class ServerApi {
     /**
      * Метод отправки SMS
      */
-    public static final String SMS = SERVER_ADDRESS + "sms?test";
+    public static final String SMS = SERVER_ADDRESS + "sms";
 
     /**
      * Метод получения информации о торговом центре

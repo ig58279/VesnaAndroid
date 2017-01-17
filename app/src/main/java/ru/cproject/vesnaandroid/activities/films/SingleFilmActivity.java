@@ -88,7 +88,7 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         getLayoutInflater().inflate(R.layout.activity_single_film, contentFrame);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Весна");
+        getSupportActionBar().setTitle("");
 
 
         shadow = findViewById(R.id.slider_shadow);
@@ -207,6 +207,8 @@ public class SingleFilmActivity extends ProtoSingleActivity {
                 .into(poster);
 
         title.setText(film.getName());
+
+        getSupportActionBar().setTitle(film.getName());
 
         age.setText(film.getAge() + "+");
         if (film.getGenre() != null && film.getGenre().size() != 0) {

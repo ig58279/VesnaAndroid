@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText name;
     private EditText surname;
     private Button register;
+    private ImageView back;
     private ProgressBar loading;
 
     @Override
@@ -43,10 +45,20 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activtity_register);
 
         phone = (EditText) findViewById(R.id.phone_field);
+
         name = (EditText) findViewById(R.id.name_field);
+        back = (ImageView) findViewById(R.id.background);
         surname = (EditText) findViewById(R.id.surname_field);
         register = (Button) findViewById(R.id.register);
         loading = (ProgressBar) findViewById(R.id.progress);
+
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override

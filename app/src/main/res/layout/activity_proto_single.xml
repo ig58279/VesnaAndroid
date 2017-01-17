@@ -47,6 +47,7 @@
                             android:id="@+id/like"
                             android:layout_width="26dp"
                             android:layout_height="26dp"
+                            android:visibility="gone"
                             android:layout_alignParentRight="true"
                             android:layout_below="@+id/image"
                             android:background="@drawable/dislike"

@@ -26,10 +26,10 @@ import ru.cproject.vesnaandroid.obj.Shop;
 
 public class ShopsAdapter extends RecyclerView.Adapter {
 
-    private Context context;
-    private List<Shop> shops;
-    private int color;
-    private int style;
+    protected Context context;
+    protected List<Shop> shops;
+    protected int color;
+    protected int style;
 
     public ShopsAdapter(Context context, List<Shop> shops, int color, int style) {
         this.context = context;

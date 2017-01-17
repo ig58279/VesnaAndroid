@@ -2,6 +2,7 @@ package ru.cproject.vesnaandroid.activities.stocks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -59,7 +60,11 @@ public class SingleStockActivity extends ProtoSingleActivity {
     private TabBar tabBar;
 
     private int id;
+    private boolean isLikeInitially;        //первоначальное состояние кнопки Like
+    private int positionOfRecyclerElement;
     private Stock stock;
+
+    private SharedPreferences commonSharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +75,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Весна");
 
-
+        commonSharedPreferences = getSharedPreferences(Settings.COMMON,MODE_PRIVATE);
 
         progress = (ViewGroup) findViewById(R.id.progress);
         errorMessage = (ViewGroup) findViewById(R.id.error_message);
@@ -83,6 +88,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
             id = intent.getIntExtra("id", 0);
         else
             finish();
+        positionOfRecyclerElement = intent.getIntExtra("position",-1);
 
         tabs = new TextView[]{
                 (TextView) findViewById(R.id.stock),
@@ -102,6 +108,7 @@ public class SingleStockActivity extends ProtoSingleActivity {
         });
 
         loadStock();
+
 
 
     }
@@ -202,12 +209,18 @@ public class SingleStockActivity extends ProtoSingleActivity {
 
         likeButton.setVisibility(View.VISIBLE);
         displayLikeOrDislike(stock.isLike());
+        isLikeInitially = stock.isLike();
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isLike = (int)likeButton.getTag() == R.drawable.ic_like;
+                boolean isLike = (int)likeButton.getTag() == R.drawable.ic_like;   //currentState
                 makeLikeOrDislike(String.valueOf(stock.getId()),!isLike);
+                if(isLikeInitially != !isLike){
+                    commonSharedPreferences.edit().putInt(Settings.Common.stockLikeWithChangedState,positionOfRecyclerElement).apply();
+                }else{
+                    commonSharedPreferences.edit().putInt(Settings.Common.stockLikeWithChangedState,-1).apply();
+                }
             }
         });
 

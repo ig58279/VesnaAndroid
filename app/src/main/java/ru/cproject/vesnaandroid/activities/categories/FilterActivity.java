@@ -116,6 +116,7 @@ public class FilterActivity extends ProtoMainActivity {
         if (topStep == currentStep)
             finish();
         else
+            if(currentStep == FACETS_CHOSE)chosenParams.clear();
             stepBack();
     }
 
@@ -306,4 +307,6 @@ public class FilterActivity extends ProtoMainActivity {
         }
         return isContain;
     }
+
+
 }

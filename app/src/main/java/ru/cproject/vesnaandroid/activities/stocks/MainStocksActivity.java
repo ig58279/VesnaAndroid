@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -105,6 +106,9 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
     private JsonObject cats;
     private String catsString;
 
+    private SharedPreferences commonSharedPreferences;
+    private boolean firstLaunch = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +125,8 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
         content = (ViewGroup) findViewById(R.id.content);
         categoriesView = (TextView) findViewById(R.id.categories);
         openCategories = (ImageView) findViewById(R.id.category_arrow);
+
+        commonSharedPreferences = getSharedPreferences(Settings.COMMON,MODE_PRIVATE);
 
         sort = (ViewGroup) findViewById(R.id.sort);
         sortImage = (ImageView) findViewById(sort_image);
@@ -325,5 +331,17 @@ public class MainStocksActivity extends ProtoMainActivity implements RetryInterf
     @Override
     protected void onResume() {
         super.onResume();
+        if(!firstLaunch) {
+            firstLaunch = false;
+            if (commonSharedPreferences.contains(Settings.Common.stockLikeWithChangedState)) {
+                int position = commonSharedPreferences.getInt(Settings.Common.stockLikeWithChangedState, -1);
+                if (position != -1) {
+                    Stock stock = stockList.get(position);
+                    stock.setLike(!stock.isLike());
+                    adapter.notifyItemChanged(position);
+                }
+            }
+        }
+        firstLaunch = false;
     }
 }

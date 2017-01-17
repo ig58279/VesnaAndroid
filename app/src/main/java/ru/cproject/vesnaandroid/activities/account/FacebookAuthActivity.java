@@ -49,7 +49,7 @@ public class FacebookAuthActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        webView = (WebView) findViewById(R.id.web_view);
+        webView = (WebView) findViewById(R.id.web_view_fb);
         progressDialog = new ProgressDialog(FacebookAuthActivity.this);
         progressDialog.setTitle("");
         progressDialog.setMessage("Загрузка...");

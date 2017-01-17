@@ -85,6 +85,8 @@ public class MapActivity extends ProtoMainActivity {
     private View currentMarker;
     private ImageView startMarker;
     private ImageView endMarker;
+    private View startPopUpMarker;
+    private View finishPopUpMarker;
 
     private Vertex startVertex;
     private Vertex endVertex;
@@ -230,6 +232,7 @@ public class MapActivity extends ProtoMainActivity {
             hotSpot.setHotSpotTapListener(new HotSpot.HotSpotTapListener() {
                 @Override
                 public void onHotSpotTap(HotSpot hotSpot, int x, int y) {
+                    mapView.removeMarker(currentMarker);
                     float mapX = x / mapView.getScale();
                     float mapY = y / mapView.getScale();
                     Log.d(TAG, "Tap: " + mapX + " " + mapY);
@@ -347,7 +350,12 @@ public class MapActivity extends ProtoMainActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(startMarker != null)mapView.removeMarker(startMarker);
+                if(startMarker != null){
+                    mapView.removeMarker(startMarker);
+                    if(startPopUpMarker != null)mapView.removeMarker(startPopUpMarker);
+                }
+               /* if(lastDrawPath != null)
+                    mapView.removePath(lastDrawPath);*/
                 startMarker = new ImageView(MapActivity.this);
                 Glide
                         .with(getBaseContext())
@@ -355,18 +363,27 @@ public class MapActivity extends ProtoMainActivity {
                         .sizeMultiplier(0.035f)
                         .into(startMarker);
                 mapView.addMarker(startMarker,v.getX(),v.getY(),-0.5f,-0.5f);
-
+                startPopUpMarker = getLayoutInflater().inflate(R.layout.marker_point_start, null);
+                mapView.addMarker(startPopUpMarker, v.getX(), v.getY(), -0.5f, -1f);
                 startVertex = v;
+             /*   if (endVertex == null) {
+                    if(endMarker != null)mapView.removeMarker(endMarker);
+                    if(finishPopUpMarker != null)mapView.removeMarker(finishPopUpMarker);
+                }*/
                 tryMakeRoute();
                 mapView.removeMarker(currentMarker);
-
             }
         });
         TextView endButton = (TextView) currentMarker.findViewById(R.id.end_route);
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(endMarker != null)mapView.removeMarker(endMarker);
+                if(endMarker != null){
+                    mapView.removeMarker(endMarker);
+                    if(finishPopUpMarker != null)mapView.removeMarker(finishPopUpMarker);
+                }
+               /* if(lastDrawPath != null)
+                    mapView.removePath(lastDrawPath);*/
                 endMarker = new ImageView(MapActivity.this);
                 Glide
                         .with(getBaseContext())
@@ -375,7 +392,14 @@ public class MapActivity extends ProtoMainActivity {
                         .into(endMarker);
                 mapView.addMarker(endMarker,v.getX(),v.getY(),-0.5f,-0.5f);
 
+                finishPopUpMarker = getLayoutInflater().inflate(R.layout.marker_point_finish, null);
+                mapView.addMarker(finishPopUpMarker, v.getX(), v.getY(), -0.5f, -1f);
+
                 endVertex = v;
+               /* if (startVertex == null) {
+                    if(startMarker != null)mapView.removeMarker(startMarker);
+                    if(startPopUpMarker != null)mapView.removeMarker(startPopUpMarker);
+                }*/
                 tryMakeRoute();
                 mapView.removeMarker(currentMarker);
 
@@ -390,11 +414,12 @@ public class MapActivity extends ProtoMainActivity {
     CompositePathView.DrawablePath lastDrawPath;
 
     private void tryMakeRoute() {
+
         if (startVertex != null && endVertex != null) {
 
             Toast.makeText(MapActivity.this,"Загрузка...",Toast.LENGTH_SHORT).show();
 
-            Log.e("Path:","Start:"+startVertex.getId()+" Finish:"+endVertex.getId());
+
 
             if(lastDrawPath != null)
             mapView.removePath(lastDrawPath);
@@ -440,17 +465,17 @@ public class MapActivity extends ProtoMainActivity {
                 lastDrawPath.path = path;
                 Paint paint = new Paint();
                 paint.setAntiAlias(true);
-                paint.setStrokeWidth(styleInfo.getPipeWidth());
+                paint.setStrokeWidth(styleInfo.getLineWidth());
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setColor(Color.RED);
+                paint.setColor(styleInfo.getLineColor());
                 lastDrawPath.paint = paint;
                 mapView.drawPath(lastDrawPath);
 
             }else{
                 Log.e("Path:"," NULL");
             }
-         /*   startVertex = null;
-            endVertex = null;*/
+
+
         }
     }
 

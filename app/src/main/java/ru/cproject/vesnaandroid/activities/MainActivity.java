@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         myCouponsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this, AccountActivity.class).putExtra("forCoupons",true));
             }
         });
     }
@@ -159,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
                         .transform(transformation)
                         .into(photoAccountImageView);
             }
+        }else{
+            login.setVisibility(View.VISIBLE);
+            accountLinearLayout.setVisibility(View.GONE);
         }
     }
 }

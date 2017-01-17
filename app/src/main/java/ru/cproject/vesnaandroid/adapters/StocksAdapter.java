@@ -79,7 +79,7 @@ public class StocksAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (getItemViewType(position) == STOCKS_ITEM) {
             final Stock stock = stocksList.get(position);
             ((StockViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +87,7 @@ public class StocksAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, SingleStockActivity.class);
                     intent.putExtra("id", stock.getId());
+                    intent.putExtra("position", position);
                     context.startActivity(intent);
                 }
             });
@@ -117,8 +118,10 @@ public class StocksAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     boolean isLike = (int)v.getTag() == R.drawable.ic_like;
                     makeLikeOrDislike(String.valueOf(stock.getId()),!isLike,(ImageButton)v);
+                    stock.setLike(!stock.isLike());
                 }
             });
+
 
             if (stock.isSpecial()) {
                 ((StockViewHolder) holder).special.setVisibility(View.VISIBLE);

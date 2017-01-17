@@ -84,7 +84,7 @@ public abstract class ProtoSingleActivity extends AppCompatActivity {
      */
     protected void makeLikeOrDislike(String subjectId, final boolean isLiked){
         String url = isLiked ? ServerApi.LIKE : ServerApi.DISLIKE;
-        final ProgressDialog progressDialog = ProgressDialog.show(getBaseContext(),"","Загрузка...",true);
+        final ProgressDialog progressDialog = ProgressDialog.show(this,"","Загрузка...",true);
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         RequestParams requestParams = new RequestParams();
         requestParams.add("usr", getSharedPreferences(Settings.REGISTRATION_INFO,MODE_PRIVATE).getString(Settings.RegistrationInfo.ID,""));

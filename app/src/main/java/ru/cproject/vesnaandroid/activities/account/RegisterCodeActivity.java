@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class RegisterCodeActivity extends AppCompatActivity {
     private static final String TAG = "RegisterCodeActivity";
 
     private EditText code;
+    private ImageView back;
     private Button apply;
 
     private String phone;
@@ -51,7 +53,15 @@ public class RegisterCodeActivity extends AppCompatActivity {
 
         code = (EditText) findViewById(R.id.code_field);
         apply = (Button) findViewById(R.id.apply);
+        back = (ImageView) findViewById(R.id.background);
         loading = (ProgressBar) findViewById(R.id.progress);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         Intent intent = getIntent();
         phone = intent.getStringExtra("phone");

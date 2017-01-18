@@ -73,6 +73,7 @@ public class SingleFilmActivity extends ProtoSingleActivity {
     private ViewGroup content;
 
     private int id;
+    private long timestamp;
     private Film film;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +85,11 @@ public class SingleFilmActivity extends ProtoSingleActivity {
             id = intent.getIntExtra("id", 0);
         else
             finish();
+
+//        if (intent.hasExtra("date"))
+//            timestamp = intent.getLongExtra("date", 0);
+//        else
+//            finish();
 
         getLayoutInflater().inflate(R.layout.activity_single_film, contentFrame);
 
@@ -142,6 +148,7 @@ public class SingleFilmActivity extends ProtoSingleActivity {
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
                 params.put("id", id);
+//                params.put("date", timestamp);
                 // TODO token
 
                 client.get(ServerApi.GET_FILM, params, new TextHttpResponseHandler() {

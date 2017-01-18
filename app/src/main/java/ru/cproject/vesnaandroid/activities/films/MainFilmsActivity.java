@@ -187,9 +187,10 @@ public class MainFilmsActivity extends ProtoMainActivity implements DatePickerDi
 
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(i, i1, i2);
-        timestamp = calendar.getTimeInMillis();
+        Calendar c = Calendar.getInstance();
+        c.set(i, i1, i2);
+
+        timestamp = c.getTimeInMillis();
 
         dateText.setText(i2 + "." + (i1 + 1) + "." + i);
 

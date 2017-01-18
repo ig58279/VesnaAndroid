@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.google.gson.Gson;
 
@@ -88,7 +89,8 @@ public class TcInfoActivity extends ProtoSingleActivity {
             DefaultSliderView slide = new DefaultSliderView(this);
             slide
                     .empty(R.drawable.ic_big_placeholder)
-                    .image(ServerApi.getImgUrl(s, false));
+                    .image(ServerApi.getImgUrl(s, false))
+                    .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
             slider.addSlider(slide);
         }
 

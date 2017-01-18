@@ -217,6 +217,7 @@ public class FilterActivity extends ProtoMainActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                facetsPrams.clear();
                 Log.d(TAG, "onSuccess: " + responseString);
                 JsonParser parser = new JsonParser();
                 JsonObject response = parser.parse(responseString).getAsJsonObject();

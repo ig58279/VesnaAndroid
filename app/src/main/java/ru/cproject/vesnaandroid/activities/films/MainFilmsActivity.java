@@ -84,6 +84,7 @@ public class MainFilmsActivity extends ProtoMainActivity implements DatePickerDi
         filmsView = (RecyclerView) findViewById(R.id.films_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new FilmsAdapter(this, filmList, ContextCompat.getColor(this, R.color.colorPrimaryCinema));
+        adapter.setTimestamp(timestamp);
         filmsView.setAdapter(adapter);
         filmsView.setLayoutManager(linearLayoutManager);
         filmsView.setHasFixedSize(false);
@@ -189,10 +190,13 @@ public class MainFilmsActivity extends ProtoMainActivity implements DatePickerDi
         Calendar calendar = Calendar.getInstance();
         calendar.set(i, i1, i2);
         timestamp = calendar.getTimeInMillis();
+
         dateText.setText(i2 + "." + (i1 + 1) + "." + i);
+
         loading.setVisibility(View.VISIBLE);
         filmList.clear();
         adapter.notifyDataSetChanged();
+        adapter.setTimestamp(timestamp);
         loadFilms();
     }
 }

@@ -39,6 +39,8 @@ public class FilmsAdapter extends RecyclerView.Adapter {
     private List<Film> filmList;
     private int futureColor;
 
+    private long timestamp;
+
     public FilmsAdapter(Context context, List<Film> filmList, int futureColor) {
         this.context = context;
         this.filmList = filmList;
@@ -59,6 +61,7 @@ public class FilmsAdapter extends RecyclerView.Adapter {
             public void onClick(View view) {
                 Intent intent = new Intent(context, SingleFilmActivity.class);
                 intent.putExtra("id", film.getId());
+                intent.putExtra("date", timestamp);
                 context.startActivity(intent);
             }
         });
@@ -134,6 +137,14 @@ public class FilmsAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return filmList.size();
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     private class FilmViewHolder extends RecyclerView.ViewHolder {

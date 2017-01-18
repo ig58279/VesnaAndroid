@@ -51,7 +51,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO Если запрещена камера, Эта срань(хуитка) вылетает
+        //TODO Если запрещена камера, Это вылетает
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {

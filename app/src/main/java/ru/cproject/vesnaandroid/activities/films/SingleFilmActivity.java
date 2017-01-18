@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -38,7 +39,9 @@ import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.universal.ProtoSingleActivity;
 import ru.cproject.vesnaandroid.adapters.FilmsAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
+import ru.cproject.vesnaandroid.helpers.SlideOnClickListener;
 import ru.cproject.vesnaandroid.helpers.TabBar;
+import ru.cproject.vesnaandroid.helpers.TrailerSlide;
 import ru.cproject.vesnaandroid.obj.Film;
 
 /**
@@ -179,6 +182,22 @@ public class SingleFilmActivity extends ProtoSingleActivity {
         pagerIndicator = (PagerIndicator) findViewById(R.id.pager_indicator);
 
         pagerIndicator.setIndicatorStyleResource(R.drawable.pager_indicator_active, R.drawable.pager_indicator_inactive);
+        int count = 0;
+        if (film.getTrailer() != null) {
+            String trailer = film.getTrailer();
+            TrailerSlide slide = new TrailerSlide(this);
+            slide
+                .image(getString(R.string.thumbnail, trailer.substring(trailer.indexOf("=") + 1)))
+                .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                @Override
+                public void onSliderClick(BaseSliderView slider) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(film.getTrailer())));
+                }
+            });
+
+            slider.addSlider(slide);
+            count++;
+        }
         slider.setCustomIndicator(pagerIndicator);
         if (film.getPhotos() != null) {
             for (int i = 0; i < film.getPhotos().size(); i++) {
@@ -188,13 +207,14 @@ public class SingleFilmActivity extends ProtoSingleActivity {
                         .setScaleType(BaseSliderView.ScaleType.CenterInside);
 
                 slider.addSlider(slide);
+                count++;
             }
-            if (film.getPhotos().size() < 2) {
-                pagerIndicator.setVisibility(View.GONE);
+        }
+        if (count < 2) {
+            pagerIndicator.setVisibility(View.GONE);
 
-                slider.stopAutoCycle();
-                slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
-            }
+            slider.stopAutoCycle();
+            slider.setPagerTransformer(false, new BaseTransformer() {@Override protected void onTransform(View view, float position) {}});
         }
 
         float dpi = getResources().getDisplayMetrics().density;

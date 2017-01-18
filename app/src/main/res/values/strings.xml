@@ -2,4 +2,5 @@
     <string name="app_name">ТРЦ «Весна»</string>
     <string name="error_message">Произошла ошибка. Проверьте соединение с интернетом и поторите попытку</string>
     <string name="retry">Повторить</string>
+    <string name="thumbnail">http://img.youtube.com/vi/%1$s/0.jpg</string>
 </resources>

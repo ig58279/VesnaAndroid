@@ -1,5 +1,6 @@
 package ru.cproject.vesnaandroid.activities.films;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -15,6 +16,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -42,7 +45,7 @@ import ru.cproject.vesnaandroid.obj.responses.FilmsResponse;
  * Created by Bitizen on 01.11.16.
  */
 
-public class MainFilmsActivity extends ProtoMainActivity {
+public class MainFilmsActivity extends ProtoMainActivity implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "MainFilmsActivity";
 
     private ViewGroup loading;
@@ -51,6 +54,8 @@ public class MainFilmsActivity extends ProtoMainActivity {
     private ViewGroup content;
 
     private ViewGroup about;
+    private ViewGroup date;
+    private TextView dateText;
 
     private RecyclerView filmsView;
     private List<Film> filmList = new ArrayList<>();
@@ -59,6 +64,8 @@ public class MainFilmsActivity extends ProtoMainActivity {
     private int sort = 0;
 
     private Shop cinema;
+
+    private long timestamp;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +76,11 @@ public class MainFilmsActivity extends ProtoMainActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Люксор");
 
+        timestamp = Calendar.getInstance().getTimeInMillis();
+
         about = (ViewGroup) findViewById(R.id.about);
+        date = (ViewGroup) findViewById(R.id.choose_date);
+        dateText = (TextView) findViewById(R.id.date_text);
         filmsView = (RecyclerView) findViewById(R.id.films_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new FilmsAdapter(this, filmList, ContextCompat.getColor(this, R.color.colorPrimaryCinema));
@@ -82,6 +93,22 @@ public class MainFilmsActivity extends ProtoMainActivity {
         retry = (Button) findViewById(R.id.retry);
         retry.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);//TODO изменить для версий до 21
         content = (ViewGroup) findViewById(R.id.content);
+
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dpd = new DatePickerDialog(MainFilmsActivity.this, MainFilmsActivity.this, year, month, day);
+                calendar.add(Calendar.DAY_OF_MONTH, 14);
+                dpd.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+                dpd.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+                dpd.show();
+            }
+        });
 
         retry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,9 +133,8 @@ public class MainFilmsActivity extends ProtoMainActivity {
             if (isConnected) {
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_MONTH, sort);
-                //        params.put("sort", (long) (calendar.getTimeInMillis() / 1000));
+
+                params.put("date", timestamp);
 
                 client.get(ServerApi.GET_FILMS, params, new TextHttpResponseHandler() {
                     @Override
@@ -158,4 +184,15 @@ public class MainFilmsActivity extends ProtoMainActivity {
         errorMessage.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(i, i1, i2);
+        timestamp = calendar.getTimeInMillis();
+        dateText.setText(i2 + "." + (i1 + 1) + "." + i);
+        loading.setVisibility(View.VISIBLE);
+        filmList.clear();
+        adapter.notifyDataSetChanged();
+        loadFilms();
+    }
 }

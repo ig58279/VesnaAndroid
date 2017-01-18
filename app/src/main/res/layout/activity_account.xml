@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
    >
 
-
     <RelativeLayout
         android:id="@+id/progress"
         android:layout_width="match_parent"
@@ -19,14 +18,16 @@
 
     </RelativeLayout>
 
+
     <LinearLayout
         android:id="@+id/error_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
+        android:visibility="gone"
         android:padding="16dp"
-        android:visibility="gone">
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,6 +50,11 @@
     </LinearLayout>
 
 
+    <RelativeLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
 
 
@@ -240,6 +246,8 @@
 
     </RelativeLayout>
 
+
+    </RelativeLayout>
 
 
 

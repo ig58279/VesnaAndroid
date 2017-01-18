@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.activities.events.SingleEventActivity;
+import ru.cproject.vesnaandroid.activities.map.MapActivity;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.activities.stocks.SingleStockActivity;
 
@@ -130,7 +131,8 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
                     } catch (Exception e) {}
                 }
                 if (text.contains("route")) {
-                    //TODO qr для карты
+                    int id = Integer.valueOf(getLastBitFromUrl(text));
+                    startActivity(new Intent(QRCodeReaderActivity.this, MapActivity.class).putExtra("fromQR",id));
                 }
             } else
                 notAppAlert();
@@ -142,7 +144,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
     private void notAppAlert () {
         AlertDialog.Builder builder = new AlertDialog.Builder(QRCodeReaderActivity.this);
         builder.setTitle("Ошибка")
-                .setMessage("QR - код не относиться к данному приложению")
+                .setMessage("QR - код не относится к данному приложению")
                 .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

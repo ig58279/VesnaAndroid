@@ -1,9 +1,14 @@
 package ru.cproject.vesnaandroid.activities.account;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +48,8 @@ import ru.cproject.vesnaandroid.helpers.RetryInterface;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.User;
 
+import static android.view.View.GONE;
+
 public class AccountActivity extends AppCompatActivity implements RetryInterface {
 
     private ImageView photoImageView;
@@ -59,6 +67,7 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
     private User user;
     protected int color;
     private String id;
+    private RelativeLayout mainContent;
 
     private MiniStocksAdapter miniStocksAdapter;
     private MiniShopAdapter miniShopAdapter;
@@ -84,12 +93,14 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
         logoutImageView = (ImageView) findViewById(R.id.logout);
         shopTextView = (TextView) findViewById(R.id.shop_button_text_view);
         shareTextView = (TextView) findViewById(R.id.share_button_text_view);
+        mainContent = (RelativeLayout) findViewById(R.id.main_content);
 
         couponTextView = (TextView) findViewById(R.id.coupon_button_text_view);
         back = (ImageView) findViewById(R.id.back);
         recyclerView = (RecyclerView) findViewById(R.id.account_recycler_view);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
+
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -135,8 +146,10 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
                 shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
                 shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
                 couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                miniShopAdapter = new MiniShopAdapter(AccountActivity.this,user.getShops(),color,R.style.AppTheme);
-                recyclerView.setAdapter(miniShopAdapter);
+                if(user.getShops() != null){
+                    miniShopAdapter = new MiniShopAdapter(AccountActivity.this,user.getShops(),color,R.style.AppTheme);
+                    recyclerView.setAdapter(miniShopAdapter);
+                }
             }
         });
 
@@ -146,8 +159,10 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
                 shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
                 shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
                 couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                miniStocksAdapter = new MiniStocksAdapter(AccountActivity.this,user.getStocks(),color,AccountActivity.this);
-                recyclerView.setAdapter(miniStocksAdapter);
+                if(user.getStocks() != null) {
+                    miniStocksAdapter = new MiniStocksAdapter(AccountActivity.this, user.getStocks(), color, AccountActivity.this);
+                    recyclerView.setAdapter(miniStocksAdapter);
+                }
             }
         });
 
@@ -163,7 +178,6 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
 
         getAndShowAccountInfo();
 
-        if(getIntent().getBooleanExtra("forCoupons",false))couponTextView.performClick();
     }
 
         private void showAccountInfo(User user){
@@ -201,29 +215,47 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
     }
 
     private void getAndShowAccountInfo(){
-        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-        RequestParams requestParams = new RequestParams();
-        requestParams.add("id",settingsSharedPrefs.getString(Settings.RegistrationInfo.ID,""));
-        asyncHttpClient.get(ServerApi.GET_USER, requestParams , new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if(responseString != null) Log.e("accountFail",responseString);
-                progress.setVisibility(View.GONE);
-                errorMessage.setVisibility(View.VISIBLE);
-            }
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            boolean isConnected = activeNetwork.isConnectedOrConnecting();
+            if (isConnected) {
+                AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+                RequestParams requestParams = new RequestParams();
+                requestParams.add("id", settingsSharedPrefs.getString(Settings.RegistrationInfo.ID, ""));
+                asyncHttpClient.get(ServerApi.GET_USER, requestParams, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                       AccountActivity.this.onFailure(responseString);
+                    }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                if(responseString != null) Log.e("accountSuc",responseString);
-                progress.setVisibility(View.GONE);
-                errorMessage.setVisibility(View.GONE);
-                user = ResponseParser.parseUser(responseString);
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        if (responseString != null) Log.e("accountSuc", responseString);
+                        progress.setVisibility(View.GONE);
+                        errorMessage.setVisibility(View.GONE);
+                        user = ResponseParser.parseUser(responseString);
+                        mainContent.setVisibility(View.VISIBLE);
+                        showAccountInfo(user);
 
-                showAccountInfo(user);
-            }
-        });
+                        if (getIntent().getBooleanExtra("forCoupons", false))
+                            couponTextView.performClick();
+                        else shopTextView.performClick();
+
+
+                    }
+                });
+            }else onFailure(null);
+        }else onFailure(null);
     }
 
+    private void onFailure (@Nullable String responseString) {
+        if (responseString != null) Log.e("accountFail", responseString);
+        progress.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.VISIBLE);
+        Toast.makeText(AccountActivity.this, "Произошла ошибка!", Toast.LENGTH_SHORT).show();
+    }
     @Override
     public void retry() {
 

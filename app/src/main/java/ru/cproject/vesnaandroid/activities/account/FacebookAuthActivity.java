@@ -42,7 +42,7 @@ public class FacebookAuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fb_auth);
 
-        back = (ImageView) findViewById(R.id.background);
+        back = (ImageView) findViewById(R.id.fb_background);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

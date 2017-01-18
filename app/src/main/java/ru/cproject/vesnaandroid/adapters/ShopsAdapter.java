@@ -17,6 +17,8 @@ import java.util.List;
 
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
+import ru.cproject.vesnaandroid.activities.QRCodeReaderActivity;
+import ru.cproject.vesnaandroid.activities.map.MapActivity;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.obj.Shop;
 
@@ -62,6 +64,13 @@ public class ShopsAdapter extends RecyclerView.Adapter {
                 .load(ServerApi.getImgUrl(shop.getLogo(), true))
                 .fitCenter()
                 .into(((ShopViewHolder) holder).logo);
+
+        ((ShopViewHolder) holder).showOnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, MapActivity.class).putExtra("fromShop",shop.getId()));
+            }
+        });
 
         ((ShopViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
             @Override

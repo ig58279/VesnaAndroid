@@ -25,6 +25,7 @@ import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
 import ru.cproject.vesnaandroid.activities.account.AccountActivity;
 import ru.cproject.vesnaandroid.activities.account.LoginActivity;
+import ru.cproject.vesnaandroid.activities.map.MapActivity;
 import ru.cproject.vesnaandroid.helpers.CardSlide;
 import ru.cproject.vesnaandroid.helpers.SlideOnClickListener;
 import ru.cproject.vesnaandroid.helpers.ViewCreatorHelper;

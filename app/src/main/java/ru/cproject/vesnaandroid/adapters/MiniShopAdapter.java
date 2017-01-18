@@ -75,7 +75,7 @@ public class MiniShopAdapter extends ShopsAdapter {
             }
         });
 
-       /* ((ShopViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
+        ((ShopViewHolder) holder).wrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, SingleShopActivity.class);
@@ -83,7 +83,7 @@ public class MiniShopAdapter extends ShopsAdapter {
                 intent.putExtra("style", style);
                 context.startActivity(intent);
             }
-        });*/
+        });
          /*
         if (getItemViewType(position) == STOCKS_ITEM) {
             final Shop shop = shops.get(position);

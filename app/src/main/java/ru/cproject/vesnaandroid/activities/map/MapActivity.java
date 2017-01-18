@@ -2,6 +2,7 @@ package ru.cproject.vesnaandroid.activities.map;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -82,11 +83,12 @@ public class MapActivity extends ProtoMainActivity {
     private int height;
     private StyleInfo styleInfo;
 
-    private View currentMarker;
-    private ImageView startMarker;
+    private View currentMarker;   //маркер, появляющийся при нажатии на карту
+    private ImageView startMarker;  //звездочка
     private ImageView endMarker;
-    private View startPopUpMarker;
+    private View startPopUpMarker;  //надпись "старт"
     private View finishPopUpMarker;
+    private View popUpMarker;      //маркер с одним текствью, используется при переходе с QR или магазина
 
     private Vertex startVertex;
     private Vertex endVertex;
@@ -99,6 +101,18 @@ public class MapActivity extends ProtoMainActivity {
     private SharedPreferences mapInfo;
     private MapResponse response;
 
+    List<Vertex> vertexList;
+    List<Edge> edgeList;
+
+    CompositePathView.DrawablePath lastDrawPath;
+
+    /**
+     * Содержат ID точки при переходе из QR/Shop activity
+     */
+    private int fromQRPointId;      //intent key : fromQR
+    private int fromShopPointId;    //intent key : fromShop
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +121,10 @@ public class MapActivity extends ProtoMainActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Карта");
+
+        Intent intent = getIntent();
+        fromQRPointId = intent.getIntExtra("fromQR",-1);
+        fromShopPointId = intent.getIntExtra("fromShop",-1);
 
         mapView = (TileView) findViewById(R.id.tile_view);
         mapView.setBitmapProvider(new ExternalStorageBitmapProviderAssets());
@@ -330,10 +348,46 @@ public class MapActivity extends ProtoMainActivity {
 
             mapView.setShouldRenderWhilePanning(true);
 
+            if(fromQRPointId != -1){
+                for(Vertex v : vertexList){
+                    if(v.getId() == fromQRPointId){
+                        goToPointAndShowMarker(v,"Вы здесь");
+                        break;
+                    }
+                }
+            }
+            if(fromShopPointId != -1){
+                for(Vertex v : vertexList){
+                    if(v.getType() != null && v.getType().equals("shops")) {
+                        if (v.getShopId() == fromShopPointId) {
+                            goToPointAndShowMarker(v, v.getShopName() != null ? v.getShopName() : "Магазин");
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
     }
 
+    /**
+     *
+     * @param v
+     * @param text
+     */
+    private void goToPointAndShowMarker(final Vertex v,String text){
+        mapView.setScale(0.45f);
+        popUpMarker = getLayoutInflater().inflate(R.layout.marker_point_start, null);
+        TextView textView = (TextView)popUpMarker.findViewById(R.id.shop_name);
+        textView.setText(text);
+        mapView.addMarker(popUpMarker, v.getX(), v.getY(), -0.5f, -1f);
+        mapView.moveToMarker(popUpMarker,false);
+    }
+
+    /**
+     * Показывает маркер создания маршрута в указанной точке
+     * @param v
+     */
     private void showPathMarker(final Vertex v) {
         mapView.removeMarker(currentMarker);
         currentMarker = getLayoutInflater().inflate(R.layout.marker_point, null);
@@ -408,18 +462,13 @@ public class MapActivity extends ProtoMainActivity {
         mapView.addMarker(currentMarker, v.getX(), v.getY(), -0.5f, -1f);
     }
 
-    List<Vertex> vertexList;
-    List<Edge> edgeList;
 
-    CompositePathView.DrawablePath lastDrawPath;
 
     private void tryMakeRoute() {
 
         if (startVertex != null && endVertex != null) {
 
             Toast.makeText(MapActivity.this,"Загрузка...",Toast.LENGTH_SHORT).show();
-
-
 
             if(lastDrawPath != null)
             mapView.removePath(lastDrawPath);
@@ -432,17 +481,27 @@ public class MapActivity extends ProtoMainActivity {
             for(int i = 0;i < edgeList.size(); i++){
                 Edge edge = edgeList.get(i);
                 if(sparseArray.get(edge.getFromId())!=null && sparseArray.get(edge.getToId())!=null){
-                    edge.setSource(sparseArray.get(edge.getFromId()));
-                    edge.setDestination(sparseArray.get(edge.getToId()));
+                    Vertex fromVertex = sparseArray.get(edge.getFromId());
+                    Vertex toVertex = sparseArray.get(edge.getToId());
+                    edge.setSource(fromVertex);
+                    edge.setDestination(toVertex);
+                    if(fromVertex.getType() != null && toVertex.getType() != null) {
+                        if (fromVertex.getType().equals("lift") && toVertex.getType().equals("lift")) {
+                            Log.e("Lift Cost",String.valueOf(edge.getCost()));
+                            edge.setCost(3);
+                        }
+                        if (fromVertex.getType().equals("escalator") && toVertex.getType().equals("escalator")) {
+                            Log.e("Escalator Cost",String.valueOf(edge.getCost()));
+                            edge.setCost(3);
+                        }
+                    }
                 }
             }
 
             Graph graph = new Graph(vertexList, edgeList);
-
             RouteBuilder routeBuilder = new RouteBuilder(graph);
             routeBuilder.execute(vertexList.get(startVertex.getId()));
             LinkedList<Vertex> pathList = routeBuilder.getPath(vertexList.get(endVertex.getId()));
-
 
             if(pathList!=null) {
                 for (Vertex vertex : pathList) {
@@ -474,7 +533,6 @@ public class MapActivity extends ProtoMainActivity {
             }else{
                 Log.e("Path:"," NULL");
             }
-
 
         }
     }

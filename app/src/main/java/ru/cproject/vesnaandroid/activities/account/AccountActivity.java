@@ -16,11 +16,13 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,10 +47,14 @@ import ru.cproject.vesnaandroid.adapters.MiniShopAdapter;
 import ru.cproject.vesnaandroid.adapters.MiniStocksAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.RetryInterface;
+import ru.cproject.vesnaandroid.helpers.TabBar;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.User;
 
 import static android.view.View.GONE;
+import static ru.cproject.vesnaandroid.R.id.like;
+import static ru.cproject.vesnaandroid.R.id.shop;
+import static ru.cproject.vesnaandroid.R.id.special;
 
 public class AccountActivity extends AppCompatActivity implements RetryInterface {
 
@@ -68,6 +74,12 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
     protected int color;
     private String id;
     private RelativeLayout mainContent;
+
+    private TextView[] tabs;
+    private View[] tabViews;
+    private ViewGroup content;
+
+    private TabBar tabBar;
 
     private MiniStocksAdapter miniStocksAdapter;
     private MiniShopAdapter miniShopAdapter;
@@ -94,14 +106,19 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
         shopTextView = (TextView) findViewById(R.id.shop_button_text_view);
         shareTextView = (TextView) findViewById(R.id.share_button_text_view);
         mainContent = (RelativeLayout) findViewById(R.id.main_content);
+        content = (ViewGroup) findViewById(R.id.content);
+
+        tabs = new TextView[] {
+                (TextView) findViewById(R.id.shop_button_text_view),
+                (TextView) findViewById(R.id.share_button_text_view),
+                (TextView) findViewById(R.id.coupon_button_text_view)
+        };
 
         couponTextView = (TextView) findViewById(R.id.coupon_button_text_view);
         back = (ImageView) findViewById(R.id.back);
-        recyclerView = (RecyclerView) findViewById(R.id.account_recycler_view);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-
+//        recyclerView = (RecyclerView) findViewById(R.id.account_recycler_view);
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(gridLayoutManager);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,8 +148,6 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
             }
         });
 
-
-
         logoutImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,41 +155,40 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
             }
         });
 
-        shopTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
-                shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                if(user.getShops() != null){
-                    miniShopAdapter = new MiniShopAdapter(AccountActivity.this,user.getShops(),color,R.style.AppTheme);
-                    recyclerView.setAdapter(miniShopAdapter);
-                }
-            }
-        });
-
-        shareTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
-                shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                if(user.getStocks() != null) {
-                    miniStocksAdapter = new MiniStocksAdapter(AccountActivity.this, user.getStocks(), color, AccountActivity.this);
-                    recyclerView.setAdapter(miniStocksAdapter);
-                }
-            }
-        });
-
-        couponTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
-                shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-                shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
-            }
-        });
-
+//        shopTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
+//                shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
+//                couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
+//                if(user.getShops() != null){
+//                    miniShopAdapter = new MiniShopAdapter(AccountActivity.this,user.getShops(),color,R.style.AppTheme);
+//                    recyclerView.setAdapter(miniShopAdapter);
+//                }
+//            }
+//        });
+//
+//        shareTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
+//                shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
+//                couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
+//                if(user.getStocks() != null) {
+//                    miniStocksAdapter = new MiniStocksAdapter(AccountActivity.this, user.getStocks(), color, AccountActivity.this);
+//                    recyclerView.setAdapter(miniStocksAdapter);
+//                }
+//            }
+//        });
+//
+//        couponTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                couponTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorPrimary));
+//                shareTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
+//                shopTextView.setTextColor(ContextCompat.getColor(AccountActivity.this,R.color.colorTextGray));
+//            }
+//        });
 
         getAndShowAccountInfo();
 
@@ -212,6 +226,28 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
                             .into(photoImageView);
                 }
             }
+
+            View shops = getLayoutInflater().inflate(R.layout.tab_shop_stocks, content, false);
+            RecyclerView shopsView = (RecyclerView) shops.findViewById(R.id.stocks_view);
+            shopsView.setAdapter(new MiniShopAdapter(this, user.getShops(), color, R.style.AppTheme));
+            shopsView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+            View stocks = getLayoutInflater().inflate(R.layout.tab_shop_stocks, content, false);
+            RecyclerView stocksView = (RecyclerView) stocks.findViewById(R.id.stocks_view);
+            stocksView.setAdapter(new MiniStocksAdapter(AccountActivity.this, user.getStocks(), color, AccountActivity.this));
+            stocksView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+            View coupons = getLayoutInflater().inflate(R.layout.tab_shop_stocks, content, false);
+//            RecyclerView couponsView = (RecyclerView) coupons.findViewById(R.id.stocks_view);
+//            couponsView.setAdapter(new MiniStocksAdapter(AccountActivity.this, user.getCoupons(), color, AccountActivity.this));
+
+            tabViews = new View[] {
+                    shops,
+                    stocks,
+                    coupons
+            };
+
+            tabBar = new TabBar(tabs, tabViews, content, color, ContextCompat.getColor(this, R.color.colorTextGray));
     }
 
     private void getAndShowAccountInfo(){

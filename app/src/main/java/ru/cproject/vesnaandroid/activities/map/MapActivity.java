@@ -57,6 +57,7 @@ import io.realm.RealmResults;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
+import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
 import ru.cproject.vesnaandroid.activities.universal.ProtoMainActivity;
 import ru.cproject.vesnaandroid.adapters.ShopsAdapter;
 import ru.cproject.vesnaandroid.helpers.ExternalStorageBitmapProviderAssets;
@@ -69,6 +70,7 @@ import ru.cproject.vesnaandroid.obj.map.Vertex;
 import ru.cproject.vesnaandroid.obj.responses.MapResponse;
 
 import static ru.cproject.vesnaandroid.R.id.shop;
+import static ru.cproject.vesnaandroid.R.id.shop_info;
 
 /**
  * Created by Bitizen on 23.11.16.
@@ -396,8 +398,18 @@ public class MapActivity extends ProtoMainActivity {
             shopName.setText(v.getShopName());
             TextView shopCat = (TextView) currentMarker.findViewById(R.id.shop_categories);
             shopCat.setText(v.getCats());
+            ViewGroup shopInfo = (ViewGroup) currentMarker.findViewById(shop_info);
+            shopInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MapActivity.this, SingleShopActivity.class);
+                    intent.putExtra("id", v.getShopId());
+                    intent.putExtra("style", R.style.ShopsTheme);
+                    startActivity(intent);
+                }
+            });
         } else {
-            ViewGroup shopInfo = (ViewGroup) currentMarker.findViewById(R.id.shop_info);
+            ViewGroup shopInfo = (ViewGroup) currentMarker.findViewById(shop_info);
             shopInfo.setVisibility(View.GONE);
         }
         final TextView startButton = (TextView) currentMarker.findViewById(R.id.start_route);

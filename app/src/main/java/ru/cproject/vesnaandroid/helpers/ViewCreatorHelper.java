@@ -245,7 +245,9 @@ public class ViewCreatorHelper {
                     this.onClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // TODO парковка
+                            Intent intent = new Intent(context, MapActivity.class);
+                            //TODO пробросить интенты для карты
+                            context.startActivity(intent);
                         }
                     };
                     break;

@@ -15,9 +15,9 @@ public class User {
     private String fname;
     private String lname;
     private String photo;
-    private ArrayList<Shop> shops;
-    private ArrayList<Stock> stocks;
-    private ArrayList<Coupon> coupons;
+    private ArrayList<Shop> shops = new ArrayList<>();
+    private ArrayList<Stock> stocks = new ArrayList<>();
+    private ArrayList<Coupon> coupons = new ArrayList<>();
 
     public String getId() {
         return id;

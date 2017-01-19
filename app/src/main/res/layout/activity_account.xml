@@ -176,73 +176,64 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:background="@drawable/rounded_corners_white_background"
         android:layout_marginTop="178dp">
 
-
         <LinearLayout
-            android:id="@+id/lin_layout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:weightSum="3"
-            android:layout_marginLeft="13dp"
-            android:gravity="center_vertical"
-            >
-
-            <TextView
-                android:id="@+id/shop_button_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_weight="1"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15dp"
-                android:text="МАГАЗИНЫ"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="23dp"
-                android:layout_marginRight="14dp"
-                android:background="@color/colorTextGray"
-                />
-
-            <TextView
-                android:id="@+id/share_button_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@color/colorTextGray"
-                android:textSize="15dp"
-                android:layout_weight="1"
-                android:text="АКЦИИ"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="23dp"
-                android:layout_marginLeft="14dp"
-                android:background="@color/colorTextGray"
-                />
-
-            <TextView
-                android:id="@+id/coupon_button_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/colorTextGray"
-                android:layout_weight="1"
-                android:paddingRight="14dp"
-                android:gravity="right|center_vertical"
-                android:textSize="15dp"
-                android:text="КУПОНЫ"/>
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/account_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lin_layout"
-            android:layout_marginTop="8dp">
+            android:background="@drawable/card_shadow"
+            android:orientation="vertical"
+            android:paddingTop="24dp">
 
-        </android.support.v7.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+                <TextView
+                    android:id="@+id/shop_button_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13sp"
+                    android:textAllCaps="true"
+                    android:text="Магазины"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorTextGray" />
+                <TextView
+                    android:id="@+id/share_button_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13sp"
+                    android:textAllCaps="true"
+                    android:text="Акции"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorTextGray" />
+                <TextView
+                    android:id="@+id/coupon_button_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="13sp"
+                    android:textAllCaps="true"
+                    android:text="Купоны"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

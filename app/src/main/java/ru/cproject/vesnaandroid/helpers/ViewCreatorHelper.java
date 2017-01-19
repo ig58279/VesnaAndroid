@@ -2,6 +2,7 @@ package ru.cproject.vesnaandroid.helpers;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,12 +13,14 @@ import android.media.Image;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -35,6 +39,7 @@ import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
@@ -45,9 +50,14 @@ import ru.cproject.vesnaandroid.activities.films.MainFilmsActivity;
 import ru.cproject.vesnaandroid.activities.map.MapActivity;
 import ru.cproject.vesnaandroid.activities.shops.MainShopsActivity;
 import ru.cproject.vesnaandroid.activities.stocks.MainStocksActivity;
+import ru.cproject.vesnaandroid.helpers.wheel.OnWheelChangedListener;
+import ru.cproject.vesnaandroid.helpers.wheel.SimpleAdapter;
+import ru.cproject.vesnaandroid.helpers.wheel.WheelView;
 import ru.cproject.vesnaandroid.obj.Category;
 import ru.cproject.vesnaandroid.obj.Shop;
 import ru.cproject.vesnaandroid.obj.mall.Function;
+import ru.cproject.vesnaandroid.obj.mall.MallInfo;
+import ru.cproject.vesnaandroid.obj.map.Vertex;
 
 import static ru.cproject.vesnaandroid.R.id.stock;
 import static ru.cproject.vesnaandroid.helpers.DinamicPermissionsHelper.CAMERA_REQUEST_CODE;
@@ -179,6 +189,91 @@ public class ViewCreatorHelper {
         private View.OnClickListener onClickListener;
         private boolean isHome;
 
+        void fillLettersArrayList(ArrayList<String> arrayList){
+            String[] letters = {"А","Б","В","Г","Д","Е","Ж","З","И","К","Л"};   //я у мамы индус
+            for(int i = 0;i<letters.length;i++){
+                arrayList.add(letters[i]);
+            }
+        }
+
+        ArrayList<String> getNumbersArrayList(String letterPick){
+            ArrayList<String> stringArrayList = new ArrayList<>();
+            int maxIterationCount;
+            switch(letterPick){
+                case "А":
+                    maxIterationCount = 7;
+                    break;
+
+                case "Б":
+
+                    maxIterationCount = 7;
+                    break;
+
+                case "В":
+
+                    maxIterationCount = 18;
+                    break;
+
+                case "Г":
+
+                    maxIterationCount = 22;
+                    break;
+
+                case "Д":
+
+                    maxIterationCount = 22;
+                    break;
+
+                case "Е":
+
+                    maxIterationCount = 22;
+                    break;
+
+                case "Ж":
+
+                    maxIterationCount = 23;
+                    break;
+
+                default:
+
+                    maxIterationCount = 48;
+
+            }
+
+            for(int i = 0;i < maxIterationCount;i++){
+                if (letterPick.equals("А") || letterPick.equals("Б")){
+                    stringArrayList.add(String.valueOf(i+3));
+
+                }else{
+                    stringArrayList.add(String.valueOf(i+1));
+                }
+
+            }
+
+            if (letterPick.equals("Б")){
+                stringArrayList.add(String.valueOf(14));
+            }
+            if (letterPick.equals("В")){
+                stringArrayList.remove(10);
+                stringArrayList.remove(11);
+            }
+            if (letterPick.equals("Д") || letterPick.equals("Е") || letterPick.equals("Ж")){
+                stringArrayList.add(String.valueOf(32));
+            }
+            if (letterPick.equals("Е") || letterPick.equals("Ж")){
+                stringArrayList.add(String.valueOf(33));
+                stringArrayList.add(String.valueOf(34));
+                stringArrayList.add(String.valueOf(35));
+                stringArrayList.add(String.valueOf(36));
+            }
+            if (letterPick.equals("Ж")){
+                stringArrayList.add(String.valueOf(26));
+                stringArrayList.add(String.valueOf(27));
+            }
+
+            return stringArrayList;
+        }
+
         MenuElement(final Context context, final Function function) {
             switch (function.getType()) {
                 case "map":
@@ -245,9 +340,52 @@ public class ViewCreatorHelper {
                     this.onClickListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(context, MapActivity.class);
-                            //TODO пробросить интенты для карты
-                            context.startActivity(intent);
+                            String parkingPosition = context.getSharedPreferences(Settings.COMMON,Context.MODE_PRIVATE).getString(Settings.Common.parkingPosition,"");
+                            if(!parkingPosition.isEmpty()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle("")
+                                        .setPositiveButton("ОК",null)
+                                        .setMessage("Ваше парковочное место: " + parkingPosition)
+                                        .show();
+                            }else{
+                                View outerView = LayoutInflater.from(context).inflate(R.layout.parking_dialog, null);
+                                final WheelView letterWv = (WheelView) outerView.findViewById(R.id.letter_wv);
+                                final WheelView numberWv = (WheelView) outerView.findViewById(R.id.number_wv);
+
+                                final ArrayList<String> lettersArrayList = new ArrayList<>();
+
+                                fillLettersArrayList(lettersArrayList);
+                                letterWv.setViewAdapter(new SimpleAdapter(lettersArrayList,context));
+                                letterWv.setVisibleItems(3);
+                                letterWv.setCurrentItem(0);
+                                letterWv.addChangingListener(new OnWheelChangedListener() {
+                                    @Override
+                                    public void onChanged(WheelView wheel, int oldValue, int newValue) {
+                                        numberWv.setViewAdapter(new SimpleAdapter(getNumbersArrayList(lettersArrayList.get(newValue)),context));
+                                        numberWv.setVisibleItems(3);
+                                        numberWv.setCurrentItem(0);
+                                    }
+                                });
+                                numberWv.setViewAdapter(new SimpleAdapter(getNumbersArrayList("А"),context));
+                                numberWv.setVisibleItems(3);
+                                numberWv.setCurrentItem(0);
+
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Выберите парковочное место")
+                                        .setView(outerView)
+                                        .setNegativeButton("Отмена",null)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                String parkingPlace = lettersArrayList.get(letterWv.getCurrentItem()) + "-" + getNumbersArrayList(lettersArrayList.get(letterWv.getCurrentItem())).get(numberWv.getCurrentItem());
+                                                Intent intent = new Intent(context, MapActivity.class);
+                                                intent.putExtra("fromParking",parkingPlace);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .show();
+                            }
+
                         }
                     };
                     break;
@@ -289,6 +427,8 @@ public class ViewCreatorHelper {
                     isHome = false;
             }
             this.isHome = function.isHome();
+
+
         }
 
         public int getIconRes() {
@@ -323,6 +463,7 @@ public class ViewCreatorHelper {
             isHome = home;
         }
     }
+
 
 
 }

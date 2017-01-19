@@ -592,6 +592,10 @@ public class ResponseParser {
                 if (vertexJson.has(shop) && !vertexJson.get(shop).isJsonNull())
                     vertexObj.setShopId(vertexJson.get(shop).getAsInt());
 
+                String park = "park";
+                if (vertexJson.has(park) && !vertexJson.get(park).isJsonNull())
+                    vertexObj.setPark(vertexJson.get(park).getAsString());
+
                 String name = "name";
                 if (vertexJson.has(name) && !vertexJson.get(name).isJsonNull())
                     vertexObj.setShopName(vertexJson.get(name).getAsString());
@@ -671,6 +675,11 @@ public class ResponseParser {
             String escalator = "escalator";
             if (styleJson.has(escalator) && !styleJson.get(escalator).isJsonNull()) {
                 styleInfo.setEscalatorIcon(styleJson.get(escalator).getAsString());
+            }
+
+            String park = "park";
+            if (styleJson.has(park) && !styleJson.get(park).isJsonNull()) {
+                styleInfo.setParkIcon(styleJson.get(park).getAsString());
             }
 
             String pipe = "pipe";

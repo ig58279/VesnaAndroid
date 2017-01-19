@@ -11,9 +11,17 @@ public class StyleInfo {
     private String endIcon;
     private String liftIcon;
     private String escalatorIcon;
+    private String parkIcon;
     private int pipeColor;
     private int pipeWidth;
 
+    public String getParkIcon() {
+        return parkIcon;
+    }
+
+    public void setParkIcon(String parkIcon) {
+        this.parkIcon = parkIcon;
+    }
 
     public int getLineColor() {
         return lineColor;

@@ -2,14 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
-    <LinearLayout
+
+    <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:orientation="horizontal">
-
-    </LinearLayout>
+        >
+        <ImageButton
+            android:id="@+id/parking_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:visibility="gone"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/parkin_icon"/>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"

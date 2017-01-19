@@ -22,6 +22,15 @@ public class Vertex extends RealmObject {
     private int shopId;
     private String shopName;
     private String cats;
+    private String park;
+
+    public String getPark() {
+        return park;
+    }
+
+    public void setPark(String park) {
+        this.park = park;
+    }
 
     public int getId() {
         return id;

@@ -8,6 +8,7 @@ public class Settings {
     public static final String COMMON = "common";
     public class Common {
         public static final String stockLikeWithChangedState = "positionOfRecyclerElement";   //костыль, если акцию лайкнули/дизлайкнули, то тут будет позиция элемента
+        public static final String parkingPosition = "parkingPos";
     }
 
     public static final String MALL_INFO = "mallInfo";

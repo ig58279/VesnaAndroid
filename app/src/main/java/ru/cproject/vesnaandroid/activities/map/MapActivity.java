@@ -18,6 +18,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ import ru.cproject.vesnaandroid.adapters.ShopsAdapter;
 import ru.cproject.vesnaandroid.helpers.ExternalStorageBitmapProviderAssets;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
 import ru.cproject.vesnaandroid.helpers.RouteBuilder;
+import ru.cproject.vesnaandroid.obj.mall.MallInfo;
 import ru.cproject.vesnaandroid.obj.map.Edge;
 import ru.cproject.vesnaandroid.obj.map.Graph;
 import ru.cproject.vesnaandroid.obj.map.StyleInfo;
@@ -80,20 +82,25 @@ public class MapActivity extends ProtoMainActivity {
     private static final String TAG = "MapActivity";
 
     private TileView mapView;
+    private ImageButton parkingButton;
 
     private int width;
     private int height;
     private StyleInfo styleInfo;
 
+    private ImageView parkingMarkerImageView;
     private View currentMarker;   //маркер, появляющийся при нажатии на карту
     private ImageView startMarker;  //звездочка
     private ImageView endMarker;
     private View startPopUpMarker;  //надпись "старт"
     private View finishPopUpMarker;
+    private View popUpParkingMarker;
     private View popUpMarker;      //маркер с одним текствью, используется при переходе с QR или магазина
 
     private Vertex startVertex;
     private Vertex endVertex;
+    private Vertex parkingVertex;
+
 
     DownloadMapTask downloadMapTask;
 
@@ -113,6 +120,7 @@ public class MapActivity extends ProtoMainActivity {
      */
     private int fromQRPointId;      //intent key : fromQR
     private int fromShopPointId;    //intent key : fromShop
+    private String fromParking;        //название парковочного места(в виде А-10)
 
 
     @Override
@@ -127,8 +135,11 @@ public class MapActivity extends ProtoMainActivity {
         Intent intent = getIntent();
         fromQRPointId = intent.getIntExtra("fromQR",-1);
         fromShopPointId = intent.getIntExtra("fromShop",-1);
+        fromParking = intent.getStringExtra("fromParking");
+        if(fromParking == null) fromParking = getSharedPreferences(Settings.COMMON,MODE_PRIVATE).getString(Settings.Common.parkingPosition,null);
 
         mapView = (TileView) findViewById(R.id.tile_view);
+        parkingButton = (ImageButton) findViewById(R.id.parking_button);
         mapView.setBitmapProvider(new ExternalStorageBitmapProviderAssets());
 
         mapInfo = getSharedPreferences(Settings.MAP_INFO, MODE_PRIVATE);
@@ -350,7 +361,67 @@ public class MapActivity extends ProtoMainActivity {
 
             mapView.setShouldRenderWhilePanning(true);
 
-            if(fromQRPointId != -1){
+            if(fromParking != null) {
+                for(Vertex v : vertexList){
+                    if(v.getType() != null && v.getType().equals("park")) {
+                        if(v.getPark() != null)
+                        if (v.getPark().equals(fromParking)) {
+                            getSharedPreferences(Settings.COMMON,MODE_PRIVATE).edit().putString(Settings.Common.parkingPosition,fromParking).apply();
+                            parkingVertex = v;
+                            if(getIntent().getStringExtra("fromParking") != null){
+                                mapView.setScale(0.45f);
+                                popUpParkingMarker = getLayoutInflater().inflate(R.layout.marker_point_start, null);
+                                TextView textView = (TextView)popUpParkingMarker.findViewById(R.id.shop_name);
+                                textView.setText("Место парковки");
+                                mapView.addMarker(popUpParkingMarker, v.getX(), v.getY(), -0.5f, -1f);
+                                mapView.moveToMarker(popUpParkingMarker,false);
+                            }
+                            else {
+                                popUpParkingMarker = getLayoutInflater().inflate(R.layout.marker_point_start, null);
+                                TextView textView = (TextView)popUpParkingMarker.findViewById(R.id.shop_name);
+                                textView.setText("Место парковки");
+                                mapView.addMarker(popUpParkingMarker, v.getX(), v.getY(), -0.5f, -1f);
+                            }
+                            parkingMarkerImageView = new ImageView(this);
+                            Glide
+                                    .with(getBaseContext())
+                                    .load(ServerApi.getImgUrl(styleInfo.getParkIcon(), false))
+                                    .sizeMultiplier(0.09f)
+                                    .into(parkingMarkerImageView);
+                            mapView.addMarker(parkingMarkerImageView,v.getX(),v.getY(),-0.5f,-0.5f);
+                           /* parkingButton.setVisibility(View.VISIBLE);
+                            parkingButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            });*/
+                            parkingMarkerImageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    new AlertDialog.Builder(MapActivity.this)
+                                            .setTitle("")
+                                            .setMessage("Удалить место парковки?")
+                                            .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getSharedPreferences(Settings.COMMON,MODE_PRIVATE).edit().putString(Settings.Common.parkingPosition,"").apply();
+                                                    mapView.removeMarker(parkingMarkerImageView);
+                                                    mapView.removeMarker(popUpParkingMarker);
+                                                //    parkingButton.setVipopUpMarkerity(View.GONE);
+                                                }
+                                            })
+                                            .setNegativeButton("Нет",null)
+                                            .show();
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(fromQRPointId != -1){                          // TODO: 19.1.17 ОПТИМИЗИРОВАТЬ
                 for(Vertex v : vertexList){
                     if(v.getId() == fromQRPointId){
                         goToPointAndShowMarker(v,"Вы здесь");

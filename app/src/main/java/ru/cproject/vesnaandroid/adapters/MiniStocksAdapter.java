@@ -47,12 +47,6 @@ public class MiniStocksAdapter extends StocksAdapter {
             return null;
     }
 
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
-        ((StockViewHolder) holder).like.setVisibility(View.GONE);
-    }
-
     /*
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {

@@ -278,6 +278,11 @@ public class ResponseParser {
         String NAME = "name";
         if (filmJson.has(NAME) && !filmJson.get(NAME).isJsonNull())
             film.setName(filmJson.get(NAME).getAsString());
+
+        String TRAILER = "trailer";
+        if (filmJson.has(TRAILER) && !filmJson.get(TRAILER).isJsonNull())
+            film.setTrailer(filmJson.get(TRAILER).getAsString());
+
         String attrsJson = "attrs";
         if (filmJson.has(attrsJson) && !filmJson.get(attrsJson).isJsonNull()) {
             JsonObject attributes = filmJson.get(attrsJson).getAsJsonObject();

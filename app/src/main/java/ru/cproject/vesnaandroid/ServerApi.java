@@ -44,6 +44,11 @@ public class ServerApi {
     public static final String GET_STOCK = SERVER_ADDRESS + "stock";
 
     /**
+     * Метод получения купона
+     */
+    public static final String GET_COUPON = SERVER_ADDRESS + "coupon";
+
+    /**
      * Метод получения магазинов
      */
     public static final String GET_SHOPS = SERVER_ADDRESS + "list?mod=";

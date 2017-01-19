@@ -13,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.activities.shops.SingleShopActivity;
@@ -62,10 +66,14 @@ public class MiniShopAdapter extends ShopsAdapter {
         final Shop shop = shops.get(position);
      //   ((ShopViewHolder) holder).title.getBackground().setColorFilter(Color.parseColor("#f4f4f4"), PorterDuff.Mode.SRC_IN);
         ((ShopViewHolder) holder).title.setText(shop.getName());
-        Glide
+        float dpi = context.getResources().getDisplayMetrics().density;
+        Picasso
                 .with(context)
-                .load(ServerApi.getImgUrl(shop.getLogo(), true))
-                .fitCenter()
+                .load(ServerApi.getImgUrl(shop.getLogo(), false))
+                .placeholder(R.drawable.ic_big_placeholder)
+                .fit()
+                .centerInside()
+                .transform(new RoundedCornersTransformation((int)(4*dpi),0, RoundedCornersTransformation.CornerType.TOP))
                 .into(((ShopViewHolder) holder).image);
 
         ((ShopViewHolder) holder).image.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +92,8 @@ public class MiniShopAdapter extends ShopsAdapter {
                 context.startActivity(intent);
             }
         });
+
+        ((ShopViewHolder) holder).like.setVisibility(View.GONE);
          /*
         if (getItemViewType(position) == STOCKS_ITEM) {
             final Shop shop = shops.get(position);

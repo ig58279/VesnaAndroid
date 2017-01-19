@@ -32,6 +32,8 @@
         <activity
             android:name=".activities.stocks.SingleStockActivity"
             android:theme="@style/StockTheme"/>
+        <activity android:name=".activities.CouponActivity"
+            android:theme="@style/StockTheme"/>
         <activity
             android:name=".activities.shops.MainShopsActivity"
             android:theme="@style/AppTheme"/>

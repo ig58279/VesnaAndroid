@@ -1,245 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_account"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
-
+    android:layout_height="match_parent">
     <RelativeLayout
-        android:id="@+id/progress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
-
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/error_message"
+        android:id="@+id/activity_account"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone"
-        android:padding="16dp"
-        >
+       >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="14sp"
-            android:text="@string/error_message"/>
+        <RelativeLayout
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
 
-        <Button
-            android:id="@+id/retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:padding="8dp"
-            android:background="@drawable/retry_button"
-            android:textSize="14sp"
-            android:textColor="@color/colorWhite"
-            android:text="@string/retry" />
-    </LinearLayout>
+        </RelativeLayout>
 
-
-    <RelativeLayout
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-
-
-
-    <LinearLayout
-        android:id="@+id/linear_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="9dp"
-        android:paddingBottom="157dp"
-        android:background="@color/colorPrimary">
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_marginLeft="10dp"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_arrow_back"/>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="ЛИЧНЫЙ КАБИНЕТ"
-            android:textSize="18sp"
-            android:textColor="@color/colorWhite"
-            />
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <ImageView
-            android:id="@+id/logout"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_exit"/>
-    </LinearLayout>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:adjustViewBounds="true"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_top_wave"
-        android:layout_marginTop="117dp"
-        />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="105dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:background="@drawable/rounded_corners_white_background"
-        android:layout_marginTop="60dp"
-        >
-
-        <TextView
-            android:id="@+id/name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textColor="@color/colorTextBlack"
-            android:textAllCaps="true"
-            android:layout_marginTop="13dp"
-            android:layout_marginLeft="13dp"
-            android:textSize="18dp"
-            />
 
         <LinearLayout
+            android:id="@+id/error_message"
             android:layout_width="match_parent"
-            android:layout_height="59dp"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingLeft="13dp"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/bottom_rounded_corners_gray_background"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="16dp"
             >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:textSize="14dp"
-                android:text="БОНУСНЫХ БАЛЛОВ:"
-                />
-            <TextView
-                android:id="@+id/points_text_view"
+                android:gravity="center"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="14sp"
+                android:text="@string/error_message"/>
+
+            <Button
+                android:id="@+id/retry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorTextBlack"
-                android:layout_marginTop="1dp"
-                android:textSize="15dp"
-                android:text="-"/>
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:background="@drawable/retry_button"
+                android:textSize="14sp"
+                android:textColor="@color/colorWhite"
+                android:text="@string/retry" />
         </LinearLayout>
-    </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
 
 
-    <ImageView
-        android:id="@+id/photo_image_view"
-        android:layout_width="104dp"
-        android:layout_height="104dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="48dp"
-        android:layout_marginRight="25dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        >
-    </ImageView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="178dp">
 
         <LinearLayout
+            android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_shadow"
-            android:orientation="vertical"
-            android:paddingTop="24dp">
+            android:orientation="horizontal"
+            android:paddingTop="9dp"
+            android:paddingBottom="157dp"
+            android:background="@color/colorPrimary">
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_arrow_back"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="ЛИЧНЫЙ КАБИНЕТ"
+                android:textSize="18sp"
+                android:textColor="@color/colorWhite"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/logout"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_exit"/>
+        </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="79dp"
+            android:adjustViewBounds="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_top_wave"
+            android:layout_marginTop="117dp"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="105dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/rounded_corners_white_background"
+            android:layout_marginTop="60dp"
+            >
+
+            <TextView
+                android:id="@+id/name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textColor="@color/colorTextBlack"
+                android:textAllCaps="true"
+                android:layout_marginTop="13dp"
+                android:layout_marginLeft="13dp"
+                android:textSize="18dp"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                android:layout_height="59dp"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingLeft="13dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bottom_rounded_corners_gray_background"
+                >
+
                 <TextView
-                    android:id="@+id/shop_button_text_view"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="13sp"
-                    android:textAllCaps="true"
-                    android:text="Магазины"/>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorTextGray" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="14dp"
+                    android:text="БОНУСНЫХ БАЛЛОВ:"
+                    />
                 <TextView
-                    android:id="@+id/share_button_text_view"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="13sp"
-                    android:textAllCaps="true"
-                    android:text="Акции"/>
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorTextGray" />
-                <TextView
-                    android:id="@+id/coupon_button_text_view"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="13sp"
-                    android:textAllCaps="true"
-                    android:text="Купоны"/>
+                    android:id="@+id/points_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextBlack"
+                    android:layout_marginTop="1dp"
+                    android:textSize="15dp"
+                    android:text="-"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+
+
+        <ImageView
+            android:id="@+id/photo_image_view"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="48dp"
+            android:layout_marginRight="25dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            >
+        </ImageView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="178dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_shadow"
+                android:orientation="vertical"
+                android:paddingTop="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+                    <TextView
+                        android:id="@+id/shop_button_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textAllCaps="true"
+                        android:text="Магазины"/>
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorTextGray" />
+                    <TextView
+                        android:id="@+id/share_button_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textAllCaps="true"
+                        android:text="Акции"/>
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorTextGray" />
+                    <TextView
+                        android:id="@+id/coupon_button_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textAllCaps="true"
+                        android:text="Купоны"/>
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+        </RelativeLayout>
 
-        </LinearLayout>
 
-    </RelativeLayout>
+        </RelativeLayout>
+
 
 
     </RelativeLayout>
-
-
-
-</RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

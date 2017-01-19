@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ru.cproject.vesnaandroid.obj.Category;
+import ru.cproject.vesnaandroid.obj.Coupon;
 import ru.cproject.vesnaandroid.obj.Event;
 import ru.cproject.vesnaandroid.obj.Film;
 import ru.cproject.vesnaandroid.obj.Search;
@@ -119,6 +120,22 @@ public class ResponseParser {
         }
 
         return stock;
+    }
+
+    public static Coupon parseCoupone(String json) {
+        Coupon coupon = new Coupon();
+        JsonParser parser = new JsonParser();
+        JsonObject response = parser.parse(json).getAsJsonObject();
+
+        String name = "name";
+        if (response.has(name) && !response.get(name).isJsonNull())
+            coupon.setName(response.get(name).getAsString());
+
+        String image = "img";
+        if (response.has(image) && !response.get(image).isJsonNull())
+            coupon.setImage(response.get(image).getAsString());
+
+        return coupon;
     }
 
     public static Shop parseShop(String json) {
@@ -737,6 +754,9 @@ public class ResponseParser {
           /*  JsonArray shopList = mainJsonObject.get("stocks").getAsJsonArray();
             for (JsonElement e : shopList)
                 arrayList.add(parseStocks(e.toString()));*/
+            JsonArray couponList = mainJsonObject.get("coupons").getAsJsonArray();
+            for (JsonElement e : couponList)
+                arrayList.add(parseCoupone(e.toString()));
             user.setCoupons(arrayList);
         }
 

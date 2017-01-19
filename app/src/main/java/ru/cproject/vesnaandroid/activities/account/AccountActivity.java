@@ -43,6 +43,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import ru.cproject.vesnaandroid.R;
 import ru.cproject.vesnaandroid.ServerApi;
 import ru.cproject.vesnaandroid.Settings;
+import ru.cproject.vesnaandroid.adapters.CouponeAdapter;
 import ru.cproject.vesnaandroid.adapters.MiniShopAdapter;
 import ru.cproject.vesnaandroid.adapters.MiniStocksAdapter;
 import ru.cproject.vesnaandroid.helpers.ResponseParser;
@@ -238,8 +239,9 @@ public class AccountActivity extends AppCompatActivity implements RetryInterface
             stocksView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
             View coupons = getLayoutInflater().inflate(R.layout.tab_shop_stocks, content, false);
-//            RecyclerView couponsView = (RecyclerView) coupons.findViewById(R.id.stocks_view);
-//            couponsView.setAdapter(new MiniStocksAdapter(AccountActivity.this, user.getCoupons(), color, AccountActivity.this));
+            RecyclerView couponsView = (RecyclerView) coupons.findViewById(R.id.stocks_view);
+            couponsView.setAdapter(new CouponeAdapter(AccountActivity.this, user.getCoupons(), color));
+            couponsView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
             tabViews = new View[] {
                     shops,

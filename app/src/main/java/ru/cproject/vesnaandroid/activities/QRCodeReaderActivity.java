@@ -98,9 +98,14 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
                     String id = getLastBitFromUrl(text);
                     try {
                         int stockId = Integer.valueOf(id);
-                        Intent intent = new Intent(context, SingleStockActivity.class);
-                        intent.putExtra("id", stockId);
-                        context.startActivity(intent);
+                        Intent[] intent = new Intent[] {
+                                new Intent(context, SingleStockActivity.class),
+                                new Intent(context, CouponActivity.class)
+                        };
+                        intent[0].putExtra("id", stockId);
+                        intent[1].putExtra("id", stockId);
+                        context.startActivities(intent);
+                        finish();
                     } catch (Exception e) {}
                 }
                 if (text.contains("shop")) {
